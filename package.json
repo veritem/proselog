@@ -23,6 +23,7 @@
     "class-validator": "0.13.2",
     "cookie": "^0.4.2",
     "cors": "2.8.5",
+    "dayjs": "^1.11.0",
     "graphql": "15.8.0",
     "jose": "^4.6.0",
     "micro": "9.3.4",

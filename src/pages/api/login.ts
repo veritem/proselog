@@ -17,6 +17,10 @@ const handler: NextApiHandler = async (req, res) => {
     return res.send(`invalid token`)
   }
 
+  if (loginToken.expiresAt < new Date()) {
+    return res.send(`token expired`)
+  }
+
   let user = await prisma.user.findUnique({
     where: {
       email: loginToken.email,
@@ -31,6 +35,12 @@ const handler: NextApiHandler = async (req, res) => {
       },
     })
   }
+
+  await prisma.loginToken.delete({
+    where: {
+      id: loginToken.id,
+    },
+  })
 
   setAuthCookie(res, await getJWT({ userId: user.id }))
 

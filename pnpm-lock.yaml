@@ -20,6 +20,7 @@ specifiers:
   class-validator: 0.13.2
   cookie: ^0.4.2
   cors: 2.8.5
+  dayjs: ^1.11.0
   graphql: 15.8.0
   husky: 7.0.4
   jose: ^4.6.0
@@ -48,6 +49,7 @@ dependencies:
   class-validator: 0.13.2
   cookie: 0.4.2
   cors: 2.8.5
+  dayjs: 1.11.0
   graphql: 15.8.0
   jose: 4.6.0
   micro: 9.3.4
@@ -2328,6 +2330,10 @@ packages:
   /date-fns/1.30.1:
     resolution: {integrity: sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==}
     dev: true
+
+  /dayjs/1.11.0:
+    resolution: {integrity: sha512-JLC809s6Y948/FuCZPm5IX8rRhQwOiyMb2TfVVQEixG7P8Lm/gt5S7yoQZmC8x1UehI9Pb7sksEt4xx14m+7Ug==}
+    dev: false
 
   /debounce/1.2.1:
     resolution: {integrity: sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==}
