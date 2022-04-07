@@ -8,7 +8,16 @@ import { nanoid } from "nanoid"
 import Cookie from "cookie"
 import { verifyJWT } from "./jwt"
 
-export type AuthUser = { id: string; name: string; email: string }
+export type AuthUser = {
+  id: string
+  name: string
+  email: string
+  sites: {
+    id: string
+    name: string
+    subdomain: string
+  }[]
+}
 
 export const getAuthUser = async (
   req: IncomingMessage,
@@ -25,12 +34,22 @@ export const getAuthUser = async (
       where: {
         id: payload.userId,
       },
+      include: {
+        sites: {
+          select: {
+            id: true,
+            name: true,
+            subdomain: true,
+          },
+        },
+      },
     })
     if (!user) return null
     return {
       id: user.id,
       name: user.name,
       email: user.email,
+      sites: user.sites,
     }
   }
   return null

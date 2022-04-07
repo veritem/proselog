@@ -1,4 +1,4 @@
-import { Site as DB_Site } from "@prisma/client"
+import { Site as DB_Site, Post as DB_Post } from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
 import { Context } from "./decorators"
 import { AuthUser } from "./auth"
@@ -13,7 +13,7 @@ export const getGuard = <TRequireAuth extends boolean>(
 
   const allow = {
     site: {
-      get(site: Partial<DB_Site>) {
+      read(site: Partial<DB_Site>) {
         return !!site.id
       },
       update(site: Partial<DB_Site>) {
@@ -21,6 +21,20 @@ export const getGuard = <TRequireAuth extends boolean>(
       },
       delete(site: Partial<DB_Site>) {
         return user && site.userId === user.id
+      },
+    },
+    post: {
+      create(site: Partial<DB_Site>) {
+        return allow.site.update(site)
+      },
+      read(post: Partial<DB_Post>) {
+        return post.draft
+          ? user?.sites.some((site) => site.id === post.siteId)
+          : true
+      },
+      list(type: "public" | "all", site: Partial<DB_Site>) {
+        if (type === "all") return allow.post.create(site)
+        return true
       },
     },
     ANY(rules: (() => boolean | null | undefined)[]) {

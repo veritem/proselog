@@ -32,14 +32,17 @@ model LoginToken {
 }
 
 model Site {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String
-  subdomain String   @unique
-  user      User     @relation(name: "UserSites", fields: [userId], references: [id])
-  userId    String
-  posts     Post[]   @relation(name: "SitePosts")
+  id              String   @id @default(uuid())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  name            String
+  subdomain       String   @unique
+  user            User     @relation(name: "UserSites", fields: [userId], references: [id])
+  userId          String
+  posts           Post[]   @relation(name: "SitePosts")
+  domains         Domain[] @relation(name: "SiteDomains")
+  primaryDomain   Domain?  @relation(name: "SitePrimaryDomain", fields: [primaryDomainId], references: [id])
+  primaryDomainId String?  @unique
 
   @@map("sites")
 }
@@ -51,8 +54,19 @@ model Post {
   title     String
   content   String
   slug      String   @unique
+  draft     Boolean?
   site      Site     @relation(name: "SitePosts", fields: [siteId], references: [id])
   siteId    String
 
   @@map("posts")
+}
+
+model Domain {
+  id                   String @id @default(uuid())
+  site                 Site   @relation(name: "SiteDomains", fields: [siteId], references: [id])
+  siteId               String
+  domain               String @unique
+  primaryDomainForSite Site?  @relation(name: "SitePrimaryDomain")
+
+  @@map("domains")
 }

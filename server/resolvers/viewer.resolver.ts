@@ -19,7 +19,6 @@ export default class ViewerResolver {
     const sites = await prisma.site.findMany({
       where: {
         userId: viewer.id,
-        deletedAt: null,
       },
       orderBy: {
         createdAt: "desc",
@@ -46,7 +45,7 @@ export default class ViewerResolver {
       return
     }
 
-    guard.allow.ANY([() => guard.allow.site.get(site)])
+    guard.allow.ANY([() => guard.allow.site.read(site)])
 
     return site
   }

@@ -1,5 +1,6 @@
 import { ArgsType, Field, ObjectType } from "type-graphql"
 import * as isoDate from "graphql-iso-date"
+import { PaginationArgs } from "./shared.types"
 
 @ObjectType({ simpleResolvers: true })
 export class Site {
@@ -44,4 +45,16 @@ export class UpdateSiteArgs {
 export class DeleteSiteArgs {
   @Field()
   id: string
+}
+
+@ArgsType()
+export class SitePostsArgs extends PaginationArgs {
+  @Field({ nullable: true })
+  drafts: boolean
+}
+
+@ArgsType()
+export class SiteArgs {
+  @Field()
+  domain: string
 }
