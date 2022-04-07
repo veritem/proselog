@@ -13,6 +13,9 @@ export const getGuard = <TRequireAuth extends boolean>(
 
   const allow = {
     site: {
+      get(site: Partial<DB_Site>) {
+        return !!site.id
+      },
       update(site: Partial<DB_Site>) {
         return user && site.userId === user.id
       },

@@ -1,6 +1,7 @@
 import { type Context, GqlContext } from "$server/decorators"
 import { getGuard } from "$server/guard"
 import { prisma } from "$server/prisma"
+import { checkSubdomain } from "$server/services/site.service"
 import { ApolloError } from "apollo-server-core"
 import { Args, Mutation, Query, Resolver } from "type-graphql"
 import {
@@ -12,26 +13,13 @@ import {
 
 @Resolver((of) => Site)
 export default class SiteResolver {
-  @Query((returns) => [Site])
-  async getSites(@GqlContext() ctx: Context) {
-    const guard = getGuard(ctx, { requireAuth: true })
-
-    const sites = await prisma.site.findMany({
-      where: {
-        userId: guard.user.id,
-        deletedAt: null,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    })
-
-    return sites
-  }
-
   @Mutation((returns) => Site)
   async createSite(@GqlContext() ctx: Context, @Args() args: CreateSiteArgs) {
     const guard = getGuard(ctx, { requireAuth: true })
+
+    await checkSubdomain({
+      subdomain: args.subdomain,
+    })
 
     const site = await prisma.site.create({
       data: {
@@ -63,6 +51,13 @@ export default class SiteResolver {
     }
 
     guard.allow.ANY([() => guard.allow.site.update(site)])
+
+    if (args.subdomain) {
+      await checkSubdomain({
+        subdomain: args.subdomain,
+        updatingSiteId: site.id,
+      })
+    }
 
     const updated = await prisma.site.update({
       where: {

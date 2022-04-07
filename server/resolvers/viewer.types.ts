@@ -1,10 +1,10 @@
-import { ObjectType, Field, Int } from "type-graphql"
+import { ObjectType, Field, Int, ArgsType } from "type-graphql"
 import * as isoDate from "graphql-iso-date"
 
 @ObjectType()
 export class Viewer {
-  @Field((type) => Int)
-  id: number
+  @Field()
+  id: string
 
   @Field()
   name: string
@@ -23,4 +23,10 @@ export class Viewer {
 
   @Field((type) => isoDate.GraphQLDateTime)
   updatedAt: Date
+}
+
+@ArgsType()
+export class GetSiteBySubdomainArgs {
+  @Field()
+  subdomain: string
 }
