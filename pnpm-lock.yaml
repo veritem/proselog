@@ -11,6 +11,7 @@ specifiers:
   '@prisma/client': 3.11.0
   '@types/cookie': ^0.4.1
   '@types/cors': 2.8.12
+  '@types/graphql-iso-date': ^3.4.0
   '@types/node': 17.0.21
   '@types/react': 17.0.40
   '@types/react-dom': 17.0.13
@@ -22,6 +23,7 @@ specifiers:
   cors: 2.8.5
   dayjs: ^1.11.0
   graphql: 15.8.0
+  graphql-iso-date: ^3.6.1
   husky: 7.0.4
   jose: ^4.6.0
   lint-staged: 12.3.6
@@ -51,6 +53,7 @@ dependencies:
   cors: 2.8.5
   dayjs: 1.11.0
   graphql: 15.8.0
+  graphql-iso-date: 3.6.1_graphql@15.8.0
   jose: 4.6.0
   micro: 9.3.4
   nanoid: 3.3.2
@@ -71,6 +74,7 @@ devDependencies:
   '@graphql-codegen/typescript-urql': 3.5.6_graphql@15.8.0
   '@types/cookie': 0.4.1
   '@types/cors': 2.8.12
+  '@types/graphql-iso-date': 3.4.0
   '@types/node': 17.0.21
   '@types/react': 17.0.40
   '@types/react-dom': 17.0.13
@@ -1468,6 +1472,12 @@ packages:
       '@types/node': 17.0.21
     dev: false
 
+  /@types/graphql-iso-date/3.4.0:
+    resolution: {integrity: sha512-V3jITHTsoI2E8TGt9+/HPDz6LWt3z9/HYnPJYWI6WwiLRexsngg7KzaQlCgQkA4jkEbGPROUD0hJFc9F02W9WA==}
+    dependencies:
+      graphql: 15.8.0
+    dev: true
+
   /@types/js-yaml/4.0.4:
     resolution: {integrity: sha512-AuHubXUmg0AzkXH0Mx6sIxeY/1C110mm/EkE/gB1sTRz3h2dao2W/63q42SlVST+lICxz5Oki2hzYA6+KnnieQ==}
     dev: true
@@ -2799,6 +2809,14 @@ packages:
       - utf-8-validate
     dev: true
 
+  /graphql-iso-date/3.6.1_graphql@15.8.0:
+    resolution: {integrity: sha512-AwFGIuYMJQXOEAgRlJlFL4H1ncFM8n8XmoVDTNypNOZyQ8LFDG2ppMFlsS862BSTCDcSUfHp8PD3/uJhv7t59Q==}
+    peerDependencies:
+      graphql: ^0.5.0 || ^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0
+    dependencies:
+      graphql: 15.8.0
+    dev: false
+
   /graphql-query-complexity/0.7.2_graphql@15.8.0:
     resolution: {integrity: sha512-+VgmrfxGEjHI3zuojWOR8bsz7Ycz/BZjNjxnlUieTz5DsB92WoIrYCSZdWG7UWZ3rfcA1Gb2Nf+wB80GsaZWuQ==}
     peerDependencies:
@@ -2858,7 +2876,6 @@ packages:
   /graphql/15.8.0:
     resolution: {integrity: sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw==}
     engines: {node: '>= 10.x'}
-    dev: false
 
   /has-ansi/2.0.0:
     resolution: {integrity: sha1-NPUEnOHs3ysGSa8+8k5F7TVBbZE=}

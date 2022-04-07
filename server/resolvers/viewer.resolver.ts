@@ -1,34 +1,14 @@
-import { Field, Int, ObjectType, Query, Resolver } from "type-graphql"
+import { Query, Resolver } from "type-graphql"
 import { GqlContext } from "$server/decorators"
 import type { Context } from "$server/decorators"
 import { getGuard } from "$server/guard"
-
-@ObjectType()
-class Viewer {
-  @Field((type) => Int)
-  id: number
-
-  @Field()
-  name: string
-
-  @Field()
-  email: string
-
-  @Field({ nullable: true })
-  image?: string
-
-  @Field()
-  createdAt: Date
-
-  @Field()
-  updatedAt: Date
-}
+import { Viewer } from "./viewer.types"
 
 @Resolver((of) => Viewer)
 export default class ViewerResolver {
-  @Query((returns) => Viewer)
+  @Query((returns) => Viewer, { nullable: true })
   async viewer(@GqlContext() ctx: Context) {
-    const { user } = getGuard(ctx, { requireAuth: true })
+    const { user } = getGuard(ctx)
     return user
   }
 }

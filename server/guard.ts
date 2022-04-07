@@ -1,18 +1,39 @@
+import { Site as DB_Site } from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
 import { Context } from "./decorators"
 import { AuthUser } from "./auth"
 
 export const getGuard = <TRequireAuth extends boolean>(
-  ctx: Context,
+  { user }: Context,
   { requireAuth }: { requireAuth?: TRequireAuth } = {},
 ) => {
-  if (requireAuth && !ctx.user) {
+  if (requireAuth && !user) {
     throw new ApolloError("login required")
   }
 
+  const allow = {
+    site: {
+      update(site: Partial<DB_Site>) {
+        return user && site.userId === user.id
+      },
+      delete(site: Partial<DB_Site>) {
+        return user && site.userId === user.id
+      },
+    },
+    ANY(rules: (() => boolean | null | undefined)[]) {
+      for (const rule of rules) {
+        if (rule()) {
+          return
+        }
+      }
+      throw new ApolloError("permission denied")
+    },
+  }
+
   return {
-    user: ctx.user as TRequireAuth extends true
+    user: user as TRequireAuth extends true
       ? AuthUser
       : AuthUser | null | undefined,
+    allow,
   }
 }
