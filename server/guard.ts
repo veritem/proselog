@@ -32,9 +32,15 @@ export const getGuard = <TRequireAuth extends boolean>(
           ? user?.sites.some((site) => site.id === post.siteId)
           : true
       },
+      update(site: Partial<DB_Site>) {
+        return allow.site.update(site)
+      },
       list(type: "public" | "all", site: Partial<DB_Site>) {
         if (type === "all") return allow.post.create(site)
         return true
+      },
+      delete(site: Partial<DB_Site>) {
+        return allow.site.delete(site)
       },
     },
     ANY(rules: (() => boolean | null | undefined)[]) {

@@ -49,3 +49,20 @@ export class PostBySlugArgs {
   @Field()
   slug: string
 }
+
+@ArgsType()
+export class UpdatePostArgs {
+  @Field()
+  id: string
+
+  @Field({ nullable: true })
+  title?: string
+
+  @Field({ nullable: true })
+  content?: string
+}
+
+@ArgsType()
+export class DeletePostArgs {
+  id: string
+}

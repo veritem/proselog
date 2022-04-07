@@ -11,7 +11,13 @@ import {
   Resolver,
   Root,
 } from "type-graphql"
-import { CreatePostArgs, Post, PostBySlugArgs } from "./post.types"
+import {
+  CreatePostArgs,
+  DeletePostArgs,
+  Post,
+  PostBySlugArgs,
+  UpdatePostArgs,
+} from "./post.types"
 import { Site } from "./site.types"
 
 @Resolver((of) => Post)
@@ -65,6 +71,64 @@ export default class PostResolver {
     })
 
     return post
+  }
+
+  @Mutation((returns) => Post)
+  async updatePost(@GqlContext() ctx: Context, @Args() args: UpdatePostArgs) {
+    const guard = getGuard(ctx, { requireAuth: true })
+
+    const post = await prisma.post.findUnique({
+      where: {
+        id: args.id,
+      },
+      include: {
+        site: true,
+      },
+    })
+
+    if (!post) {
+      throw new ApolloError(`Post not found`)
+    }
+
+    guard.allow.ANY([() => guard.allow.post.update(post.site)])
+
+    return prisma.post.update({
+      where: {
+        id: post.id,
+      },
+      data: {
+        title: args.title,
+        content: args.content,
+      },
+    })
+  }
+
+  @Mutation((returns) => Boolean)
+  async deletePost(@GqlContext() ctx: Context, @Args() args: DeletePostArgs) {
+    const guard = getGuard(ctx, { requireAuth: true })
+
+    const post = await prisma.post.findUnique({
+      where: {
+        id: args.id,
+      },
+      include: {
+        site: true,
+      },
+    })
+
+    if (!post) {
+      throw new ApolloError(`Post not found`)
+    }
+
+    guard.allow.ANY([() => guard.allow.post.delete(post.site)])
+
+    await prisma.post.delete({
+      where: {
+        id: post.id,
+      },
+    })
+
+    return true
   }
 
   @FieldResolver((returns) => Site)
