@@ -50,7 +50,7 @@ export class DeleteSiteArgs {
 @ArgsType()
 export class SitePostsArgs extends PaginationArgs {
   @Field({ nullable: true })
-  drafts: boolean
+  includeDrafts: boolean
 }
 
 @ArgsType()

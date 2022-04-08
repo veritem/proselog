@@ -28,9 +28,11 @@ export const getGuard = <TRequireAuth extends boolean>(
         return allow.site.update(site)
       },
       read(post: Partial<DB_Post>) {
-        return post.draft
-          ? user?.sites.some((site) => site.id === post.siteId)
-          : true
+        const isPublished =
+          post.published && post.publishedAt && post.publishedAt <= new Date()
+        return isPublished
+          ? true
+          : user?.sites.some((site) => site.id === post.siteId)
       },
       update(site: Partial<DB_Site>) {
         return allow.site.update(site)

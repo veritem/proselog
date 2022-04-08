@@ -31,6 +31,12 @@ export class Post {
   @Field((type) => isoDate.GraphQLDateTime)
   updatedAt: Date
 
+  @Field((type) => isoDate.GraphQLDateTime)
+  publishedAt: Date
+
+  @Field()
+  published: boolean
+
   @Field()
   siteId: string
 }

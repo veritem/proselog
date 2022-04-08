@@ -137,13 +137,19 @@ export default class SiteResolver {
     const guard = getGuard(ctx)
 
     guard.allow.ANY([
-      () => guard.allow.post.list(args.drafts ? "all" : "public", site),
+      () => guard.allow.post.list(args.includeDrafts ? "all" : "public", site),
     ])
+
+    const now = new Date()
 
     const [posts, total] = await Promise.all([
       prisma.post.findMany({
         where: {
           siteId: site.id,
+          published: true,
+          publishedAt: {
+            lte: now,
+          },
         },
         orderBy: {
           createdAt: "desc",
