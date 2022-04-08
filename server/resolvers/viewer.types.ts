@@ -32,10 +32,22 @@ export class GetSiteBySubdomainArgs {
 }
 
 @ArgsType()
-export class UpdateViewerProfileArgs {
+export class UpdateUserProfileArgs {
+  @Field()
+  userId: string
+
   @Field({ nullable: true })
   name?: string
 
   @Field({ nullable: true })
   avatar?: string
+}
+
+@ArgsType()
+export class UpdateUserEmailArgs {
+  @Field()
+  userId: string
+
+  @Field()
+  email: string
 }
