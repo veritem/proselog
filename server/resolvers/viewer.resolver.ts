@@ -1,8 +1,19 @@
-import { Args, FieldResolver, Query, Resolver, Root } from "type-graphql"
+import {
+  Args,
+  FieldResolver,
+  Query,
+  Resolver,
+  Root,
+  Mutation,
+} from "type-graphql"
 import { GqlContext } from "$server/decorators"
 import type { Context } from "$server/decorators"
 import { getGuard } from "$server/guard"
-import { GetSiteBySubdomainArgs, Viewer } from "./viewer.types"
+import {
+  GetSiteBySubdomainArgs,
+  UpdateViewerProfileArgs,
+  Viewer,
+} from "./viewer.types"
 import { prisma } from "$server/prisma"
 import { Site } from "./site.types"
 
@@ -48,5 +59,25 @@ export default class ViewerResolver {
     guard.allow.ANY([() => guard.allow.site.read(site)])
 
     return site
+  }
+
+  @Mutation((returns) => Viewer)
+  async updateViewerProfile(
+    @GqlContext() ctx: Context,
+    @Args() args: UpdateViewerProfileArgs,
+  ) {
+    const guard = getGuard(ctx, { requireAuth: true })
+
+    guard.allow.ANY([() => guard.allow.user.update({ userId: guard.user.id })])
+
+    return prisma.user.update({
+      where: {
+        id: guard.user.id,
+      },
+      data: {
+        name: args.name,
+        avatar: args.avatar,
+      },
+    })
   }
 }

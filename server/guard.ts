@@ -45,6 +45,11 @@ export const getGuard = <TRequireAuth extends boolean>(
         return allow.site.delete(site)
       },
     },
+    user: {
+      update(payload: { userId: string }) {
+        return user && user.id === payload.userId
+      },
+    },
     ANY(rules: (() => boolean | null | undefined)[]) {
       for (const rule of rules) {
         if (rule()) {
