@@ -1,3 +1,71 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.container {
+  @apply max-w-screen-xl;
+  @apply mx-auto;
+}
+
+.button {
+  @apply inline-flex;
+  @apply items-center;
+  @apply justify-center;
+  @apply h-12;
+  @apply px-5;
+  @apply rounded-lg;
+
+  @apply transition-transform;
+  @apply active:scale-105;
+}
+
+.button.is-loading:before {
+  margin-right: 0.5rem;
+  height: 1rem;
+  width: 1rem;
+  border-radius: 9999px;
+  border-width: 2px;
+  content: "";
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-bottom-color: currentColor;
+  border-right-color: currentColor;
+  @apply animate-spin;
+}
+
+.button.is-block {
+  @apply w-full;
+}
+
+.button.is-primary {
+  @apply bg-indigo-500;
+  @apply text-white;
+}
+
+.button.is-ghost {
+  @apply hover:bg-zinc-100;
+}
+
+.input {
+  @apply border;
+  @apply outline-none;
+  @apply rounded-lg;
+  @apply px-5;
+  @apply h-12;
+  @apply inline-flex;
+  @apply items-center;
+  @apply focus:ring-2;
+  @apply focus:ring-indigo-400;
+  @apply focus:border-indigo-500;
+}
+
+.input.is-block {
+  @apply w-full;
+}
+
+.label {
+  @apply block;
+  @apply mb-1;
+  @apply text-sm;
+  @apply font-medium;
+}

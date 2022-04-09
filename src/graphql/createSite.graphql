@@ -1,0 +1,7 @@
+mutation createSite($name: String!, $subdomain: String!) {
+  createSite(name: $name, subdomain: $subdomain) {
+    id
+    name
+    subdomain
+  }
+}

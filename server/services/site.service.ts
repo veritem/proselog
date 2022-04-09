@@ -17,3 +17,18 @@ export const checkSubdomain = async ({
     throw new Error(`Subdomain already taken`)
   }
 }
+
+export const getUserLastActiveSite = async (userId: string) => {
+  const sites = await prisma.site.findMany({
+    where: {
+      userId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  })
+
+  if (sites.length === 0) return null
+
+  return sites[0]
+}
