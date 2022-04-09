@@ -151,6 +151,17 @@ export type ViewerSiteBySubdomainArgs = {
   subdomain: Scalars["String"]
 }
 
+export type CreatePostMutationVariables = Exact<{
+  siteId: Scalars["String"]
+  title: Scalars["String"]
+  content: Scalars["String"]
+}>
+
+export type CreatePostMutation = {
+  __typename?: "Mutation"
+  createPost: { __typename?: "Post"; id: string }
+}
+
 export type CreateSiteMutationVariables = Exact<{
   name: Scalars["String"]
   subdomain: Scalars["String"]
@@ -175,6 +186,119 @@ export type RequestLoginLinkMutation = {
   requestLoginLink: boolean
 }
 
+export type SiteBySubdomainQueryVariables = Exact<{
+  subdomain: Scalars["String"]
+}>
+
+export type SiteBySubdomainQuery = {
+  __typename?: "Query"
+  viewer?: {
+    __typename?: "Viewer"
+    siteBySubdomain?: { __typename?: "Site"; id: string } | null
+  } | null
+}
+
+export const CreatePostDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "createPost" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "siteId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "title" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "content" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "createPost" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "siteId" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "siteId" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "title" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "title" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "content" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "content" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useCreatePostMutation() {
+  return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(
+    CreatePostDocument,
+  )
+}
 export const CreateSiteDocument = {
   kind: "Document",
   definitions: [
@@ -304,4 +428,73 @@ export function useRequestLoginLinkMutation() {
     RequestLoginLinkMutation,
     RequestLoginLinkMutationVariables
   >(RequestLoginLinkDocument)
+}
+export const SiteBySubdomainDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "siteBySubdomain" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "subdomain" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "viewer" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "siteBySubdomain" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "subdomain" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "subdomain" },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useSiteBySubdomainQuery(
+  options: Omit<Urql.UseQueryArgs<SiteBySubdomainQueryVariables>, "query">,
+) {
+  return Urql.useQuery<SiteBySubdomainQuery>({
+    query: SiteBySubdomainDocument,
+    ...options,
+  })
 }

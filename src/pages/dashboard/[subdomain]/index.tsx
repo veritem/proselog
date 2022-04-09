@@ -1,5 +1,5 @@
-import { AppLayout } from "$src/components/app/AppLayout"
+import { DashboardLayout } from "$src/components/app/DashboardLayout"
 
 export default function SubdomainIndex() {
-  return <AppLayout>hi</AppLayout>
+  return <DashboardLayout />
 }
