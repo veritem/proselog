@@ -197,6 +197,30 @@ export type PostForEditQuery = {
   }
 }
 
+export type PostsForDashboardQueryVariables = Exact<{
+  domain: Scalars["String"]
+  includeDrafts?: InputMaybe<Scalars["Boolean"]>
+}>
+
+export type PostsForDashboardQuery = {
+  __typename?: "Query"
+  site: {
+    __typename?: "Site"
+    id: string
+    posts: {
+      __typename?: "PostsConnection"
+      nodes: Array<{
+        __typename?: "Post"
+        id: string
+        title: string
+        content: string
+        publishedAt: any
+        published: boolean
+      }>
+    }
+  }
+}
+
 export type RequestLoginLinkMutationVariables = Exact<{
   email: Scalars["String"]
 }>
@@ -472,6 +496,122 @@ export function usePostForEditQuery(
 ) {
   return Urql.useQuery<PostForEditQuery>({
     query: PostForEditDocument,
+    ...options,
+  })
+}
+export const PostsForDashboardDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "postsForDashboard" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "domain" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "includeDrafts" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "site" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "domain" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "domain" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "posts" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "includeDrafts" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "includeDrafts" },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "nodes" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "title" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "content" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "publishedAt" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "published" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function usePostsForDashboardQuery(
+  options: Omit<Urql.UseQueryArgs<PostsForDashboardQueryVariables>, "query">,
+) {
+  return Urql.useQuery<PostsForDashboardQuery>({
+    query: PostsForDashboardDocument,
     ...options,
   })
 }

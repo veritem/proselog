@@ -1,0 +1,14 @@
+query postsForDashboard($domain: String!, $includeDrafts: Boolean) {
+  site(domain: $domain) {
+    id
+    posts(includeDrafts: $includeDrafts) {
+      nodes {
+        id
+        title
+        content
+        publishedAt
+        published
+      }
+    }
+  }
+}

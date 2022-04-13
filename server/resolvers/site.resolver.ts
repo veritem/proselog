@@ -2,6 +2,7 @@ import { type Context, GqlContext } from "$server/decorators"
 import { getGuard } from "$server/guard"
 import { prisma } from "$server/prisma"
 import { checkSubdomain } from "$server/services/site.service"
+import { Prisma } from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
 import {
   Args,
@@ -142,22 +143,29 @@ export default class SiteResolver {
 
     const now = new Date()
 
+    const where: Prisma.PostWhereInput = {
+      siteId: site.id,
+    }
+    if (args.includeDrafts) {
+    } else {
+      where.published = true
+      where.publishedAt = {
+        lte: now,
+      }
+    }
+
     const [posts, total] = await Promise.all([
       prisma.post.findMany({
-        where: {
-          siteId: site.id,
-          published: true,
-          publishedAt: {
-            lte: now,
-          },
-        },
+        where,
         orderBy: {
           createdAt: "desc",
         },
         take: args.take + 1,
-        cursor: {
-          id: args.cursor,
-        },
+        cursor: args.cursor
+          ? {
+              id: args.cursor,
+            }
+          : undefined,
       }),
       await prisma.post.count({
         where: {

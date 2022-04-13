@@ -81,3 +81,27 @@
   @apply text-sm;
   @apply font-medium;
 }
+
+.post-status-circle {
+  @apply h-[15px] w-[15px];
+  @apply bg-green-500;
+  @apply inline-block;
+  @apply rounded-full;
+  @apply relative;
+}
+
+.post-status-circle:before {
+  content: "";
+  @apply absolute;
+  @apply left-1/2;
+  @apply top-1/2;
+  @apply bg-white;
+  @apply h-[10px] w-[10px];
+  @apply rounded-full;
+  @apply -translate-x-1/2;
+  @apply -translate-y-1/2;
+}
+
+.post-status-circle.is-draft {
+  @apply bg-gray-500;
+}
