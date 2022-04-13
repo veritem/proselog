@@ -6,6 +6,12 @@
   --font-fans: theme("fontFamily.sans");
 }
 
+*,
+*:after,
+*:before {
+  @apply border-zinc-100;
+}
+
 .container {
   @apply max-w-screen-xl;
   @apply mx-auto;
