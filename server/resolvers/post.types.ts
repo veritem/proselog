@@ -20,6 +20,9 @@ export class Post {
   id: string
 
   @Field()
+  slug: string
+
+  @Field()
   title: string
 
   @Field()
@@ -51,9 +54,9 @@ export class PostsConnection {
 }
 
 @ArgsType()
-export class PostBySlugArgs {
+export class PostArgs {
   @Field()
-  slug: string
+  slugOrId: string
 }
 
 @ArgsType()
@@ -66,6 +69,12 @@ export class UpdatePostArgs {
 
   @Field({ nullable: true })
   content?: string
+
+  @Field({ nullable: true })
+  published?: boolean
+
+  @Field((type) => isoDate.GraphQLDateTime, { nullable: true })
+  publishedAt?: Date
 }
 
 @ArgsType()

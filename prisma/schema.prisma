@@ -50,18 +50,19 @@ model Site {
 }
 
 model Post {
-  id          String    @id @default(uuid())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  publishedAt DateTime  @default(now())
-  published   Boolean   @default(false)
-  title       String
-  content     String
-  format      String    @default("markdown")
-  slug        String    @unique
-  site        Site      @relation(name: "SitePosts", fields: [siteId], references: [id])
-  siteId      String
-  tags        PostTag[] @relation(name: "PostTags")
+  id               String    @id @default(uuid())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  contentUpdatedAt DateTime  @default(now())
+  publishedAt      DateTime  @default(now())
+  published        Boolean   @default(false)
+  title            String
+  content          String
+  format           String    @default("markdown")
+  slug             String    @unique
+  site             Site      @relation(name: "SitePosts", fields: [siteId], references: [id])
+  siteId           String
+  tags             PostTag[] @relation(name: "PostTags")
 
   @@map("posts")
 }

@@ -1,0 +1,17 @@
+mutation updatePost(
+  $id: String!
+  $title: String
+  $content: String
+  $published: Boolean
+  $publishedAt: DateTime
+) {
+  updatePost(
+    id: $id
+    title: $title
+    content: $content
+    published: $published
+    publishedAt: $publishedAt
+  ) {
+    id
+  }
+}

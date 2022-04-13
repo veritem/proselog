@@ -1,0 +1,10 @@
+query postForEdit($slugOrId: String!) {
+  post(slugOrId: $slugOrId) {
+    id
+    slug
+    title
+    content
+    publishedAt
+    published
+  }
+}

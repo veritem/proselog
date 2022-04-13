@@ -58,6 +58,8 @@ export type MutationRequestLoginLinkArgs = {
 export type MutationUpdatePostArgs = {
   content?: InputMaybe<Scalars["String"]>
   id: Scalars["String"]
+  published?: InputMaybe<Scalars["Boolean"]>
+  publishedAt?: InputMaybe<Scalars["DateTime"]>
   title?: InputMaybe<Scalars["String"]>
 }
 
@@ -93,6 +95,7 @@ export type Post = {
   publishedAt: Scalars["DateTime"]
   site: Site
   siteId: Scalars["String"]
+  slug: Scalars["String"]
   title: Scalars["String"]
   updatedAt: Scalars["DateTime"]
 }
@@ -105,13 +108,13 @@ export type PostsConnection = {
 
 export type Query = {
   __typename?: "Query"
-  postBySlug: Post
+  post: Post
   site: Site
   viewer?: Maybe<Viewer>
 }
 
-export type QueryPostBySlugArgs = {
-  slug: Scalars["String"]
+export type QueryPostArgs = {
+  slugOrId: Scalars["String"]
 }
 
 export type QuerySiteArgs = {
@@ -177,6 +180,23 @@ export type CreateSiteMutation = {
   }
 }
 
+export type PostForEditQueryVariables = Exact<{
+  slugOrId: Scalars["String"]
+}>
+
+export type PostForEditQuery = {
+  __typename?: "Query"
+  post: {
+    __typename?: "Post"
+    id: string
+    slug: string
+    title: string
+    content: string
+    publishedAt: any
+    published: boolean
+  }
+}
+
 export type RequestLoginLinkMutationVariables = Exact<{
   email: Scalars["String"]
 }>
@@ -196,6 +216,19 @@ export type SiteBySubdomainQuery = {
     __typename?: "Viewer"
     siteBySubdomain?: { __typename?: "Site"; id: string } | null
   } | null
+}
+
+export type UpdatePostMutationVariables = Exact<{
+  id: Scalars["String"]
+  title?: InputMaybe<Scalars["String"]>
+  content?: InputMaybe<Scalars["String"]>
+  published?: InputMaybe<Scalars["Boolean"]>
+  publishedAt?: InputMaybe<Scalars["DateTime"]>
+}>
+
+export type UpdatePostMutation = {
+  __typename?: "Mutation"
+  updatePost: { __typename?: "Post"; id: string }
 }
 
 export const CreatePostDocument = {
@@ -377,6 +410,71 @@ export function useCreateSiteMutation() {
     CreateSiteDocument,
   )
 }
+export const PostForEditDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "postForEdit" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "slugOrId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "post" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "slugOrId" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "slugOrId" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "content" } },
+                { kind: "Field", name: { kind: "Name", value: "publishedAt" } },
+                { kind: "Field", name: { kind: "Name", value: "published" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function usePostForEditQuery(
+  options: Omit<Urql.UseQueryArgs<PostForEditQueryVariables>, "query">,
+) {
+  return Urql.useQuery<PostForEditQuery>({
+    query: PostForEditDocument,
+    ...options,
+  })
+}
 export const RequestLoginLinkDocument = {
   kind: "Document",
   definitions: [
@@ -497,4 +595,125 @@ export function useSiteBySubdomainQuery(
     query: SiteBySubdomainDocument,
     ...options,
   })
+}
+export const UpdatePostDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "updatePost" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "title" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "content" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "published" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "publishedAt" },
+          },
+          type: {
+            kind: "NamedType",
+            name: { kind: "Name", value: "DateTime" },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updatePost" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "id" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "title" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "title" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "content" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "content" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "published" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "published" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "publishedAt" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "publishedAt" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useUpdatePostMutation() {
+  return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(
+    UpdatePostDocument,
+  )
 }

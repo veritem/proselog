@@ -1,67 +1,41 @@
-import { Button } from "$src/components/ui/Button"
 import {
   useCreatePostMutation,
   useSiteBySubdomainQuery,
 } from "$src/generated/graphql"
-import { useFormik } from "formik"
 import { useRouter } from "next/router"
+import { useEffect } from "react"
 
 export default function NewPostPage() {
   const router = useRouter()
   const subdomain = router.query.subdomain as string
-  const [, createPostMutation] = useCreatePostMutation()
-  const [siteBySubdomain] = useSiteBySubdomainQuery({
+  const [siteBySubdomainResult] = useSiteBySubdomainQuery({
     variables: {
-      subdomain: subdomain,
+      subdomain,
     },
-    pause: !subdomain,
   })
+  const [, createPostMutation] = useCreatePostMutation()
 
-  const form = useFormik({
-    initialValues: {
-      title: "",
-      content: "",
-    },
-    async onSubmit(values) {
-      const { error } = await createPostMutation({
-        siteId: siteBySubdomain.data?.viewer?.siteBySubdomain?.id!,
-        title: values.title,
-        content: values.content,
+  useEffect(() => {
+    if (siteBySubdomainResult.data?.viewer?.siteBySubdomain) {
+      createPostMutation({
+        title: "Untitled",
+        content: "",
+        siteId: siteBySubdomainResult.data.viewer.siteBySubdomain.id,
+      }).then((res) => {
+        if (res.error) {
+          alert(res.error)
+        } else if (res.data) {
+          router.push(
+            `/dashboard/${subdomain}/edit-post/${res.data.createPost.id}`,
+          )
+        }
       })
-      if (error) {
-        alert(error)
-      } else {
-        alert("success")
-      }
-    },
-  })
+    }
+  }, [siteBySubdomainResult.data])
 
   return (
-    <div className="max-w-2xl mx-auto py-5">
-      <form onSubmit={form.handleSubmit}>
-        <div>
-          <input
-            type="text"
-            name="title"
-            value={form.values.title}
-            onChange={form.handleChange}
-            className="border-none text-xl w-full focus:outline-none"
-            placeholder="Title goes here.."
-          />
-        </div>
-        <div className="mt-5">
-          <textarea
-            className="border w-full"
-            name="content"
-            value={form.values.content}
-            onChange={form.handleChange}
-            rows={30}
-          ></textarea>
-        </div>
-        <div className="mt-5">
-          <Button type="submit">Save</Button>
-        </div>
-      </form>
+    <div className="min-h-screen flex items-center justify-center">
+      <span>Loading...</span>
     </div>
   )
 }

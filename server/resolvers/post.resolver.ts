@@ -11,11 +11,12 @@ import {
   Resolver,
   Root,
 } from "type-graphql"
+import { validate as validateUUID } from "uuid"
 import {
   CreatePostArgs,
   DeletePostArgs,
   Post,
-  PostBySlugArgs,
+  PostArgs,
   UpdatePostArgs,
 } from "./post.types"
 import { Site } from "./site.types"
@@ -23,13 +24,16 @@ import { Site } from "./site.types"
 @Resolver((of) => Post)
 export default class PostResolver {
   @Query((returns) => Post)
-  async postBySlug(@GqlContext() ctx: Context, @Args() args: PostBySlugArgs) {
+  async post(@GqlContext() ctx: Context, @Args() args: PostArgs) {
     const guard = getGuard(ctx)
 
+    const isUUID = validateUUID(args.slugOrId)
     const post = await prisma.post.findUnique({
-      where: {
-        slug: args.slug,
-      },
+      where: isUUID
+        ? {
+            id: args.slugOrId,
+          }
+        : { slug: args.slugOrId },
     })
 
     if (!post) {
@@ -99,6 +103,8 @@ export default class PostResolver {
       data: {
         title: args.title,
         content: args.content,
+        published: args.published,
+        publishedAt: args.publishedAt,
       },
     })
   }

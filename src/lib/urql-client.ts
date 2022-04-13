@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 import {
   Client,
   createClient,
@@ -6,7 +6,7 @@ import {
   cacheExchange,
   fetchExchange,
   ssrExchange,
-} from 'urql'
+} from "urql"
 
 export const createUrqlClient = () => {
   const ssr = ssrExchange({
@@ -15,8 +15,9 @@ export const createUrqlClient = () => {
   return createClient({
     url: `/api/graphql`,
     fetchOptions: {
-      credentials: 'include',
+      credentials: "include",
     },
+    requestPolicy: "cache-and-network",
     exchanges: [dedupExchange, cacheExchange, ssr, fetchExchange],
   })
 }
