@@ -53,7 +53,6 @@ export const DashboardLayout: React.FC = ({ children }) => {
         </div>
         <div className="px-6 space-y-1">
           {links.map((link) => {
-            console.log(router.asPath, link.href)
             const active = router.asPath === link.href
             return (
               <Link href={link.href} key={link.href}>
