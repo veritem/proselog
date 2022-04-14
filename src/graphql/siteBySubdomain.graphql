@@ -2,6 +2,7 @@ query siteBySubdomain($subdomain: String!) {
   viewer {
     siteBySubdomain(subdomain: $subdomain) {
       id
+      name
     }
   }
 }

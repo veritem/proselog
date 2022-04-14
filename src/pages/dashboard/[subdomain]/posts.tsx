@@ -31,6 +31,11 @@ export default function DashboardPostsPage() {
 
   return (
     <DashboardLayout>
+      {posts && posts.nodes.length === 0 && (
+        <div className="my-20 text-center text-3xl text-zinc-400">
+          No Posts Yet.
+        </div>
+      )}
       {posts?.nodes.map((post) => {
         return (
           <Link

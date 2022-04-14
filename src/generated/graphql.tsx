@@ -238,7 +238,7 @@ export type SiteBySubdomainQuery = {
   __typename?: "Query"
   viewer?: {
     __typename?: "Viewer"
-    siteBySubdomain?: { __typename?: "Site"; id: string } | null
+    siteBySubdomain?: { __typename?: "Site"; id: string; name: string } | null
   } | null
 }
 
@@ -253,6 +253,17 @@ export type UpdatePostMutationVariables = Exact<{
 export type UpdatePostMutation = {
   __typename?: "Mutation"
   updatePost: { __typename?: "Post"; id: string }
+}
+
+export type UpdateSiteMutationVariables = Exact<{
+  id: Scalars["String"]
+  name?: InputMaybe<Scalars["String"]>
+  subdomain?: InputMaybe<Scalars["String"]>
+}>
+
+export type UpdateSiteMutation = {
+  __typename?: "Mutation"
+  updateSite: { __typename?: "Site"; id: string }
 }
 
 export const CreatePostDocument = {
@@ -716,6 +727,7 @@ export const SiteBySubdomainDocument = {
                     kind: "SelectionSet",
                     selections: [
                       { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
                     ],
                   },
                 },
@@ -855,5 +867,88 @@ export const UpdatePostDocument = {
 export function useUpdatePostMutation() {
   return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(
     UpdatePostDocument,
+  )
+}
+export const UpdateSiteDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "updateSite" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "subdomain" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateSite" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "id" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "name" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "name" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "subdomain" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "subdomain" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useUpdateSiteMutation() {
+  return Urql.useMutation<UpdateSiteMutation, UpdateSiteMutationVariables>(
+    UpdateSiteDocument,
   )
 }

@@ -3,7 +3,9 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import React from "react"
 
-export const DashboardLayout: React.FC = ({ children }) => {
+export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({
+  children,
+}) => {
   const router = useRouter()
   const subdomain = router.query.subdomain as string
   const links = [
