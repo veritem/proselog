@@ -10,6 +10,7 @@ declare namespace NodeJS {
     AUTH_COOKIE_NAME: string
     AUTH_COOKIE_DOMAIN?: string
     AUTH_SECRET: string
+    OUR_DOMAIN: string
   }
 }
 

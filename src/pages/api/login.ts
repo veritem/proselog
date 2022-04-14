@@ -1,6 +1,7 @@
 import { setAuthCookie } from "$server/auth"
 import { getJWT } from "$server/jwt"
 import { prisma } from "$server/prisma"
+import { nanoid } from "nanoid"
 import { NextApiHandler } from "next"
 
 const handler: NextApiHandler = async (req, res) => {
@@ -32,6 +33,7 @@ const handler: NextApiHandler = async (req, res) => {
       data: {
         email: loginToken.email,
         name: loginToken.email.split("@")[0],
+        apiToken: `PK_${nanoid(30)}`,
       },
     })
   }

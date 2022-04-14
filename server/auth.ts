@@ -19,6 +19,37 @@ export type AuthUser = {
   }[]
 }
 
+const findUserFromToken = async (token: string) => {
+  if (token.startsWith("PK_")) {
+    return prisma.user.findUnique({
+      where: {
+        apiToken: token,
+      },
+      include: {
+        sites: true,
+      },
+    })
+  }
+
+  const payload = await verifyJWT(token)
+  if (!payload) return null
+
+  return prisma.user.findUnique({
+    where: {
+      id: payload.userId,
+    },
+    include: {
+      sites: {
+        select: {
+          id: true,
+          name: true,
+          subdomain: true,
+        },
+      },
+    },
+  })
+}
+
 export const getAuthUser = async (
   req: IncomingMessage,
 ): Promise<AuthUser | null> => {
@@ -27,31 +58,18 @@ export const getAuthUser = async (
     token = Cookie.parse(req.headers.cookie)[process.env.AUTH_COOKIE_NAME]
   }
   if (token) {
-    const payload = await verifyJWT(token)
-    if (!payload) return null
+    const user = await findUserFromToken(token)
 
-    const user = await prisma.user.findUnique({
-      where: {
-        id: payload.userId,
-      },
-      include: {
-        sites: {
-          select: {
-            id: true,
-            name: true,
-            subdomain: true,
-          },
-        },
-      },
-    })
-    if (!user) return null
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      sites: user.sites,
+    if (user) {
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        sites: user.sites,
+      }
     }
   }
+
   return null
 }
 
