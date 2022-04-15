@@ -1,5 +1,5 @@
-query postsForDashboard($domain: String!, $includeDrafts: Boolean) {
-  site(domain: $domain) {
+query postsForDashboard($domainOrSubdomain: String!, $includeDrafts: Boolean) {
+  site(domainOrSubdomain: $domainOrSubdomain) {
     id
     posts(includeDrafts: $includeDrafts) {
       nodes {

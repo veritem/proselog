@@ -8,6 +8,7 @@ import { Popover } from "@headlessui/react"
 import clsx from "clsx"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
+import toast from "react-hot-toast"
 
 const getInputDatetimeValue = (date: Date) => {
   const isoString = date.toISOString()
@@ -55,10 +56,10 @@ export default function EditPostPage() {
         published: form.published,
       })
       if (error) {
-        alert(error)
+        toast.error(error.message)
       } else if (data) {
         onSuccess()
-        alert("success")
+        toast.success("success")
       }
     } finally {
       setFormSubmitting(false)

@@ -1,10 +1,10 @@
 import { Site as DB_Site, Post as DB_Post } from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
-import { Context } from "./decorators"
+import { ContextType } from "./decorators"
 import { AuthUser } from "./auth"
 
 export const getGuard = <TRequireAuth extends boolean>(
-  { user }: Context,
+  { user }: ContextType,
   { requireAuth }: { requireAuth?: TRequireAuth } = {},
 ) => {
   if (requireAuth && !user) {
@@ -21,6 +21,9 @@ export const getGuard = <TRequireAuth extends boolean>(
       },
       delete(site: Partial<DB_Site>) {
         return user && site.userId === user.id
+      },
+      list() {
+        return true
       },
     },
     post: {
@@ -48,6 +51,9 @@ export const getGuard = <TRequireAuth extends boolean>(
     user: {
       update(payload: { userId: string }) {
         return user && user.id === payload.userId
+      },
+      isAuthUser(userId?: string) {
+        return Boolean(userId && userId === user?.id)
       },
     },
     ANY(rules: (() => boolean | null | undefined)[]) {

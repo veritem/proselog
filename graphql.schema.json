@@ -378,7 +378,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updateViewerEmail",
+            "name": "updateUserEmail",
             "description": null,
             "args": [
               {
@@ -419,7 +419,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Viewer",
+                "name": "User",
                 "ofType": null
               }
             },
@@ -427,7 +427,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updateViewerProfile",
+            "name": "updateUserProfile",
             "description": null,
             "args": [
               {
@@ -476,7 +476,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Viewer",
+                "name": "User",
                 "ofType": null
               }
             },
@@ -797,7 +797,7 @@
             "description": null,
             "args": [
               {
-                "name": "domain",
+                "name": "domainOrSubdomain",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -826,12 +826,41 @@
             "deprecationReason": null
           },
           {
+            "name": "user",
+            "description": null,
+            "args": [
+              {
+                "name": "username",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "User",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "viewer",
             "description": null,
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "Viewer",
+              "name": "User",
               "ofType": null
             },
             "isDeprecated": false,
@@ -999,7 +1028,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "Viewer",
+        "name": "User",
         "description": null,
         "fields": [
           {
@@ -1052,7 +1081,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "String",
+              "name": "Boolean",
               "ofType": null
             },
             "isDeprecated": false,
@@ -1091,35 +1120,6 @@
             "deprecationReason": null
           },
           {
-            "name": "siteBySubdomain",
-            "description": null,
-            "args": [
-              {
-                "name": "subdomain",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "OBJECT",
-              "name": "Site",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "sites",
             "description": null,
             "args": [],
@@ -1153,6 +1153,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "username",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               }
             },

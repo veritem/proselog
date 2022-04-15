@@ -4,20 +4,21 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import dayjs from "dayjs"
 import clsx from "clsx"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import toast from "react-hot-toast"
 
 export default function DashboardPostsPage() {
   const router = useRouter()
   const subdomain = router.query.subdomain as string
   const [postsResult] = usePostsForDashboardQuery({
     variables: {
-      domain: subdomain,
+      domainOrSubdomain: subdomain,
       includeDrafts: true,
     },
     pause: !subdomain,
   })
 
-  const posts = postsResult.data?.site.posts
+  const posts = postsResult.data?.site?.posts
   const [selectedPostIds, setSelectedPostIds] = useState<string[]>([])
 
   const toggleSelectedPostId = (id: string) => {

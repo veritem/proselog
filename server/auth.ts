@@ -12,6 +12,7 @@ export type AuthUser = {
   id: string
   name: string
   email: string
+  username: string
   sites: {
     id: string
     name: string
@@ -64,6 +65,7 @@ export const getAuthUser = async (
       return {
         id: user.id,
         name: user.name,
+        username: user.username,
         email: user.email,
         sites: user.sites,
       }

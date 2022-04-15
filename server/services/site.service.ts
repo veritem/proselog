@@ -1,4 +1,5 @@
 import { prisma } from "$server/prisma"
+import { ApolloError } from "apollo-server-core"
 
 export const checkSubdomain = async ({
   subdomain,
@@ -31,4 +32,18 @@ export const getUserLastActiveSite = async (userId: string) => {
   if (sites.length === 0) return null
 
   return sites[0]
+}
+
+export const getSiteByDomainOrSubdomain = async (domainOrSubdomain: string) => {
+  const site = await prisma.site.findUnique({
+    where: {
+      subdomain: domainOrSubdomain,
+    },
+  })
+
+  if (!site) {
+    throw new ApolloError(`Site not found`)
+  }
+
+  return site
 }

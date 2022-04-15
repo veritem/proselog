@@ -34,6 +34,7 @@ const handler: NextApiHandler = async (req, res) => {
         email: loginToken.email,
         name: loginToken.email.split("@")[0],
         apiToken: `PK_${nanoid(30)}`,
+        username: nanoid(7),
       },
     })
   }
@@ -44,7 +45,11 @@ const handler: NextApiHandler = async (req, res) => {
     },
   })
 
-  setAuthCookie(res, await getJWT({ userId: user.id }))
+  const jwt = await getJWT({ userId: user.id })
+  if (process.env.NODE_ENV === "development") {
+    console.log("login with jwt", jwt)
+  }
+  setAuthCookie(res, jwt)
 
   res.redirect("/dashboard")
 }

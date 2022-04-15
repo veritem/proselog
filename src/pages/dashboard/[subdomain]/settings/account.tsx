@@ -6,7 +6,7 @@ import { useRouter } from "next/router"
 import { useEffect } from "react"
 import toast from "react-hot-toast"
 
-export default function SiteSettingsPage() {
+export default function AccountSettingsPage() {
   const router = useRouter()
   const subdomain = router.query.subdomain as string
   const [siteResult] = useSiteQuery({
@@ -49,7 +49,7 @@ export default function SiteSettingsPage() {
   }, [siteResult.data])
 
   return (
-    <SettingsLayout title="Site Settings">
+    <SettingsLayout title="Account Settings">
       <form onSubmit={form.handleSubmit}>
         <div>
           <label htmlFor="name" className="block mb-2 text-sm">

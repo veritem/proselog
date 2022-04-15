@@ -3,6 +3,20 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import React from "react"
 
+export const Sidebar: React.FC<{
+  children: React.ReactNode
+}> = ({ children }) => {
+  return (
+    <div className="w-64 bg-white fixed top-0 bottom-0 left-0 border-r">
+      {children}
+    </div>
+  )
+}
+
+export const Main: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return <div className="pl-64 w-full">{children}</div>
+}
+
 export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
@@ -28,10 +42,10 @@ export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({
 
   return (
     <div className="flex">
-      <div className="w-64 bg-white fixed top-0 bottom-0 left-0 border-r">
-        <div className="p-6 flex space-x-3 items-center">
+      <Sidebar>
+        <div className="p-3 flex space-x-3 items-center">
           <Link href={`/dashboard/${subdomain}/new-post`}>
-            <a className="h-8 font-medium bg-indigo-500 shadow-sm px-2 rounded-lg w-full justify-center inline-flex items-center text-white transform transition-transform hover:bg-indigo-700">
+            <a className="h-8 font-medium bg-indigo-500 text-sm shadow-sm px-2 rounded-lg w-full justify-center inline-flex items-center text-white transform transition-transform hover:bg-indigo-700">
               New Post
             </a>
           </Link>
@@ -53,14 +67,14 @@ export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({
             </svg>
           </button>
         </div>
-        <div className="px-6 space-y-1">
+        <div className="px-3  space-y-1 text-zinc-700">
           {links.map((link) => {
             const active = router.asPath === link.href
             return (
               <Link href={link.href} key={link.href}>
                 <a
                   className={clsx(
-                    `flex px-2 h-9 items-center rounded-lg`,
+                    `flex px-2 h-8 text-sm font-medium items-center rounded-lg`,
                     active ? `bg-zinc-100` : `hover:bg-zinc-50`,
                   )}
                 >
@@ -71,8 +85,8 @@ export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({
             )
           })}
         </div>
-      </div>
-      <div className="ml-64 w-full">{children}</div>
+      </Sidebar>
+      <Main>{children}</Main>
     </div>
   )
 }

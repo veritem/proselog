@@ -1,7 +1,10 @@
-import { type Context, GqlContext } from "$server/decorators"
+import { type ContextType, GqlContext } from "$server/decorators"
 import { getGuard } from "$server/guard"
 import { prisma } from "$server/prisma"
-import { checkSubdomain } from "$server/services/site.service"
+import {
+  checkSubdomain,
+  getSiteByDomainOrSubdomain,
+} from "$server/services/site.service"
 import { Prisma } from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
 import {
@@ -25,20 +28,10 @@ import {
 @Resolver((of) => Site)
 export default class SiteResolver {
   @Query((returns) => Site)
-  async site(@GqlContext() ctx: Context, @Args() args: SiteArgs) {
+  async site(@GqlContext() ctx: ContextType, @Args() args: SiteArgs) {
     const guard = getGuard(ctx)
 
-    // Only cares about subdomain for now
-
-    const site = await prisma.site.findUnique({
-      where: {
-        subdomain: args.domain,
-      },
-    })
-
-    if (!site) {
-      throw new ApolloError(`Site not found`)
-    }
+    const site = await getSiteByDomainOrSubdomain(args.domainOrSubdomain)
 
     guard.allow.ANY([() => guard.allow.site.read(site)])
 
@@ -46,7 +39,10 @@ export default class SiteResolver {
   }
 
   @Mutation((returns) => Site)
-  async createSite(@GqlContext() ctx: Context, @Args() args: CreateSiteArgs) {
+  async createSite(
+    @GqlContext() ctx: ContextType,
+    @Args() args: CreateSiteArgs,
+  ) {
     const guard = getGuard(ctx, { requireAuth: true })
 
     await checkSubdomain({
@@ -69,7 +65,10 @@ export default class SiteResolver {
   }
 
   @Mutation((returns) => Site)
-  async updateSite(@GqlContext() ctx: Context, @Args() args: UpdateSiteArgs) {
+  async updateSite(
+    @GqlContext() ctx: ContextType,
+    @Args() args: UpdateSiteArgs,
+  ) {
     const guard = getGuard(ctx, { requireAuth: true })
 
     const site = await prisma.site.findUnique({
@@ -105,7 +104,10 @@ export default class SiteResolver {
   }
 
   @Mutation((returns) => Boolean)
-  async deleteSite(@GqlContext() ctx: Context, @Args() args: DeleteSiteArgs) {
+  async deleteSite(
+    @GqlContext() ctx: ContextType,
+    @Args() args: DeleteSiteArgs,
+  ) {
     const guard = getGuard(ctx, { requireAuth: true })
 
     const site = await prisma.site.findUnique({
@@ -131,7 +133,7 @@ export default class SiteResolver {
 
   @FieldResolver((returns) => PostsConnection)
   async posts(
-    @GqlContext() ctx: Context,
+    @GqlContext() ctx: ContextType,
     @Root() site: Site,
     @Args() args: SitePostsArgs,
   ): Promise<PostsConnection> {

@@ -32,8 +32,8 @@ export type Mutation = {
   requestLoginLink: Scalars["Boolean"]
   updatePost: Post
   updateSite: Site
-  updateViewerEmail: Viewer
-  updateViewerProfile: Viewer
+  updateUserEmail: User
+  updateUserProfile: User
 }
 
 export type MutationCreatePostArgs = {
@@ -69,12 +69,12 @@ export type MutationUpdateSiteArgs = {
   subdomain?: InputMaybe<Scalars["String"]>
 }
 
-export type MutationUpdateViewerEmailArgs = {
+export type MutationUpdateUserEmailArgs = {
   email: Scalars["String"]
   userId: Scalars["String"]
 }
 
-export type MutationUpdateViewerProfileArgs = {
+export type MutationUpdateUserProfileArgs = {
   avatar?: InputMaybe<Scalars["String"]>
   name?: InputMaybe<Scalars["String"]>
   userId: Scalars["String"]
@@ -110,7 +110,8 @@ export type Query = {
   __typename?: "Query"
   post: Post
   site: Site
-  viewer?: Maybe<Viewer>
+  user?: Maybe<User>
+  viewer?: Maybe<User>
 }
 
 export type QueryPostArgs = {
@@ -118,7 +119,11 @@ export type QueryPostArgs = {
 }
 
 export type QuerySiteArgs = {
-  domain: Scalars["String"]
+  domainOrSubdomain: Scalars["String"]
+}
+
+export type QueryUserArgs = {
+  username: Scalars["String"]
 }
 
 export type Site = {
@@ -137,21 +142,17 @@ export type SitePostsArgs = {
   take?: InputMaybe<Scalars["Int"]>
 }
 
-export type Viewer = {
-  __typename?: "Viewer"
+export type User = {
+  __typename?: "User"
   avatar?: Maybe<Scalars["String"]>
   createdAt: Scalars["DateTime"]
   email: Scalars["String"]
-  emailVerified?: Maybe<Scalars["String"]>
+  emailVerified?: Maybe<Scalars["Boolean"]>
   id: Scalars["String"]
   name: Scalars["String"]
-  siteBySubdomain?: Maybe<Site>
   sites: Array<Site>
   updatedAt: Scalars["DateTime"]
-}
-
-export type ViewerSiteBySubdomainArgs = {
-  subdomain: Scalars["String"]
+  username: Scalars["String"]
 }
 
 export type CreatePostMutationVariables = Exact<{
@@ -198,7 +199,7 @@ export type PostForEditQuery = {
 }
 
 export type PostsForDashboardQueryVariables = Exact<{
-  domain: Scalars["String"]
+  domainOrSubdomain: Scalars["String"]
   includeDrafts?: InputMaybe<Scalars["Boolean"]>
 }>
 
@@ -230,16 +231,13 @@ export type RequestLoginLinkMutation = {
   requestLoginLink: boolean
 }
 
-export type SiteBySubdomainQueryVariables = Exact<{
-  subdomain: Scalars["String"]
+export type SiteQueryVariables = Exact<{
+  domainOrSubdomain: Scalars["String"]
 }>
 
-export type SiteBySubdomainQuery = {
+export type SiteQuery = {
   __typename?: "Query"
-  viewer?: {
-    __typename?: "Viewer"
-    siteBySubdomain?: { __typename?: "Site"; id: string; name: string } | null
-  } | null
+  site: { __typename?: "Site"; id: string; name: string; subdomain: string }
 }
 
 export type UpdatePostMutationVariables = Exact<{
@@ -522,7 +520,7 @@ export const PostsForDashboardDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "domain" },
+            name: { kind: "Name", value: "domainOrSubdomain" },
           },
           type: {
             kind: "NonNullType",
@@ -550,10 +548,10 @@ export const PostsForDashboardDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "domain" },
+                name: { kind: "Name", value: "domainOrSubdomain" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "domain" },
+                  name: { kind: "Name", value: "domainOrSubdomain" },
                 },
               },
             ],
@@ -678,19 +676,19 @@ export function useRequestLoginLinkMutation() {
     RequestLoginLinkMutationVariables
   >(RequestLoginLinkDocument)
 }
-export const SiteBySubdomainDocument = {
+export const SiteDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "siteBySubdomain" },
+      name: { kind: "Name", value: "site" },
       variableDefinitions: [
         {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "subdomain" },
+            name: { kind: "Name", value: "domainOrSubdomain" },
           },
           type: {
             kind: "NonNullType",
@@ -706,31 +704,23 @@ export const SiteBySubdomainDocument = {
         selections: [
           {
             kind: "Field",
-            name: { kind: "Name", value: "viewer" },
+            name: { kind: "Name", value: "site" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "domainOrSubdomain" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "domainOrSubdomain" },
+                },
+              },
+            ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "siteBySubdomain" },
-                  arguments: [
-                    {
-                      kind: "Argument",
-                      name: { kind: "Name", value: "subdomain" },
-                      value: {
-                        kind: "Variable",
-                        name: { kind: "Name", value: "subdomain" },
-                      },
-                    },
-                  ],
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                    ],
-                  },
-                },
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "subdomain" } },
               ],
             },
           },
@@ -740,13 +730,10 @@ export const SiteBySubdomainDocument = {
   ],
 } as unknown as DocumentNode
 
-export function useSiteBySubdomainQuery(
-  options: Omit<Urql.UseQueryArgs<SiteBySubdomainQueryVariables>, "query">,
+export function useSiteQuery(
+  options: Omit<Urql.UseQueryArgs<SiteQueryVariables>, "query">,
 ) {
-  return Urql.useQuery<SiteBySubdomainQuery>({
-    query: SiteBySubdomainDocument,
-    ...options,
-  })
+  return Urql.useQuery<SiteQuery>({ query: SiteDocument, ...options })
 }
 export const UpdatePostDocument = {
   kind: "Document",

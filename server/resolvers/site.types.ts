@@ -1,4 +1,4 @@
-import { ArgsType, Field, ObjectType } from "type-graphql"
+import { Args, ArgsType, Field, ObjectType } from "type-graphql"
 import * as isoDate from "graphql-iso-date"
 import { PaginationArgs } from "./shared.types"
 
@@ -56,5 +56,5 @@ export class SitePostsArgs extends PaginationArgs {
 @ArgsType()
 export class SiteArgs {
   @Field()
-  domain: string
+  domainOrSubdomain: string
 }

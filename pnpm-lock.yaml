@@ -48,6 +48,7 @@ specifiers:
   prisma: 3.12.0
   react: 18.0.0
   react-dom: 18.0.0
+  react-hot-toast: ^2.2.0
   reflect-metadata: 0.1.13
   tailwindcss: 3.0.24
   type-graphql: 1.1.1
@@ -83,6 +84,7 @@ dependencies:
   next-connect: 0.12.2
   react: 18.0.0
   react-dom: 18.0.0_react@18.0.0
+  react-hot-toast: 2.2.0_react-dom@18.0.0+react@18.0.0
   reflect-metadata: 0.1.13
   type-graphql: 1.1.1_aea24acf06b899fbc466d3b3b949c72d
   urql: 2.2.0_graphql@15.8.0+react@18.0.0
@@ -3114,6 +3116,12 @@ packages:
       slash: 3.0.0
     dev: true
 
+  /goober/2.1.8:
+    resolution: {integrity: sha512-S0C85gCzcfFCMSdjD/CxyQMt1rbf2qEg6hmDzxk2FfD7+7Ogk55m8ZFUMtqNaZM4VVX/qaU9AzSORG+Gf4ZpAQ==}
+    peerDependencies:
+      csstype: ^3.0.10
+    dev: false
+
   /got/9.6.0:
     resolution: {integrity: sha512-R7eWptXuGYxwijs0eV+v3o6+XH1IqVK8dJOEecQfTmkncw9AV4dcw/Dhxi8MdlqPthxxpZyizMzyg8RTmEsG+Q==}
     engines: {node: '>=8.6'}
@@ -4484,6 +4492,20 @@ packages:
 
   /react-fast-compare/2.0.4:
     resolution: {integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==}
+    dev: false
+
+  /react-hot-toast/2.2.0_react-dom@18.0.0+react@18.0.0:
+    resolution: {integrity: sha512-248rXw13uhf/6TNDVzagX+y7R8J183rp7MwUMNkcrBRyHj/jWOggfXTGlM8zAOuh701WyVW+eUaWG2LeSufX9g==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      goober: 2.1.8
+      react: 18.0.0
+      react-dom: 18.0.0_react@18.0.0
+    transitivePeerDependencies:
+      - csstype
     dev: false
 
   /react-is/16.13.1:
