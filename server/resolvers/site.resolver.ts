@@ -24,6 +24,7 @@ import {
   SitePostsArgs,
   UpdateSiteArgs,
 } from "./site.types"
+import { User } from "./user.types"
 
 @Resolver((of) => Site)
 export default class SiteResolver {
@@ -185,5 +186,14 @@ export default class SiteResolver {
         total,
       },
     }
+  }
+
+  @FieldResolver((returns) => User)
+  user(@Root() site: Site) {
+    return prisma.user.findUnique({
+      where: {
+        id: site.userId,
+      },
+    })
   }
 }

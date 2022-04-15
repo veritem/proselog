@@ -62,34 +62,26 @@ export default class UserResolver {
       throw new ApolloError("User not found")
     }
 
-    return prisma.user.update({
-      where: {
-        id: user.id,
-      },
-      data: {
-        name: args.name,
-        avatar: args.avatar,
-      },
-    })
-  }
+    if (args.email) {
+      const userByEmail = await prisma.user.findUnique({
+        where: {
+          email: args.email,
+        },
+      })
+      if (userByEmail && userByEmail.id !== user.id) {
+        throw new ApolloError("Email already in use")
+      }
+    }
 
-  @Mutation((returns) => User)
-  async updateUserEmail(
-    @GqlContext() ctx: ContextType,
-    @Args() args: UpdateUserEmailArgs,
-  ) {
-    const guard = getGuard(ctx, { requireAuth: true })
-
-    guard.allow.ANY([() => guard.allow.user.update({ userId: args.userId })])
-
-    const user = await prisma.user.findUnique({
-      where: {
-        id: args.userId,
-      },
-    })
-
-    if (!user) {
-      throw new ApolloError("User not found")
+    if (args.username) {
+      const userByUsername = await prisma.user.findUnique({
+        where: {
+          username: args.username,
+        },
+      })
+      if (userByUsername && userByUsername.id !== user.id) {
+        throw new ApolloError("Username already in use")
+      }
     }
 
     return prisma.user.update({
@@ -97,8 +89,11 @@ export default class UserResolver {
         id: user.id,
       },
       data: {
+        name: args.name,
+        avatar: args.avatar,
+        username: args.username,
         email: args.email,
-        emailVerified: null,
+        emailVerified: args.email !== user.email ? null : undefined,
       },
     })
   }
@@ -121,7 +116,7 @@ export default class UserResolver {
     return sites
   }
 
-  @Query((returns) => Site)
+  @FieldResolver((returns) => Site)
   async site(@GqlContext() ctx: ContextType, @Args() args: SiteArgs) {
     const guard = getGuard(ctx)
 

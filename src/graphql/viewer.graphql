@@ -1,0 +1,10 @@
+query viewer {
+  viewer {
+    id
+    name
+    username
+    avatar
+    email
+    emailVerified
+  }
+}

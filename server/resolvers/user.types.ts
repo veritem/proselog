@@ -40,6 +40,12 @@ export class UpdateUserProfileArgs {
 
   @Field({ nullable: true })
   avatar?: string
+
+  @Field({ nullable: true })
+  username?: string
+
+  @Field({ nullable: true })
+  email?: string
 }
 
 @ArgsType()

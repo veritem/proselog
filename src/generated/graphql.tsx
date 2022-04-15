@@ -32,7 +32,6 @@ export type Mutation = {
   requestLoginLink: Scalars["Boolean"]
   updatePost: Post
   updateSite: Site
-  updateUserEmail: User
   updateUserProfile: User
 }
 
@@ -69,15 +68,12 @@ export type MutationUpdateSiteArgs = {
   subdomain?: InputMaybe<Scalars["String"]>
 }
 
-export type MutationUpdateUserEmailArgs = {
-  email: Scalars["String"]
-  userId: Scalars["String"]
-}
-
 export type MutationUpdateUserProfileArgs = {
   avatar?: InputMaybe<Scalars["String"]>
+  email?: InputMaybe<Scalars["String"]>
   name?: InputMaybe<Scalars["String"]>
   userId: Scalars["String"]
+  username?: InputMaybe<Scalars["String"]>
 }
 
 export type Pagination = {
@@ -134,6 +130,8 @@ export type Site = {
   posts: PostsConnection
   subdomain: Scalars["String"]
   updatedAt: Scalars["DateTime"]
+  user: User
+  userId: Scalars["String"]
 }
 
 export type SitePostsArgs = {
@@ -150,9 +148,14 @@ export type User = {
   emailVerified?: Maybe<Scalars["Boolean"]>
   id: Scalars["String"]
   name: Scalars["String"]
+  site: Site
   sites: Array<Site>
   updatedAt: Scalars["DateTime"]
   username: Scalars["String"]
+}
+
+export type UserSiteArgs = {
+  domainOrSubdomain: Scalars["String"]
 }
 
 export type CreatePostMutationVariables = Exact<{
@@ -262,6 +265,33 @@ export type UpdateSiteMutationVariables = Exact<{
 export type UpdateSiteMutation = {
   __typename?: "Mutation"
   updateSite: { __typename?: "Site"; id: string }
+}
+
+export type UpdateUserProfileMutationVariables = Exact<{
+  userId: Scalars["String"]
+  name?: InputMaybe<Scalars["String"]>
+  username?: InputMaybe<Scalars["String"]>
+  email?: InputMaybe<Scalars["String"]>
+}>
+
+export type UpdateUserProfileMutation = {
+  __typename?: "Mutation"
+  updateUserProfile: { __typename?: "User"; id: string }
+}
+
+export type ViewerQueryVariables = Exact<{ [key: string]: never }>
+
+export type ViewerQuery = {
+  __typename?: "Query"
+  viewer?: {
+    __typename?: "User"
+    id: string
+    name: string
+    username: string
+    avatar?: string | null
+    email: string
+    emailVerified?: boolean | null
+  } | null
 }
 
 export const CreatePostDocument = {
@@ -938,4 +968,146 @@ export function useUpdateSiteMutation() {
   return Urql.useMutation<UpdateSiteMutation, UpdateSiteMutationVariables>(
     UpdateSiteDocument,
   )
+}
+export const UpdateUserProfileDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "updateUserProfile" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "userId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "username" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "email" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateUserProfile" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "userId" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "userId" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "name" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "name" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "username" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "username" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "email" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "email" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useUpdateUserProfileMutation() {
+  return Urql.useMutation<
+    UpdateUserProfileMutation,
+    UpdateUserProfileMutationVariables
+  >(UpdateUserProfileDocument)
+}
+export const ViewerDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "viewer" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "viewer" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "username" } },
+                { kind: "Field", name: { kind: "Name", value: "avatar" } },
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "emailVerified" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useViewerQuery(
+  options?: Omit<Urql.UseQueryArgs<ViewerQueryVariables>, "query">,
+) {
+  return Urql.useQuery<ViewerQuery>({ query: ViewerDocument, ...options })
 }

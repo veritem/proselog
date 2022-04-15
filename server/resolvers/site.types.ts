@@ -18,6 +18,9 @@ export class Site {
 
   @Field()
   subdomain: string
+
+  @Field()
+  userId: string
 }
 
 @ArgsType()
