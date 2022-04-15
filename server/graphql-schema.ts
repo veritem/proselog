@@ -11,7 +11,7 @@ export const customAuthChecker: AuthChecker<ContextType> = (
   // that comes from the `@Authorized` decorator, eg. ["ADMIN", "MODERATOR"]
   const ok = roles.some((role) => {
     if (role === "CAN_VIEW_USER_PRIVATE_FIELDS") {
-      return context.user && context.user.username === root.username
+      return context.user && context.user.id === root.id
     }
     return false
   })
