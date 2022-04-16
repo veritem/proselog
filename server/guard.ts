@@ -1,4 +1,8 @@
-import { Site as DB_Site, Post as DB_Post } from "@prisma/client"
+import {
+  Site as DB_Site,
+  Post as DB_Post,
+  MembershipRole,
+} from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
 import { ContextType } from "./decorators"
 import { AuthUser } from "./auth"
@@ -11,16 +15,24 @@ export const getGuard = <TRequireAuth extends boolean>(
     throw new ApolloError("login required")
   }
 
+  const isAdminOrGreater = (siteId?: string) => {
+    if (!user || !siteId) return false
+    const roles: MembershipRole[] = [MembershipRole.ADMIN, MembershipRole.OWNER]
+    return user.memberships.some(
+      (member) => member.siteId === siteId && roles.includes(member.role),
+    )
+  }
+
   const allow = {
     site: {
       read(site: Partial<DB_Site>) {
-        return !!site.id
+        return !site.deletedAt
       },
       update(site: Partial<DB_Site>) {
-        return user && site.userId === user.id
+        return isAdminOrGreater(site.id) && !site.deletedAt
       },
       delete(site: Partial<DB_Site>) {
-        return user && site.userId === user.id
+        return isAdminOrGreater(site.id)
       },
       list() {
         return true
@@ -34,23 +46,23 @@ export const getGuard = <TRequireAuth extends boolean>(
         const isPublished =
           post.published && post.publishedAt && post.publishedAt <= new Date()
         return isPublished
-          ? true
-          : user?.sites.some((site) => site.id === post.siteId)
+          ? !post.deletedAt
+          : !post.deletedAt && isAdminOrGreater(post.siteId)
       },
       update(site: Partial<DB_Site>) {
         return allow.site.update(site)
       },
       list(type: "public" | "all", site: Partial<DB_Site>) {
-        if (type === "all") return allow.post.create(site)
-        return true
+        if (type === "all") return !site.deletedAt && allow.post.create(site)
+        return !site.deletedAt
       },
       delete(site: Partial<DB_Site>) {
         return allow.site.delete(site)
       },
     },
     user: {
-      update(payload: { userId: string }) {
-        return user && user.id === payload.userId
+      update(userToUpdate: { id: string; deletedAt: Date | null }) {
+        return user && user.id === userToUpdate.id && !userToUpdate.deletedAt
       },
       isAuthUser(userId?: string) {
         return Boolean(userId && userId === user?.id)

@@ -5,7 +5,7 @@ import {
   checkSubdomain,
   getSiteByDomainOrSubdomain,
 } from "$server/services/site.service"
-import { Prisma } from "@prisma/client"
+import { MembershipRole, Prisma } from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
 import {
   Args,
@@ -54,9 +54,15 @@ export default class SiteResolver {
       data: {
         name: args.name,
         subdomain: args.subdomain,
-        user: {
-          connect: {
-            id: guard.user.id,
+        memberships: {
+          create: {
+            user: {
+              connect: {
+                id: guard.user.id,
+              },
+            },
+            role: MembershipRole.OWNER,
+            acceptedAt: new Date(),
           },
         },
       },
@@ -78,7 +84,7 @@ export default class SiteResolver {
       },
     })
 
-    if (!site) {
+    if (!site || site.deletedAt) {
       throw new ApolloError(`Site not found`)
     }
 
@@ -123,9 +129,12 @@ export default class SiteResolver {
 
     guard.allow.ANY([() => guard.allow.site.delete(site)])
 
-    await prisma.site.delete({
+    await prisma.site.update({
       where: {
         id: site.id,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     })
 
@@ -148,6 +157,7 @@ export default class SiteResolver {
 
     const where: Prisma.PostWhereInput = {
       siteId: site.id,
+      deletedAt: null,
     }
     if (args.includeDrafts) {
     } else {
@@ -189,11 +199,15 @@ export default class SiteResolver {
   }
 
   @FieldResolver((returns) => User)
-  user(@Root() site: Site) {
-    return prisma.user.findUnique({
+  async user(@Root() site: Site) {
+    const user = await prisma.user.findUnique({
       where: {
         id: site.userId,
       },
     })
+    if (user?.deletedAt) {
+      return null
+    }
+    return user
   }
 }

@@ -73,7 +73,7 @@ export default function DashboardPostsPage() {
                 ></span>
               </span>
               <span className="w-full px-3">{post.title}</span>
-              <span className="text-zinc-400 text-sm">
+              <span className="text-zinc-400 text-sm pr-5">
                 {dayjs(post.publishedAt).format("YYYY/MM/DD")}
               </span>
             </a>

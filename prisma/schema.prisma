@@ -11,16 +11,17 @@ generator client {
 }
 
 model User {
-  id            String    @id @default(uuid())
+  id            String       @id @default(uuid())
   name          String
-  username      String    @unique
-  email         String    @unique
+  username      String       @unique
+  email         String       @unique
   emailVerified DateTime?
   avatar        String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sites         Site[]    @relation(name: "UserSites")
-  apiToken      String    @unique
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  apiToken      String       @unique
+  deletedAt     DateTime?
+  memberships   Membership[]
 
   @@map("users")
 }
@@ -33,20 +34,42 @@ model LoginToken {
   @@map("login_tokens")
 }
 
+enum MembershipRole {
+  // The creator
+  OWNER
+  // The admins
+  ADMIN
+  // The subscribers
+  SUBSCRIBER
+}
+
+model Membership {
+  id             String         @id @default(uuid())
+  createdAt      DateTime       @default(now())
+  user           User           @relation(fields: [userId], references: [id])
+  site           Site           @relation(fields: [siteId], references: [id])
+  userId         String
+  siteId         String
+  role           MembershipRole
+  acceptedAt     DateTime?
+  lastSwitchedTo DateTime       @default(now())
+
+  @@map("memberships")
+}
+
 model Site {
-  id              String    @id @default(uuid())
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id              String       @id @default(uuid())
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
   name            String
-  subdomain       String    @unique
-  user            User      @relation(name: "UserSites", fields: [userId], references: [id])
-  userId          String
-  posts           Post[]    @relation(name: "SitePosts")
-  domains         Domain[]  @relation(name: "SiteDomains")
-  primaryDomain   Domain?   @relation(name: "SitePrimaryDomain", fields: [primaryDomainId], references: [id])
-  primaryDomainId String?   @unique
-  postTags        PostTag[] @relation(name: "SitePostTags")
+  subdomain       String       @unique
+  posts           Post[]       @relation(name: "SitePosts")
+  domains         Domain[]     @relation(name: "SiteDomains")
+  primaryDomain   Domain?      @relation(name: "SitePrimaryDomain", fields: [primaryDomainId], references: [id])
+  primaryDomainId String?      @unique
   introduction    String?
+  deletedAt       DateTime?
+  memberships     Membership[]
 
   @@map("sites")
 }
@@ -62,9 +85,10 @@ model Post {
   content          String
   format           String    @default("markdown")
   slug             String    @unique
-  site             Site      @relation(name: "SitePosts", fields: [siteId], references: [id])
+  site             Site      @relation(name: "SitePosts", fields: [siteId], references: [id], onDelete: Cascade)
   siteId           String
   tags             PostTag[] @relation(name: "PostTags")
+  deletedAt        DateTime?
 
   @@map("posts")
 }
@@ -73,7 +97,7 @@ model Domain {
   id                   String   @id @default(uuid())
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
-  site                 Site     @relation(name: "SiteDomains", fields: [siteId], references: [id])
+  site                 Site     @relation(name: "SiteDomains", fields: [siteId], references: [id], onDelete: Cascade)
   siteId               String
   domain               String   @unique
   primaryDomainForSite Site?    @relation(name: "SitePrimaryDomain")
@@ -88,9 +112,7 @@ model PostTag {
   name      String
   slug      String
   posts     Post[]   @relation(name: "PostTags")
-  site      Site     @relation(name: "SitePostTags", fields: [siteId], references: [id])
-  siteId    String
 
-  @@unique([slug, siteId])
+
   @@map("post_tags")
 }

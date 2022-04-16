@@ -1,26 +1,24 @@
-import {
-  useCreatePostMutation,
-  useSiteBySubdomainQuery,
-} from "$src/generated/graphql"
+import { useCreatePostMutation, useSiteQuery } from "$src/generated/graphql"
 import { useRouter } from "next/router"
 import { useEffect } from "react"
 
 export default function NewPostPage() {
   const router = useRouter()
   const subdomain = router.query.subdomain as string
-  const [siteBySubdomainResult] = useSiteBySubdomainQuery({
+  const [siteResult] = useSiteQuery({
     variables: {
-      subdomain,
+      domainOrSubdomain: subdomain,
     },
+    pause: !subdomain,
   })
   const [, createPostMutation] = useCreatePostMutation()
 
   useEffect(() => {
-    if (siteBySubdomainResult.data?.viewer?.siteBySubdomain) {
+    if (siteResult.data?.site) {
       createPostMutation({
         title: "Untitled",
         content: "",
-        siteId: siteBySubdomainResult.data.viewer.siteBySubdomain.id,
+        siteId: siteResult.data?.site.id,
       }).then((res) => {
         if (res.error) {
           alert(res.error)
@@ -31,7 +29,7 @@ export default function NewPostPage() {
         }
       })
     }
-  }, [siteBySubdomainResult.data])
+  }, [siteResult.data])
 
   return (
     <div className="min-h-screen flex items-center justify-center">

@@ -1,4 +1,4 @@
-import { Context, GqlContext } from "$server/decorators"
+import { ContextType, GqlContext } from "$server/decorators"
 import { getGuard } from "$server/guard"
 import { prisma } from "$server/prisma"
 import { ApolloError } from "apollo-server-core"
@@ -24,7 +24,7 @@ import { Site } from "./site.types"
 @Resolver((of) => Post)
 export default class PostResolver {
   @Query((returns) => Post)
-  async post(@GqlContext() ctx: Context, @Args() args: PostArgs) {
+  async post(@GqlContext() ctx: ContextType, @Args() args: PostArgs) {
     const guard = getGuard(ctx)
 
     const isUUID = validateUUID(args.slugOrId)
@@ -36,7 +36,7 @@ export default class PostResolver {
         : { slug: args.slugOrId },
     })
 
-    if (!post) {
+    if (!post || post.deletedAt) {
       throw new ApolloError(`post not found`)
     }
 
@@ -46,7 +46,10 @@ export default class PostResolver {
   }
 
   @Mutation((returns) => Post)
-  async createPost(@GqlContext() ctx: Context, @Args() args: CreatePostArgs) {
+  async createPost(
+    @GqlContext() ctx: ContextType,
+    @Args() args: CreatePostArgs,
+  ) {
     const guard = getGuard(ctx, { requireAuth: true })
 
     const site = await prisma.site.findUnique({
@@ -78,7 +81,10 @@ export default class PostResolver {
   }
 
   @Mutation((returns) => Post)
-  async updatePost(@GqlContext() ctx: Context, @Args() args: UpdatePostArgs) {
+  async updatePost(
+    @GqlContext() ctx: ContextType,
+    @Args() args: UpdatePostArgs,
+  ) {
     const guard = getGuard(ctx, { requireAuth: true })
 
     const post = await prisma.post.findUnique({
@@ -90,7 +96,7 @@ export default class PostResolver {
       },
     })
 
-    if (!post) {
+    if (!post || post.deletedAt) {
       throw new ApolloError(`Post not found`)
     }
 
@@ -110,7 +116,10 @@ export default class PostResolver {
   }
 
   @Mutation((returns) => Boolean)
-  async deletePost(@GqlContext() ctx: Context, @Args() args: DeletePostArgs) {
+  async deletePost(
+    @GqlContext() ctx: ContextType,
+    @Args() args: DeletePostArgs,
+  ) {
     const guard = getGuard(ctx, { requireAuth: true })
 
     const post = await prisma.post.findUnique({
@@ -128,9 +137,12 @@ export default class PostResolver {
 
     guard.allow.ANY([() => guard.allow.post.delete(post.site)])
 
-    await prisma.post.delete({
+    await prisma.post.update({
       where: {
         id: post.id,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     })
 

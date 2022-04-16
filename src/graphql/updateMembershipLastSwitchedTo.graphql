@@ -1,0 +1,3 @@
+mutation updateMembershipLastSwitchedTo($siteId: String!) {
+  updateMembershipLastSwitchedTo(siteId: $siteId)
+}

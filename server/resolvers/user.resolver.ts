@@ -36,7 +36,7 @@ export default class UserResolver {
       },
     })
 
-    if (!user) {
+    if (!user || user.deletedAt) {
       return null
     }
 
@@ -50,17 +50,17 @@ export default class UserResolver {
   ) {
     const guard = getGuard(ctx, { requireAuth: true })
 
-    guard.allow.ANY([() => guard.allow.user.update({ userId: args.userId })])
-
     const user = await prisma.user.findUnique({
       where: {
         id: args.userId,
       },
     })
 
-    if (!user) {
+    if (!user || user.deletedAt) {
       throw new ApolloError("User not found")
     }
+
+    guard.allow.ANY([() => guard.allow.user.update(user)])
 
     if (args.email) {
       const userByEmail = await prisma.user.findUnique({
@@ -107,6 +107,7 @@ export default class UserResolver {
     const sites = await prisma.site.findMany({
       where: {
         userId: user.id,
+        deletedAt: null,
       },
       orderBy: {
         createdAt: "desc",

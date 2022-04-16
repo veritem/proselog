@@ -30,6 +30,7 @@ export type Mutation = {
   deletePost: Scalars["Boolean"]
   deleteSite: Scalars["Boolean"]
   requestLoginLink: Scalars["Boolean"]
+  updateMembershipLastSwitchedTo: Scalars["Boolean"]
   updatePost: Post
   updateSite: Site
   updateUserProfile: User
@@ -52,6 +53,10 @@ export type MutationDeleteSiteArgs = {
 
 export type MutationRequestLoginLinkArgs = {
   email: Scalars["String"]
+}
+
+export type MutationUpdateMembershipLastSwitchedToArgs = {
+  siteId: Scalars["String"]
 }
 
 export type MutationUpdatePostArgs = {
@@ -241,6 +246,15 @@ export type SiteQueryVariables = Exact<{
 export type SiteQuery = {
   __typename?: "Query"
   site: { __typename?: "Site"; id: string; name: string; subdomain: string }
+}
+
+export type UpdateMembershipLastSwitchedToMutationVariables = Exact<{
+  siteId: Scalars["String"]
+}>
+
+export type UpdateMembershipLastSwitchedToMutation = {
+  __typename?: "Mutation"
+  updateMembershipLastSwitchedTo: boolean
 }
 
 export type UpdatePostMutationVariables = Exact<{
@@ -764,6 +778,58 @@ export function useSiteQuery(
   options: Omit<Urql.UseQueryArgs<SiteQueryVariables>, "query">,
 ) {
   return Urql.useQuery<SiteQuery>({ query: SiteDocument, ...options })
+}
+export const UpdateMembershipLastSwitchedToDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "updateMembershipLastSwitchedTo" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "siteId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateMembershipLastSwitchedTo" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "siteId" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "siteId" },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useUpdateMembershipLastSwitchedToMutation() {
+  return Urql.useMutation<
+    UpdateMembershipLastSwitchedToMutation,
+    UpdateMembershipLastSwitchedToMutationVariables
+  >(UpdateMembershipLastSwitchedToDocument)
 }
 export const UpdatePostDocument = {
   kind: "Document",

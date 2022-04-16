@@ -1,4 +1,5 @@
 import { prisma } from "$server/prisma"
+import { MembershipRole } from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
 
 export const checkSubdomain = async ({
@@ -20,18 +21,24 @@ export const checkSubdomain = async ({
 }
 
 export const getUserLastActiveSite = async (userId: string) => {
-  const sites = await prisma.site.findMany({
+  const memberships = await prisma.membership.findMany({
     where: {
       userId,
+      role: {
+        in: [MembershipRole.OWNER, MembershipRole.ADMIN],
+      },
+    },
+    include: {
+      site: true,
     },
     orderBy: {
-      createdAt: "desc",
+      lastSwitchedTo: "desc",
     },
   })
 
-  if (sites.length === 0) return null
+  if (memberships.length === 0) return null
 
-  return sites[0]
+  return memberships[0].site
 }
 
 export const getSiteByDomainOrSubdomain = async (domainOrSubdomain: string) => {
@@ -41,7 +48,7 @@ export const getSiteByDomainOrSubdomain = async (domainOrSubdomain: string) => {
     },
   })
 
-  if (!site) {
+  if (!site || site.deletedAt) {
     throw new ApolloError(`Site not found`)
   }
 
