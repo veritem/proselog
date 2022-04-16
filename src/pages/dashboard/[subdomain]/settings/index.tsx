@@ -46,10 +46,11 @@ export default function SiteSettingsPage() {
   const deleteSiteForm = useFormik({
     initialValues: {},
     async onSubmit() {
-      if (!confirm(`Are your sure you want to delete this site?`)) {
+      const site = siteResult.data?.site!
+
+      if (prompt(`Enter "${site.name}" to delete the site`) !== site.name) {
         return
       }
-      const site = siteResult.data?.site!
       const { error } = await deleteSiteMutation({
         id: site!.id,
       })

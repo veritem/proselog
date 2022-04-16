@@ -43,7 +43,7 @@ export default function DashboardPostsPage() {
   const hasSelectedPostIds = selectedPostIds.length > 0
 
   const deletedSelectedPosts = async () => {
-    if (!confirm("Are you sure you want to delete selected posts?")) {
+    if (prompt(`Enter "delete" to deleted selected posts`) !== "delete") {
       return
     }
 
