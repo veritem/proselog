@@ -8,9 +8,10 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import dayjs from "dayjs"
 import clsx from "clsx"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import toast from "react-hot-toast"
 import { Button } from "$src/components/ui/Button"
+import { getPostVisibility } from "$src/helpers/post"
 
 export default function DashboardPostsPage() {
   const router = useRouter()
@@ -154,7 +155,7 @@ export default function DashboardPostsPage() {
                 <span
                   className={clsx(
                     `post-status-circle`,
-                    post.published ? `` : `is-draft`,
+                    `is-${getPostVisibility(post)}`,
                   )}
                 ></span>
               </span>

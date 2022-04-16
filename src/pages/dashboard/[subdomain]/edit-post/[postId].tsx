@@ -1,6 +1,7 @@
 import { Button } from "$src/components/ui/Button"
 import { Editor } from "$src/components/ui/Editor"
 import {
+  PostVisibility,
   usePostForEditQuery,
   useUpdatePostMutation,
 } from "$src/generated/graphql"
@@ -9,11 +10,12 @@ import clsx from "clsx"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
+import dayjs from "dayjs"
+import { usePostVisibility } from "$src/helpers/post"
 
-const getInputDatetimeValue = (date: Date) => {
-  const isoString = date.toISOString()
-
-  return isoString.substring(0, ((isoString.indexOf("T") | 0) + 6) | 0)
+const getInputDatetimeValue = (date: Date | string) => {
+  const str = dayjs(date).format()
+  return str.substring(0, ((str.indexOf("T") | 0) + 6) | 0)
 }
 
 export default function EditPostPage() {
@@ -23,6 +25,7 @@ export default function EditPostPage() {
   const [, updatePostMutation] = useUpdatePostMutation()
 
   const [published, setPublished] = useState(false)
+  const [publishedAt, setPublishedAt] = useState<Date | null>(null)
   const [postResult] = usePostForEditQuery({
     variables: {
       slugOrId: postId,
@@ -33,7 +36,7 @@ export default function EditPostPage() {
   const [form, setForm] = useState({
     title: "",
     content: "",
-    publishedAt: new Date(),
+    publishedAt: dayjs().format(),
     published: false,
   })
   const [formSubmitting, setFormSubmitting] = useState(false)
@@ -52,7 +55,7 @@ export default function EditPostPage() {
         id: postId,
         title: form.title,
         content: form.content,
-        publishedAt: form.publishedAt,
+        publishedAt: new Date(form.publishedAt),
         published: form.published,
       })
       if (error) {
@@ -72,6 +75,8 @@ export default function EditPostPage() {
 
   const openSettings = () => {}
 
+  const visibility = usePostVisibility({ published, publishedAt })
+
   useEffect(() => {
     if (postResult.data) {
       setForm({
@@ -79,11 +84,10 @@ export default function EditPostPage() {
         title: postResult.data.post.title,
         content: postResult.data.post.content,
         published: postResult.data.post.published,
-        publishedAt: postResult.data.post.publishedAt
-          ? new Date(postResult.data.post.publishedAt)
-          : new Date(),
+        publishedAt: postResult.data.post.publishedAt,
       })
       setPublished(postResult.data.post.published)
+      setPublishedAt(new Date(postResult.data.post.publishedAt))
     }
   }, [postResult.data])
 
@@ -104,7 +108,11 @@ export default function EditPostPage() {
               published ? `text-indigo-500` : `text-zinc-300`,
             )}
           >
-            {published ? "Published" : "Draft"}
+            {visibility === PostVisibility.Published
+              ? "Published"
+              : visibility === PostVisibility.Scheduled
+              ? "Scheduled"
+              : "Draft"}
           </span>
           <Popover className="relative">
             <Popover.Button className="button is-primary select-none">
@@ -117,15 +125,18 @@ export default function EditPostPage() {
                   <div className="border p-3 rounded-lg min-w-[240px]">
                     <div className="space-y-3">
                       <label className="block">
-                        <span className="block text-zinc-400 font-medium text-sm">
+                        <span
+                          className="block text-zinc-400 font-medium text-sm"
+                          date-value={getInputDatetimeValue(form.publishedAt)}
+                        >
                           Publish at
                         </span>
                         <input
                           type="datetime-local"
                           value={getInputDatetimeValue(form.publishedAt)}
-                          onChange={(e) =>
+                          onChange={(e) => {
                             updateField("publishedAt", e.target.value)
-                          }
+                          }}
                         />
                       </label>
                       <label className="block">

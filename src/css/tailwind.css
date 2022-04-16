@@ -128,3 +128,7 @@ textarea.input {
 .post-status-circle.is-draft {
   @apply bg-gray-500;
 }
+
+.post-status-circle.is-scheduled {
+  @apply bg-yellow-500;
+}
