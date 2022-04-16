@@ -6,7 +6,8 @@ export const Button: React.FC<
     isLoading?: boolean
     isBlock?: boolean
     variant?: "primary" | "ghost"
-    color?: "green"
+    variantColor?: "green" | "red"
+    size?: "small"
   }
 > = ({
   type,
@@ -15,7 +16,8 @@ export const Button: React.FC<
   isLoading,
   isBlock,
   variant,
-  color,
+  variantColor,
+  size,
   ...props
 }) => {
   return (
@@ -27,7 +29,8 @@ export const Button: React.FC<
         "button",
         isLoading && "is-loading",
         isBlock && `is-block`,
-        color && `is-${color}`,
+        variantColor && `is-${variantColor}`,
+        size && `is-${size}`,
         `is-${variant || "primary"}`,
       )}
     >

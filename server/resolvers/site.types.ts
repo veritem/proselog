@@ -1,6 +1,7 @@
 import { Args, ArgsType, Field, ObjectType } from "type-graphql"
 import * as isoDate from "graphql-iso-date"
 import { PaginationArgs } from "./shared.types"
+import { PostVisibility } from "./post.types"
 
 @ObjectType({ simpleResolvers: true })
 export class Site {
@@ -21,6 +22,9 @@ export class Site {
 
   @Field()
   userId: string
+
+  @Field({ nullable: true })
+  introduction?: string
 }
 
 @ArgsType()
@@ -42,6 +46,9 @@ export class UpdateSiteArgs {
 
   @Field({ nullable: true })
   subdomain?: string
+
+  @Field({ nullable: true })
+  introduction?: string
 }
 
 @ArgsType()
@@ -52,8 +59,10 @@ export class DeleteSiteArgs {
 
 @ArgsType()
 export class SitePostsArgs extends PaginationArgs {
-  @Field({ nullable: true })
-  includeDrafts: boolean
+  @Field((type) => PostVisibility, {
+    defaultValue: PostVisibility.published,
+  })
+  visibility: PostVisibility
 }
 
 @ArgsType()

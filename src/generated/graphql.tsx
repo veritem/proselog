@@ -47,6 +47,10 @@ export type MutationCreateSiteArgs = {
   subdomain: Scalars["String"]
 }
 
+export type MutationDeletePostArgs = {
+  id: Scalars["String"]
+}
+
 export type MutationDeleteSiteArgs = {
   id: Scalars["String"]
 }
@@ -69,6 +73,7 @@ export type MutationUpdatePostArgs = {
 
 export type MutationUpdateSiteArgs = {
   id: Scalars["String"]
+  introduction?: InputMaybe<Scalars["String"]>
   name?: InputMaybe<Scalars["String"]>
   subdomain?: InputMaybe<Scalars["String"]>
 }
@@ -101,6 +106,13 @@ export type Post = {
   updatedAt: Scalars["DateTime"]
 }
 
+export enum PostVisibility {
+  All = "all",
+  Draft = "draft",
+  Published = "published",
+  Scheduled = "scheduled",
+}
+
 export type PostsConnection = {
   __typename?: "PostsConnection"
   nodes: Array<Post>
@@ -131,6 +143,7 @@ export type Site = {
   __typename?: "Site"
   createdAt: Scalars["DateTime"]
   id: Scalars["String"]
+  introduction?: Maybe<Scalars["String"]>
   name: Scalars["String"]
   posts: PostsConnection
   subdomain: Scalars["String"]
@@ -141,8 +154,8 @@ export type Site = {
 
 export type SitePostsArgs = {
   cursor?: InputMaybe<Scalars["String"]>
-  includeDrafts?: InputMaybe<Scalars["Boolean"]>
   take?: InputMaybe<Scalars["Int"]>
+  visibility?: InputMaybe<PostVisibility>
 }
 
 export type User = {
@@ -189,6 +202,24 @@ export type CreateSiteMutation = {
   }
 }
 
+export type DeletePostMutationVariables = Exact<{
+  id: Scalars["String"]
+}>
+
+export type DeletePostMutation = {
+  __typename?: "Mutation"
+  deletePost: boolean
+}
+
+export type DeleteSiteMutationVariables = Exact<{
+  id: Scalars["String"]
+}>
+
+export type DeleteSiteMutation = {
+  __typename?: "Mutation"
+  deleteSite: boolean
+}
+
 export type PostForEditQueryVariables = Exact<{
   slugOrId: Scalars["String"]
 }>
@@ -208,7 +239,7 @@ export type PostForEditQuery = {
 
 export type PostsForDashboardQueryVariables = Exact<{
   domainOrSubdomain: Scalars["String"]
-  includeDrafts?: InputMaybe<Scalars["Boolean"]>
+  visibility?: InputMaybe<PostVisibility>
 }>
 
 export type PostsForDashboardQuery = {
@@ -245,7 +276,13 @@ export type SiteQueryVariables = Exact<{
 
 export type SiteQuery = {
   __typename?: "Query"
-  site: { __typename?: "Site"; id: string; name: string; subdomain: string }
+  site: {
+    __typename?: "Site"
+    id: string
+    name: string
+    subdomain: string
+    introduction?: string | null
+  }
 }
 
 export type UpdateMembershipLastSwitchedToMutationVariables = Exact<{
@@ -274,6 +311,7 @@ export type UpdateSiteMutationVariables = Exact<{
   id: Scalars["String"]
   name?: InputMaybe<Scalars["String"]>
   subdomain?: InputMaybe<Scalars["String"]>
+  introduction?: InputMaybe<Scalars["String"]>
 }>
 
 export type UpdateSiteMutation = {
@@ -487,6 +525,102 @@ export function useCreateSiteMutation() {
     CreateSiteDocument,
   )
 }
+export const DeletePostDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "deletePost" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "deletePost" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "id" },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useDeletePostMutation() {
+  return Urql.useMutation<DeletePostMutation, DeletePostMutationVariables>(
+    DeletePostDocument,
+  )
+}
+export const DeleteSiteDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "deleteSite" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "deleteSite" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "id" },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useDeleteSiteMutation() {
+  return Urql.useMutation<DeleteSiteMutation, DeleteSiteMutationVariables>(
+    DeleteSiteDocument,
+  )
+}
 export const PostForEditDocument = {
   kind: "Document",
   definitions: [
@@ -578,9 +712,12 @@ export const PostsForDashboardDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "includeDrafts" },
+            name: { kind: "Name", value: "visibility" },
           },
-          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+          type: {
+            kind: "NamedType",
+            name: { kind: "Name", value: "PostVisibility" },
+          },
         },
       ],
       selectionSet: {
@@ -609,10 +746,10 @@ export const PostsForDashboardDocument = {
                   arguments: [
                     {
                       kind: "Argument",
-                      name: { kind: "Name", value: "includeDrafts" },
+                      name: { kind: "Name", value: "visibility" },
                       value: {
                         kind: "Variable",
-                        name: { kind: "Name", value: "includeDrafts" },
+                        name: { kind: "Name", value: "visibility" },
                       },
                     },
                   ],
@@ -765,6 +902,10 @@ export const SiteDocument = {
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
                 { kind: "Field", name: { kind: "Name", value: "subdomain" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "introduction" },
+                },
               ],
             },
           },
@@ -984,6 +1125,14 @@ export const UpdateSiteDocument = {
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "introduction" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1014,6 +1163,14 @@ export const UpdateSiteDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "subdomain" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "introduction" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "introduction" },
                 },
               },
             ],

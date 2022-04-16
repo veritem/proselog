@@ -131,7 +131,7 @@ export default class PostResolver {
       },
     })
 
-    if (!post) {
+    if (!post || post.deletedAt) {
       throw new ApolloError(`Post not found`)
     }
 

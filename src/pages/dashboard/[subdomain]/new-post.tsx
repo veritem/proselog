@@ -1,6 +1,6 @@
 import { useCreatePostMutation, useSiteQuery } from "$src/generated/graphql"
 import { useRouter } from "next/router"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export default function NewPostPage() {
   const router = useRouter()
@@ -12,9 +12,11 @@ export default function NewPostPage() {
     pause: !subdomain,
   })
   const [, createPostMutation] = useCreatePostMutation()
+  const [created, setCreated] = useState(false)
 
   useEffect(() => {
-    if (siteResult.data?.site) {
+    if (siteResult.data?.site && !created) {
+      setCreated(true)
       createPostMutation({
         title: "Untitled",
         content: "",
@@ -29,7 +31,7 @@ export default function NewPostPage() {
         }
       })
     }
-  }, [siteResult.data])
+  }, [siteResult.data, created])
 
   return (
     <div className="min-h-screen flex items-center justify-center">

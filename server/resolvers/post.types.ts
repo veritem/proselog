@@ -1,6 +1,17 @@
-import { ArgsType, Field, ObjectType } from "type-graphql"
+import { ArgsType, Field, ObjectType, registerEnumType } from "type-graphql"
 import * as isoDate from "graphql-iso-date"
-import { Pagination, PaginationArgs } from "./shared.types"
+import { Pagination } from "./shared.types"
+
+export enum PostVisibility {
+  all = "all",
+  published = "published",
+  draft = "draft",
+  scheduled = "scheduled",
+}
+
+registerEnumType(PostVisibility, {
+  name: "PostVisibility",
+})
 
 @ArgsType()
 export class CreatePostArgs {
@@ -79,5 +90,6 @@ export class UpdatePostArgs {
 
 @ArgsType()
 export class DeletePostArgs {
+  @Field()
   id: string
 }

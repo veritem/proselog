@@ -6,6 +6,7 @@ import {
 import { ApolloError } from "apollo-server-core"
 import { ContextType } from "./decorators"
 import { AuthUser } from "./auth"
+import { PostVisibility } from "./resolvers/post.types"
 
 export const getGuard = <TRequireAuth extends boolean>(
   { user }: ContextType,
@@ -37,6 +38,7 @@ export const getGuard = <TRequireAuth extends boolean>(
       list() {
         return true
       },
+      isAdminOrGreater,
     },
     post: {
       create(site: Partial<DB_Site>) {
@@ -51,10 +53,6 @@ export const getGuard = <TRequireAuth extends boolean>(
       },
       update(site: Partial<DB_Site>) {
         return allow.site.update(site)
-      },
-      list(type: "public" | "all", site: Partial<DB_Site>) {
-        if (type === "all") return !site.deletedAt && allow.post.create(site)
-        return !site.deletedAt
       },
       delete(site: Partial<DB_Site>) {
         return allow.site.delete(site)
@@ -75,6 +73,12 @@ export const getGuard = <TRequireAuth extends boolean>(
         }
       }
       throw new ApolloError("permission denied")
+    },
+    EVERY(rules: (() => boolean | null | undefined)[]) {
+      const ok = rules.every((rule) => rule())
+      if (!ok) {
+        throw new ApolloError("permission denied")
+      }
     },
   }
 

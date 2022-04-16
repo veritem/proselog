@@ -1,5 +1,15 @@
-mutation updateSite($id: String!, $name: String, $subdomain: String) {
-  updateSite(id: $id, name: $name, subdomain: $subdomain) {
+mutation updateSite(
+  $id: String!
+  $name: String
+  $subdomain: String
+  $introduction: String
+) {
+  updateSite(
+    id: $id
+    name: $name
+    subdomain: $subdomain
+    introduction: $introduction
+  ) {
     id
   }
 }

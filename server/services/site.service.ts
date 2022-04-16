@@ -15,6 +15,16 @@ export const checkSubdomain = async ({
     },
   })
 
+  if (existingSite?.deletedAt) {
+    // Actuall delete the site so that the subdomain can be used again
+    await prisma.site.delete({
+      where: {
+        id: existingSite.id,
+      },
+    })
+    return
+  }
+
   if (existingSite && (!updatingSiteId || existingSite.id !== updatingSiteId)) {
     throw new Error(`Subdomain already taken`)
   }
@@ -36,9 +46,11 @@ export const getUserLastActiveSite = async (userId: string) => {
     },
   })
 
-  if (memberships.length === 0) return null
+  const site = memberships[0]?.site
 
-  return memberships[0].site
+  if (!site || site.deletedAt) return null
+
+  return site
 }
 
 export const getSiteByDomainOrSubdomain = async (domainOrSubdomain: string) => {

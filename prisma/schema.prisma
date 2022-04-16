@@ -46,8 +46,8 @@ enum MembershipRole {
 model Membership {
   id             String         @id @default(uuid())
   createdAt      DateTime       @default(now())
-  user           User           @relation(fields: [userId], references: [id])
-  site           Site           @relation(fields: [siteId], references: [id])
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  site           Site           @relation(fields: [siteId], references: [id], onDelete: Cascade)
   userId         String
   siteId         String
   role           MembershipRole

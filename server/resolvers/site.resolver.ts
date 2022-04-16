@@ -15,7 +15,7 @@ import {
   Resolver,
   Root,
 } from "type-graphql"
-import { PostsConnection } from "./post.types"
+import { PostsConnection, PostVisibility } from "./post.types"
 import {
   CreateSiteArgs,
   DeleteSiteArgs,
@@ -104,6 +104,7 @@ export default class SiteResolver {
       data: {
         name: args.name,
         subdomain: args.subdomain,
+        introduction: args.introduction,
       },
     })
 
@@ -149,22 +150,24 @@ export default class SiteResolver {
   ): Promise<PostsConnection> {
     const guard = getGuard(ctx)
 
-    guard.allow.ANY([
-      () => guard.allow.post.list(args.includeDrafts ? "all" : "public", site),
-    ])
-
     const now = new Date()
 
     const where: Prisma.PostWhereInput = {
       siteId: site.id,
       deletedAt: null,
     }
-    if (args.includeDrafts) {
-    } else {
+    if (args.visibility === PostVisibility.published) {
       where.published = true
       where.publishedAt = {
         lte: now,
       }
+    } else if (args.visibility === PostVisibility.scheduled) {
+      where.published = true
+      where.publishedAt = {
+        gt: now,
+      }
+    } else if (args.visibility === PostVisibility.draft) {
+      where.published = false
     }
 
     const [posts, total] = await Promise.all([
@@ -186,6 +189,8 @@ export default class SiteResolver {
         },
       }),
     ])
+
+    guard.allow.EVERY(posts.map((post) => () => guard.allow.post.read(post)))
 
     const hasMore = posts.length > args.take
 

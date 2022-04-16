@@ -1,7 +1,10 @@
-query postsForDashboard($domainOrSubdomain: String!, $includeDrafts: Boolean) {
+query postsForDashboard(
+  $domainOrSubdomain: String!
+  $visibility: PostVisibility
+) {
   site(domainOrSubdomain: $domainOrSubdomain) {
     id
-    posts(includeDrafts: $includeDrafts) {
+    posts(visibility: $visibility) {
       nodes {
         id
         title

@@ -1,6 +1,10 @@
 import { SettingsLayout } from "$src/components/app/SettingsLayout"
 import { Button } from "$src/components/ui/Button"
-import { useSiteQuery, useUpdateSiteMutation } from "$src/generated/graphql"
+import {
+  useSiteQuery,
+  useUpdateSiteMutation,
+  useDeleteSiteMutation,
+} from "$src/generated/graphql"
 import { useFormik } from "formik"
 import { useRouter } from "next/router"
 import { useEffect } from "react"
@@ -16,21 +20,44 @@ export default function SiteSettingsPage() {
     pause: !subdomain,
   })
   const [, updateSiteMutation] = useUpdateSiteMutation()
+  const [, deleteSiteMutation] = useDeleteSiteMutation()
+
+  const site = siteResult.data?.site
 
   const form = useFormik({
     initialValues: {
       name: "",
+      introduction: "",
     },
     async onSubmit(values) {
-      const site = siteResult.data?.site!
       const { error, data } = await updateSiteMutation({
-        id: site.id,
+        id: site!.id,
         name: values.name,
+        introduction: values.introduction,
       })
       if (error) {
         toast.error(error.message)
       } else if (data) {
         toast.success("Site updated")
+      }
+    },
+  })
+
+  const deleteSiteForm = useFormik({
+    initialValues: {},
+    async onSubmit() {
+      if (!confirm(`Are your sure you want to delete this site?`)) {
+        return
+      }
+      const site = siteResult.data?.site!
+      const { error } = await deleteSiteMutation({
+        id: site!.id,
+      })
+      if (error) {
+        toast.error(error.message)
+      } else {
+        toast.success("Site deleted")
+        router.push("/dashboard")
       }
     },
   })
@@ -44,6 +71,7 @@ export default function SiteSettingsPage() {
       }
       form.setValues({
         name: site.name,
+        introduction: site.introduction || "",
       })
     }
   }, [siteResult.data])
@@ -64,12 +92,38 @@ export default function SiteSettingsPage() {
             onChange={form.handleChange}
           />
         </div>
-        <div className="mt-10">
+        <div className="mt-5">
+          <label htmlFor="introduction" className="block mb-2 text-sm">
+            Introduction
+          </label>
+          <textarea
+            id="introduction"
+            className="input"
+            name="introduction"
+            required
+            value={form.values.introduction}
+            onChange={form.handleChange}
+            rows={6}
+          />
+        </div>
+        <div className="mt-5">
           <Button type="submit" isLoading={form.isSubmitting}>
             Save
           </Button>
         </div>
       </form>
+      <div className="mt-14 border-t pt-8">
+        <h3 className="text-red-500 text-lg mb-5">Danger Zone</h3>
+        <form onSubmit={deleteSiteForm.handleSubmit}>
+          <Button
+            variantColor="red"
+            type="submit"
+            isLoading={deleteSiteForm.isSubmitting}
+          >
+            Delete Site
+          </Button>
+        </form>
+      </div>
     </SettingsLayout>
   )
 }
