@@ -7,6 +7,7 @@ import {
 } from "$server/services/site.service"
 import { MembershipRole, Prisma } from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
+import { nanoid } from "nanoid"
 import {
   Args,
   FieldResolver,
@@ -22,6 +23,7 @@ import {
   Site,
   SiteArgs,
   SitePostsArgs,
+  SiteStats,
   UpdateSiteArgs,
 } from "./site.types"
 import { User } from "./user.types"
@@ -204,15 +206,39 @@ export default class SiteResolver {
   }
 
   @FieldResolver((returns) => User)
-  async user(@Root() site: Site) {
-    const user = await prisma.user.findUnique({
+  async owner(@Root() site: Site) {
+    const membership = await prisma.membership.findFirst({
       where: {
-        id: site.userId,
+        role: MembershipRole.OWNER,
+        siteId: site.id,
+      },
+      include: {
+        user: true,
       },
     })
-    if (user?.deletedAt) {
+
+    if (!membership || membership.user.deletedAt) {
       return null
     }
-    return user
+    return membership.user
+  }
+
+  @FieldResolver((returns) => SiteStats)
+  async stats(@Root() site: Site): Promise<SiteStats> {
+    const postCount = await prisma.post.count({
+      where: {
+        deletedAt: null,
+        siteId: site.id,
+      },
+    })
+
+    const subscriberCount = await prisma.membership.count({
+      where: {
+        siteId: site.id,
+        role: MembershipRole.SUBSCRIBER,
+      },
+    })
+
+    return { id: nanoid(), postCount, subscriberCount }
   }
 }

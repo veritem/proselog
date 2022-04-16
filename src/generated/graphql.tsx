@@ -145,10 +145,11 @@ export type Site = {
   id: Scalars["String"]
   introduction?: Maybe<Scalars["String"]>
   name: Scalars["String"]
+  owner: User
   posts: PostsConnection
+  stats: SiteStats
   subdomain: Scalars["String"]
   updatedAt: Scalars["DateTime"]
-  user: User
   userId: Scalars["String"]
 }
 
@@ -156,6 +157,13 @@ export type SitePostsArgs = {
   cursor?: InputMaybe<Scalars["String"]>
   take?: InputMaybe<Scalars["Int"]>
   visibility?: InputMaybe<PostVisibility>
+}
+
+export type SiteStats = {
+  __typename?: "SiteStats"
+  id: Scalars["String"]
+  postCount: Scalars["Int"]
+  subscriberCount: Scalars["Int"]
 }
 
 export type User = {
@@ -199,6 +207,26 @@ export type CreateSiteMutation = {
     id: string
     name: string
     subdomain: string
+  }
+}
+
+export type DashboardHomeQueryVariables = Exact<{
+  domainOrSubdomain: Scalars["String"]
+}>
+
+export type DashboardHomeQuery = {
+  __typename?: "Query"
+  site: {
+    __typename?: "Site"
+    id: string
+    name: string
+    subdomain: string
+    stats: {
+      __typename?: "SiteStats"
+      id: string
+      postCount: number
+      subscriberCount: number
+    }
   }
 }
 
@@ -524,6 +552,86 @@ export function useCreateSiteMutation() {
   return Urql.useMutation<CreateSiteMutation, CreateSiteMutationVariables>(
     CreateSiteDocument,
   )
+}
+export const DashboardHomeDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "dashboardHome" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "domainOrSubdomain" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "site" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "domainOrSubdomain" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "domainOrSubdomain" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "subdomain" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "stats" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "postCount" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "subscriberCount" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useDashboardHomeQuery(
+  options: Omit<Urql.UseQueryArgs<DashboardHomeQueryVariables>, "query">,
+) {
+  return Urql.useQuery<DashboardHomeQuery>({
+    query: DashboardHomeDocument,
+    ...options,
+  })
 }
 export const DeletePostDocument = {
   kind: "Document",

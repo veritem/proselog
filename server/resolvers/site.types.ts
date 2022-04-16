@@ -1,4 +1,4 @@
-import { Args, ArgsType, Field, ObjectType } from "type-graphql"
+import { Args, ArgsType, Field, Int, ObjectType } from "type-graphql"
 import * as isoDate from "graphql-iso-date"
 import { PaginationArgs } from "./shared.types"
 import { PostVisibility } from "./post.types"
@@ -69,4 +69,17 @@ export class SitePostsArgs extends PaginationArgs {
 export class SiteArgs {
   @Field()
   domainOrSubdomain: string
+}
+
+// TODO: maybe some fields should only allow admin to view
+@ObjectType({ simpleResolvers: true })
+export class SiteStats {
+  @Field()
+  id: string
+
+  @Field((type) => Int)
+  postCount: number
+
+  @Field((type) => Int)
+  subscriberCount: number
 }
