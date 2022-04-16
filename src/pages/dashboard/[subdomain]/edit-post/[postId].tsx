@@ -125,10 +125,7 @@ export default function EditPostPage() {
                   <div className="border p-3 rounded-lg min-w-[240px]">
                     <div className="space-y-3">
                       <label className="block">
-                        <span
-                          className="block text-zinc-400 font-medium text-sm"
-                          date-value={getInputDatetimeValue(form.publishedAt)}
-                        >
+                        <span className="block text-zinc-400 font-medium text-sm">
                           Publish at
                         </span>
                         <input
