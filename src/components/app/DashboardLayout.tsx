@@ -2,6 +2,7 @@ import clsx from "clsx"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import React from "react"
+import { SiteSwitcher } from "./SiteSwitcher"
 
 export const Sidebar: React.FC<{
   children: React.ReactNode
@@ -43,15 +44,18 @@ export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({
   return (
     <div className="flex">
       <Sidebar>
-        <div className="p-3 flex space-x-3 items-center">
+        <div className="">
+          <SiteSwitcher subdomain={subdomain} />
+        </div>
+        <div className="p-3 pt-0 flex space-x-3 items-center text-sm">
           <Link href={`/dashboard/${subdomain}/new-post`}>
-            <a className="h-8 font-medium bg-indigo-500 text-sm shadow-sm px-2 rounded-lg w-full justify-center inline-flex items-center text-white transform transition-transform hover:bg-indigo-700">
+            <a className="h-8 w-full border text-zinc-600 hover:bg-zinc-50 rounded-lg shadow-sm inline-flex items-center justify-center">
               New Post
             </a>
           </Link>
           <button
             type="button"
-            className="flex-shrink-0 w-8 h-8 border text-zinc-500 hover:bg-zinc-50 rounded-lg shadow-sm inline-flex items-center justify-center"
+            className="flex-shrink-0 w-8 h-8 border text-zinc-600 hover:bg-zinc-50 rounded-lg shadow-sm inline-flex items-center justify-center"
           >
             <svg
               className="w-4 h-4"
@@ -67,7 +71,7 @@ export const DashboardLayout: React.FC<{ children?: React.ReactNode }> = ({
             </svg>
           </button>
         </div>
-        <div className="px-3  space-y-1 text-zinc-700">
+        <div className="px-3 pt-3 space-y-1 text-zinc-700">
           {links.map((link) => {
             const active = router.asPath === link.href
             return (

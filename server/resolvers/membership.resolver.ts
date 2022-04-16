@@ -3,10 +3,14 @@ import { getGuard } from "$server/guard"
 import { prisma } from "$server/prisma"
 import { MembershipRole } from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
-import { Args, Mutation, Resolver } from "type-graphql"
-import { UpdateMembershipLastSwitchedToArgs } from "./membership.types"
+import { Args, FieldResolver, Mutation, Resolver, Root } from "type-graphql"
+import {
+  Membership,
+  UpdateMembershipLastSwitchedToArgs,
+} from "./membership.types"
+import { Site } from "./site.types"
 
-@Resolver()
+@Resolver((of) => Membership)
 export default class MembershipResolver {
   @Mutation((returns) => Boolean)
   async updateMembershipLastSwitchedTo(
@@ -46,5 +50,24 @@ export default class MembershipResolver {
     })
 
     return true
+  }
+
+  @FieldResolver((returns) => Site)
+  async site(@GqlContext() ctx: ContextType, @Root() membership: Membership) {
+    const guard = getGuard(ctx)
+
+    const site = await prisma.site.findUnique({
+      where: {
+        id: membership.siteId,
+      },
+    })
+
+    if (!site || site.deletedAt) {
+      throw new ApolloError("Site not found")
+    }
+
+    guard.allow.ANY([() => guard.allow.site.read(site)])
+
+    return site
   }
 }

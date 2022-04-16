@@ -1,5 +1,6 @@
 import { ObjectType, Field, ArgsType, Authorized } from "type-graphql"
 import * as isoDate from "graphql-iso-date"
+import { MembershipRole } from "@prisma/client"
 
 @ObjectType()
 export class User {
@@ -49,16 +50,13 @@ export class UpdateUserProfileArgs {
 }
 
 @ArgsType()
-export class UpdateUserEmailArgs {
-  @Field()
-  userId: string
-
-  @Field()
-  email: string
-}
-
-@ArgsType()
 export class UserArgs {
   @Field()
   username: string
+}
+
+@ArgsType()
+export class UserMembershipsArgs {
+  @Field((type) => [String])
+  roles: MembershipRole[]
 }

@@ -23,6 +23,15 @@ export type Scalars = {
   DateTime: any
 }
 
+export type Membership = {
+  __typename?: "Membership"
+  id: Scalars["String"]
+  role: Scalars["String"]
+  site: Site
+  siteId: Scalars["String"]
+  userId: Scalars["String"]
+}
+
 export type Mutation = {
   __typename?: "Mutation"
   createPost: Post
@@ -173,15 +182,36 @@ export type User = {
   email: Scalars["String"]
   emailVerified?: Maybe<Scalars["Boolean"]>
   id: Scalars["String"]
+  memberships: Array<Membership>
   name: Scalars["String"]
   site: Site
-  sites: Array<Site>
   updatedAt: Scalars["DateTime"]
   username: Scalars["String"]
 }
 
+export type UserMembershipsArgs = {
+  roles: Array<Scalars["String"]>
+}
+
 export type UserSiteArgs = {
   domainOrSubdomain: Scalars["String"]
+}
+
+export type SitesForSiteSwitcherQueryVariables = Exact<{ [key: string]: never }>
+
+export type SitesForSiteSwitcherQuery = {
+  __typename?: "Query"
+  viewer?: {
+    __typename?: "User"
+    id: string
+    email: string
+    emailVerified?: boolean | null
+    memberships: Array<{
+      __typename?: "Membership"
+      id: string
+      site: { __typename?: "Site"; id: string; name: string; subdomain: string }
+    }>
+  } | null
 }
 
 export type CreatePostMutationVariables = Exact<{
@@ -374,6 +404,99 @@ export type ViewerQuery = {
   } | null
 }
 
+export type NewSiteDataQueryVariables = Exact<{ [key: string]: never }>
+
+export type NewSiteDataQuery = {
+  __typename?: "Query"
+  viewer?: { __typename?: "User"; id: string; email: string } | null
+}
+
+export const SitesForSiteSwitcherDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "sitesForSiteSwitcher" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "viewer" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "emailVerified" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "memberships" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "roles" },
+                      value: {
+                        kind: "ListValue",
+                        values: [
+                          { kind: "StringValue", value: "ADMIN", block: false },
+                          { kind: "StringValue", value: "OWNER", block: false },
+                        ],
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "site" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "name" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "subdomain" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useSitesForSiteSwitcherQuery(
+  options?: Omit<
+    Urql.UseQueryArgs<SitesForSiteSwitcherQueryVariables>,
+    "query"
+  >,
+) {
+  return Urql.useQuery<SitesForSiteSwitcherQuery>({
+    query: SitesForSiteSwitcherDocument,
+    ...options,
+  })
+}
 export const CreatePostDocument = {
   kind: "Document",
   definitions: [
@@ -1441,4 +1564,39 @@ export function useViewerQuery(
   options?: Omit<Urql.UseQueryArgs<ViewerQueryVariables>, "query">,
 ) {
   return Urql.useQuery<ViewerQuery>({ query: ViewerDocument, ...options })
+}
+export const NewSiteDataDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "NewSiteData" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "viewer" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useNewSiteDataQuery(
+  options?: Omit<Urql.UseQueryArgs<NewSiteDataQueryVariables>, "query">,
+) {
+  return Urql.useQuery<NewSiteDataQuery>({
+    query: NewSiteDataDocument,
+    ...options,
+  })
 }

@@ -2,6 +2,7 @@ import {
   Site as DB_Site,
   Post as DB_Post,
   MembershipRole,
+  Membership,
 } from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
 import { ContextType } from "./decorators"
@@ -64,6 +65,11 @@ export const getGuard = <TRequireAuth extends boolean>(
       },
       isAuthUser(userId?: string) {
         return Boolean(userId && userId === user?.id)
+      },
+    },
+    membership: {
+      read(membership: Membership) {
+        return user && membership.userId === user.id
       },
     },
     ANY(rules: (() => boolean | null | undefined)[]) {

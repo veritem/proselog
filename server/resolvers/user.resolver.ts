@@ -10,15 +10,16 @@ import { GqlContext } from "$server/decorators"
 import type { ContextType } from "$server/decorators"
 import { getGuard } from "$server/guard"
 import {
-  UpdateUserEmailArgs,
   UpdateUserProfileArgs,
   User,
   UserArgs,
+  UserMembershipsArgs,
 } from "./user.types"
 import { prisma } from "$server/prisma"
 import { ApolloError } from "apollo-server-core"
 import { Site, SiteArgs } from "./site.types"
 import { getSiteByDomainOrSubdomain } from "$server/services/site.service"
+import { Membership } from "./membership.types"
 
 @Resolver((of) => User)
 export default class UserResolver {
@@ -98,23 +99,33 @@ export default class UserResolver {
     })
   }
 
-  @FieldResolver((returns) => [Site])
-  async sites(@GqlContext() ctx: ContextType, @Root() user: User) {
+  @FieldResolver((returns) => [Membership])
+  async memberships(
+    @GqlContext() ctx: ContextType,
+    @Root() user: User,
+    @Args() args: UserMembershipsArgs,
+  ) {
     const guard = getGuard(ctx)
 
-    guard.allow.ANY([() => guard.allow.site.list()])
-
-    const sites = await prisma.site.findMany({
+    const memberships = await prisma.membership.findMany({
       where: {
         userId: user.id,
-        deletedAt: null,
+        role: {
+          in: args.roles,
+        },
       },
       orderBy: {
         createdAt: "desc",
       },
     })
 
-    return sites
+    guard.allow.EVERY(
+      memberships.map(
+        (membership) => () => guard.allow.membership.read(membership),
+      ),
+    )
+
+    return memberships
   }
 
   @FieldResolver((returns) => Site)

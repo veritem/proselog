@@ -93,7 +93,7 @@ export default function EditPostPage() {
 
   return (
     <div>
-      <div className="flex justify-between px-5 h-20 items-center fixed left-0 top-0 right-0">
+      <div className="flex justify-between px-5 h-20 items-center fixed left-0 top-0 right-0 z-10 backdrop-blur-lg">
         <button
           type="button"
           className="border text-zinc-500 rounded-lg px-3 h-9 inline-flex items-center hover:bg-zinc-100 transition-colors"
