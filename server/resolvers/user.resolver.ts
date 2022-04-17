@@ -113,6 +113,9 @@ export default class UserResolver {
         role: {
           in: args.roles,
         },
+        site: {
+          deletedAt: null,
+        },
       },
       orderBy: {
         createdAt: "desc",
