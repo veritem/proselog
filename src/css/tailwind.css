@@ -79,7 +79,7 @@
   @apply outline-none;
   @apply rounded-lg;
   @apply px-3;
-  @apply h-12;
+  @apply h-10;
   @apply inline-flex;
   @apply items-center;
   @apply min-w-[240px];

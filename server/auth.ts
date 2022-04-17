@@ -7,13 +7,9 @@ import { AUTH_COOKIE_NAME, AUTH_SECRET } from "$src/config"
 import { nanoid } from "nanoid"
 import Cookie from "cookie"
 import { verifyJWT } from "./jwt"
-import { Membership } from "@prisma/client"
+import { Membership, User } from "@prisma/client"
 
-export type AuthUser = {
-  id: string
-  name: string
-  email: string
-  username: string
+export type AuthUser = User & {
   memberships: Membership[]
 }
 
@@ -53,13 +49,7 @@ export const getAuthUser = async (
     const user = await findUserFromToken(token)
 
     if (user) {
-      return {
-        id: user.id,
-        name: user.name,
-        username: user.username,
-        email: user.email,
-        memberships: user.memberships,
-      }
+      return user
     }
   }
 

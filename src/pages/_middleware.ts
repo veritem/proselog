@@ -3,8 +3,13 @@ import { NextRequest, NextResponse } from "next/server"
 
 export default (req: NextRequest) => {
   const host = req.headers.get("host")
+  const { pathname } = req.nextUrl
 
-  if (req.nextUrl.pathname.startsWith("/api/")) {
+  if (pathname.startsWith("/uploads/")) {
+    return NextResponse.next()
+  }
+
+  if (pathname.startsWith("/api/")) {
     return NextResponse.next()
   }
 

@@ -78,7 +78,7 @@ export default function SiteSettingsPage() {
   }, [siteResult.data])
 
   return (
-    <SettingsLayout title="Site Settings">
+    <SettingsLayout title="Site" subtitle="Manage settings for this site">
       <form onSubmit={form.handleSubmit}>
         <div>
           <label htmlFor="name" className="block mb-2 text-sm">

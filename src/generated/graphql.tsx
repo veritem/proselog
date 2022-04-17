@@ -382,6 +382,7 @@ export type UpdateUserProfileMutationVariables = Exact<{
   name?: InputMaybe<Scalars["String"]>
   username?: InputMaybe<Scalars["String"]>
   email?: InputMaybe<Scalars["String"]>
+  avatar?: InputMaybe<Scalars["String"]>
 }>
 
 export type UpdateUserProfileMutation = {
@@ -1498,6 +1499,14 @@ export const UpdateUserProfileDocument = {
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "avatar" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1536,6 +1545,14 @@ export const UpdateUserProfileDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "email" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "avatar" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "avatar" },
                 },
               },
             ],

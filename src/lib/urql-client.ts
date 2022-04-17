@@ -1,3 +1,4 @@
+import { API_ENDPOINT } from "$src/config"
 import React from "react"
 import {
   Client,
@@ -13,7 +14,7 @@ export const createUrqlClient = () => {
     isClient: process.browser,
   })
   return createClient({
-    url: `/api/graphql`,
+    url: `${API_ENDPOINT}/api/graphql`,
     fetchOptions: {
       credentials: "include",
     },

@@ -1,10 +1,10 @@
-import 'reflect-metadata'
-import { ApolloServer } from 'apollo-server-micro'
-import { NextApiHandler } from 'next'
-import connect from 'next-connect'
-import cors from 'cors'
-import { schema } from '$server/graphql-schema'
-import { getAuthUser } from '$server/auth'
+import "reflect-metadata"
+import { ApolloServer } from "apollo-server-micro"
+import { NextApiHandler } from "next"
+import connect from "next-connect"
+import { schema } from "$server/graphql-schema"
+import { getAuthUser } from "$server/auth"
+import { corsMiddleware } from "$src/lib/api-routes"
 
 export const config = {
   api: {
@@ -14,7 +14,7 @@ export const config = {
 
 let handler: any
 
-const isProd = process.env.NODE_ENV === 'production'
+const isProd = process.env.NODE_ENV === "production"
 
 const apiHandler: NextApiHandler = async (req, res) => {
   if (handler && isProd) {
@@ -43,13 +43,4 @@ const apiHandler: NextApiHandler = async (req, res) => {
   return handler(req, res)
 }
 
-export default connect()
-  .use(
-    cors({
-      credentials: !isProd,
-      origin: isProd
-        ? []
-        : ['https://studio.apollographql.com', 'http://localhost:3000'],
-    }),
-  )
-  .use(apiHandler)
+export default connect().use(corsMiddleware()).use(apiHandler)

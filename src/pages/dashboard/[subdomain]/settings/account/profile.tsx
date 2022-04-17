@@ -1,12 +1,15 @@
 import { SettingsLayout } from "$src/components/app/SettingsLayout"
+import { Avatar } from "$src/components/ui/Avatar"
+import { AvatarEditor } from "$src/components/ui/AvatarEditor"
 import { Button } from "$src/components/ui/Button"
 import {
   useUpdateUserProfileMutation,
   useViewerQuery,
 } from "$src/generated/graphql"
+import { useClientSaveAvatar } from "$src/lib/client-save-avatar"
 import { useFormik } from "formik"
 import { useRouter } from "next/router"
-import { useEffect } from "react"
+import React, { useEffect } from "react"
 import toast from "react-hot-toast"
 
 export default function AccountSettingsPage() {
@@ -14,6 +17,7 @@ export default function AccountSettingsPage() {
 
   const [viewerResult] = useViewerQuery({})
   const [, updateUserProfileMutation] = useUpdateUserProfileMutation()
+  const clientSaveAvatar = useClientSaveAvatar()
 
   const form = useFormik({
     initialValues: {
@@ -52,15 +56,34 @@ export default function AccountSettingsPage() {
   }, [viewerResult.data])
 
   return (
-    <SettingsLayout title="Account Settings">
+    <SettingsLayout title="Profile">
       <form onSubmit={form.handleSubmit}>
         <div>
+          <label className="block mb-2 text-sm">Profile Picture</label>
+          <AvatarEditor
+            render={({ onClick }) => (
+              <Avatar
+                images={[viewerResult.data?.viewer?.avatar]}
+                size={140}
+                name={viewerResult.data?.viewer?.name}
+                bgColor="#ccc"
+                tabIndex={-1}
+                className="cursor-default focus:ring-2 ring-offset-1 ring-zinc-200"
+                onClick={onClick}
+              />
+            )}
+            saveAvatar={(blob) =>
+              clientSaveAvatar(viewerResult.data!.viewer!.id, blob)
+            }
+          />
+        </div>
+        <div className="mt-5">
           <label htmlFor="name" className="block mb-2 text-sm">
             Name
           </label>
           <input
             id="name"
-            className="input"
+            className="input is-block"
             name="name"
             required
             value={form.values.name}
@@ -68,12 +91,12 @@ export default function AccountSettingsPage() {
           />
         </div>
         <div className="mt-5">
-          <label htmlFor="name" className="block mb-2 text-sm">
+          <label htmlFor="username" className="block mb-2 text-sm">
             Username
           </label>
           <input
             id="username"
-            className="input"
+            className="input is-block"
             name="username"
             required
             value={form.values.username}
@@ -81,12 +104,12 @@ export default function AccountSettingsPage() {
           />
         </div>
         <div className="mt-5">
-          <label htmlFor="name" className="block mb-2 text-sm">
+          <label htmlFor="email" className="block mb-2 text-sm">
             Email
           </label>
           <input
             id="email"
-            className="input"
+            className="input is-block"
             name="email"
             required
             type="email"

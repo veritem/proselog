@@ -7,7 +7,6 @@ import {
 import { ApolloError } from "apollo-server-core"
 import { ContextType } from "./decorators"
 import { AuthUser } from "./auth"
-import { PostVisibility } from "./resolvers/post.types"
 
 export const getGuard = <TRequireAuth extends boolean>(
   { user }: ContextType,

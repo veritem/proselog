@@ -3,12 +3,14 @@ mutation updateUserProfile(
   $name: String
   $username: String
   $email: String
+  $avatar: String
 ) {
   updateUserProfile(
     userId: $userId
     name: $name
     username: $username
     email: $email
+    avatar: $avatar
   ) {
     id
   }
