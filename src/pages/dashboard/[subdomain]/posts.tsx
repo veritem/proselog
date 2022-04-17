@@ -11,7 +11,7 @@ import clsx from "clsx"
 import { useState } from "react"
 import toast from "react-hot-toast"
 import { Button } from "$src/components/ui/Button"
-import { getPostVisibility } from "$src/helpers/post"
+import { getPostVisibility } from "$src/lib/post-helpers"
 
 export default function DashboardPostsPage() {
   const router = useRouter()

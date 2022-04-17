@@ -404,6 +404,38 @@ export type ViewerQuery = {
   } | null
 }
 
+export type SiteHomeDataQueryVariables = Exact<{
+  domainOrSubdomain: Scalars["String"]
+}>
+
+export type SiteHomeDataQuery = {
+  __typename?: "Query"
+  site: {
+    __typename?: "Site"
+    id: string
+    name: string
+    introduction?: string | null
+    subdomain: string
+    owner: {
+      __typename?: "User"
+      id: string
+      name: string
+      avatar?: string | null
+    }
+    posts: {
+      __typename?: "PostsConnection"
+      nodes: Array<{
+        __typename?: "Post"
+        id: string
+        title: string
+        slug: string
+        publishedAt: any
+        content: string
+      }>
+    }
+  }
+}
+
 export type NewSiteDataQueryVariables = Exact<{ [key: string]: never }>
 
 export type NewSiteDataQuery = {
@@ -1564,6 +1596,132 @@ export function useViewerQuery(
   options?: Omit<Urql.UseQueryArgs<ViewerQueryVariables>, "query">,
 ) {
   return Urql.useQuery<ViewerQuery>({ query: ViewerDocument, ...options })
+}
+export const SiteHomeDataDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "SiteHomeData" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "domainOrSubdomain" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "site" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "domainOrSubdomain" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "domainOrSubdomain" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "introduction" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "subdomain" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "owner" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "avatar" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "posts" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "visibility" },
+                      value: { kind: "EnumValue", value: "published" },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "nodes" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "title" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "slug" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "publishedAt" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "content" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useSiteHomeDataQuery(
+  options: Omit<Urql.UseQueryArgs<SiteHomeDataQueryVariables>, "query">,
+) {
+  return Urql.useQuery<SiteHomeDataQuery>({
+    query: SiteHomeDataDocument,
+    ...options,
+  })
 }
 export const NewSiteDataDocument = {
   kind: "Document",

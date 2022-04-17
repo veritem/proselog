@@ -4,6 +4,10 @@ import { NextRequest, NextResponse } from "next/server"
 export default (req: NextRequest) => {
   const host = req.headers.get("host")
 
+  if (req.nextUrl.pathname.startsWith("/api/")) {
+    return NextResponse.next()
+  }
+
   // When logged in, redirect homepage to the dashboard
   if (req.nextUrl.pathname === "/" && getAuthCookie(req)) {
     const url = req.nextUrl.clone()

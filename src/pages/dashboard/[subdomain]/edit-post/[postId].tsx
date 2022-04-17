@@ -11,7 +11,7 @@ import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import dayjs from "dayjs"
-import { usePostVisibility } from "$src/helpers/post"
+import { usePostVisibility } from "$src/lib/post-helpers"
 
 const getInputDatetimeValue = (date: Date | string) => {
   const str = dayjs(date).format()
