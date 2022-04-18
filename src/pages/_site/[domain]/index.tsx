@@ -56,7 +56,7 @@ export default function SiteIndexPage() {
       </Head>
       <div>
         <header className="py-14 bg-indigo-50 text-center">
-          <div className="mb-5">
+          <div className="mb-3">
             <Avatar images={avatars} name={site?.name} />
           </div>
           <h1 className="text-2xl font-medium">
@@ -64,7 +64,11 @@ export default function SiteIndexPage() {
               <a>{site?.name}</a>
             </Link>
           </h1>
-          {site?.bio && <div className="mt-2">{site?.bio}</div>}
+          {site?.bio && (
+            <div className="mt-3 max-w-md mx-auto text-zinc-500">
+              {site?.bio}
+            </div>
+          )}
           <div className="mt-8">
             <Button>Subscribe</Button>
           </div>
