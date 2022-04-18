@@ -12,7 +12,7 @@ gql`
     site(domainOrSubdomain: $domainOrSubdomain) {
       id
       name
-      introduction
+      bio
       subdomain
       owner {
         id
@@ -63,9 +63,7 @@ export default function SiteIndexPage() {
               <a>{site?.name}</a>
             </Link>
           </h1>
-          {site?.introduction && (
-            <div className="mt-2">{site?.introduction}</div>
-          )}
+          {site?.bio && <div className="mt-2">{site?.bio}</div>}
           <div className="mt-8">
             <Button>Subscribe</Button>
           </div>

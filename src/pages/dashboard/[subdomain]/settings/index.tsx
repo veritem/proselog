@@ -28,13 +28,13 @@ export default function SiteSettingsPage() {
   const form = useFormik({
     initialValues: {
       name: "",
-      introduction: "",
+      bio: "",
     },
     async onSubmit(values) {
       const { error, data } = await updateSiteMutation({
         id: site!.id,
         name: values.name,
-        introduction: values.introduction,
+        bio: values.bio,
       })
       if (error) {
         toast.error(error.message)
@@ -73,7 +73,7 @@ export default function SiteSettingsPage() {
       }
       form.setValues({
         name: site.name,
-        introduction: site.introduction || "",
+        bio: site.bio || "",
       })
     }
   }, [siteResult.data])
@@ -96,15 +96,14 @@ export default function SiteSettingsPage() {
             />
           </div>
           <div className="mt-5">
-            <label htmlFor="introduction" className="block mb-2 text-sm">
-              Introduction
+            <label htmlFor="bio" className="block mb-2 text-sm">
+              Bio
             </label>
             <textarea
-              id="introduction"
+              id="bio"
               className="input is-block"
-              name="introduction"
-              required
-              value={form.values.introduction}
+              name="bio"
+              value={form.values.bio}
               onChange={form.handleChange}
               rows={6}
             />

@@ -2,14 +2,9 @@ mutation updateSite(
   $id: String!
   $name: String
   $subdomain: String
-  $introduction: String
+  $bio: String
 ) {
-  updateSite(
-    id: $id
-    name: $name
-    subdomain: $subdomain
-    introduction: $introduction
-  ) {
+  updateSite(id: $id, name: $name, subdomain: $subdomain, bio: $bio) {
     id
   }
 }

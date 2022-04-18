@@ -17,6 +17,7 @@ model User {
   email         String       @unique
   emailVerified DateTime?
   avatar        String?
+  bio           String?
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   apiToken      String       @unique
@@ -67,7 +68,7 @@ model Site {
   domains         Domain[]     @relation(name: "SiteDomains")
   primaryDomain   Domain?      @relation(name: "SitePrimaryDomain", fields: [primaryDomainId], references: [id])
   primaryDomainId String?      @unique
-  introduction    String?
+  bio             String?
   deletedAt       DateTime?
   memberships     Membership[]
 

@@ -81,8 +81,8 @@ export type MutationUpdatePostArgs = {
 }
 
 export type MutationUpdateSiteArgs = {
+  bio?: InputMaybe<Scalars["String"]>
   id: Scalars["String"]
-  introduction?: InputMaybe<Scalars["String"]>
   name?: InputMaybe<Scalars["String"]>
   subdomain?: InputMaybe<Scalars["String"]>
 }
@@ -150,9 +150,9 @@ export type QueryUserArgs = {
 
 export type Site = {
   __typename?: "Site"
+  bio?: Maybe<Scalars["String"]>
   createdAt: Scalars["DateTime"]
   id: Scalars["String"]
-  introduction?: Maybe<Scalars["String"]>
   name: Scalars["String"]
   owner: User
   posts: PostsConnection
@@ -339,7 +339,7 @@ export type SiteQuery = {
     id: string
     name: string
     subdomain: string
-    introduction?: string | null
+    bio?: string | null
   }
 }
 
@@ -369,7 +369,7 @@ export type UpdateSiteMutationVariables = Exact<{
   id: Scalars["String"]
   name?: InputMaybe<Scalars["String"]>
   subdomain?: InputMaybe<Scalars["String"]>
-  introduction?: InputMaybe<Scalars["String"]>
+  bio?: InputMaybe<Scalars["String"]>
 }>
 
 export type UpdateSiteMutation = {
@@ -415,7 +415,7 @@ export type SiteHomeDataQuery = {
     __typename?: "Site"
     id: string
     name: string
-    introduction?: string | null
+    bio?: string | null
     subdomain: string
     owner: {
       __typename?: "User"
@@ -1166,10 +1166,7 @@ export const SiteDocument = {
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
                 { kind: "Field", name: { kind: "Name", value: "subdomain" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "introduction" },
-                },
+                { kind: "Field", name: { kind: "Name", value: "bio" } },
               ],
             },
           },
@@ -1391,10 +1388,7 @@ export const UpdateSiteDocument = {
         },
         {
           kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "introduction" },
-          },
+          variable: { kind: "Variable", name: { kind: "Name", value: "bio" } },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
       ],
@@ -1431,10 +1425,10 @@ export const UpdateSiteDocument = {
               },
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "introduction" },
+                name: { kind: "Name", value: "bio" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "introduction" },
+                  name: { kind: "Name", value: "bio" },
                 },
               },
             ],
@@ -1658,10 +1652,7 @@ export const SiteHomeDataDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "introduction" },
-                },
+                { kind: "Field", name: { kind: "Name", value: "bio" } },
                 { kind: "Field", name: { kind: "Name", value: "subdomain" } },
                 {
                   kind: "Field",
