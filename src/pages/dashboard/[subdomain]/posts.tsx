@@ -12,6 +12,7 @@ import { useState } from "react"
 import toast from "react-hot-toast"
 import { Button } from "$src/components/ui/Button"
 import { getPostVisibility } from "$src/lib/post-helpers"
+import { formatDate } from "$src/lib/date"
 
 export default function DashboardPostsPage() {
   const router = useRouter()
@@ -90,32 +91,41 @@ export default function DashboardPostsPage() {
 
   return (
     <DashboardLayout>
-      <div className="pr-3 mt-1 flex items-center h-12 text-sm">
-        <span className="w-12 inline-flex"></span>
-        <select
-          className="-ml-1 mr-3 bg-zinc-100 rounded-md p-1"
-          onChange={(e) => setVisibility(e.target.value as PostVisibility)}
-        >
-          <option value={PostVisibility.All}>All Posts</option>
-          <option value={PostVisibility.Draft}>Drafts</option>
-          <option value={PostVisibility.Published}>Published</option>
-          <option value={PostVisibility.Scheduled}>Scheduled</option>
-        </select>
-        {hasSelectedPostIds && (
-          <>
-            <Button
-              size="small"
-              variantColor="red"
-              type="button"
-              onClick={deletedSelectedPosts}
-            >
-              Delete
-            </Button>
-            <span className="ml-3 text-zinc-400">
-              {selectedPostIds.length} selected
-            </span>
-          </>
-        )}
+      <div className="px-12 mt-1 flex items-center justify-between h-12 text-sm">
+        <div>
+          <select
+            className="-ml-1 mr-3 bg-zinc-100 shadow-button rounded-md p-1"
+            onChange={(e) => setVisibility(e.target.value as PostVisibility)}
+          >
+            <option value={PostVisibility.All}>All Posts</option>
+            <option value={PostVisibility.Draft}>Drafts</option>
+            <option value={PostVisibility.Published}>Published</option>
+            <option value={PostVisibility.Scheduled}>Scheduled</option>
+          </select>
+          {hasSelectedPostIds && (
+            <>
+              <Button
+                size="small"
+                variantColor="red"
+                type="button"
+                onClick={deletedSelectedPosts}
+              >
+                Delete
+              </Button>
+              <span className="ml-3 text-zinc-400">
+                {selectedPostIds.length} selected
+              </span>
+            </>
+          )}
+        </div>
+        <div>
+          <Button
+            size="small"
+            onClick={() => router.push(`/dashboard/${subdomain}/new-post`)}
+          >
+            New Post
+          </Button>
+        </div>
       </div>
 
       {posts && posts.nodes.length === 0 && (
@@ -130,7 +140,7 @@ export default function DashboardPostsPage() {
             key={post.id}
             href={`/dashboard/${subdomain}/edit-post/${post.id}`}
           >
-            <a className="group hover:bg-zinc-50 border-b h-12 flex items-center">
+            <a className="group hover:bg-zinc-50 border-b h-12 pr-12 flex items-center">
               <span
                 className={clsx(
                   `relative w-12 group-hover:visible h-12 flex items-center justify-center cursor-default`,
@@ -160,8 +170,8 @@ export default function DashboardPostsPage() {
                 ></span>
               </span>
               <span className="w-full px-3">{post.title}</span>
-              <span className="text-zinc-400 text-sm pr-5">
-                {dayjs(post.publishedAt).format("YYYY/MM/DD")}
+              <span className="flex-shrink-0 text-zinc-400 text-sm">
+                {formatDate(post.publishedAt)}
               </span>
             </a>
           </Link>

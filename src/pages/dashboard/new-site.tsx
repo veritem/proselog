@@ -9,7 +9,7 @@ import gql from "graphql-tag"
 import Link from "next/link"
 import { useRouter } from "next/router"
 
-export const query = gql`
+gql`
   query NewSiteData {
     viewer {
       id
@@ -45,11 +45,7 @@ export default function NewSite() {
 
   return (
     <div>
-      <header className="px-5 text-sm  md:px-14 flex justify-between items-center py-10">
-        <div>
-          <div className="text-zinc-400">Logged in as:</div>
-          <div>{viewer?.email}</div>
-        </div>
+      <header className="px-5 text-sm  md:px-14 flex justify-between items-start py-10">
         <Link href="/dashboard">
           <a className="flex space-x-1 items-center">
             <svg
@@ -67,6 +63,10 @@ export default function NewSite() {
             <span>Back to dashboard</span>
           </a>
         </Link>
+        <div>
+          <div className="text-zinc-400">Logged in as:</div>
+          <div>{viewer?.email}</div>
+        </div>
       </header>
       <div className="max-w-sm mx-auto mt-20">
         <h2 className="text-3xl mb-10 text-center">Create a new site</h2>

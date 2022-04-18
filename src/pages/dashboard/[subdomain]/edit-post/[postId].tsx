@@ -119,10 +119,10 @@ export default function EditPostPage() {
               Publish
             </Popover.Button>
 
-            <Popover.Panel className="absolute right-0 z-10 pt-2 bg-white">
+            <Popover.Panel className="absolute right-0 z-10 pt-2">
               {({ close }) => {
                 return (
-                  <div className="border p-3 rounded-lg min-w-[240px]">
+                  <div className="border p-3 rounded-lg min-w-[240px] bg-white shadow-modal">
                     <div className="space-y-3">
                       <label className="block">
                         <span className="block text-zinc-400 font-medium text-sm">

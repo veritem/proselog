@@ -1,3 +1,4 @@
+import { DashboardLayout } from "$src/components/app/DashboardLayout"
 import { SettingsLayout } from "$src/components/app/SettingsLayout"
 import { Button } from "$src/components/ui/Button"
 import {
@@ -78,53 +79,55 @@ export default function SiteSettingsPage() {
   }, [siteResult.data])
 
   return (
-    <SettingsLayout title="Site" subtitle="Manage settings for this site">
-      <form onSubmit={form.handleSubmit}>
-        <div>
-          <label htmlFor="name" className="block mb-2 text-sm">
-            Name
-          </label>
-          <input
-            id="name"
-            className="input"
-            name="name"
-            required
-            value={form.values.name}
-            onChange={form.handleChange}
-          />
-        </div>
-        <div className="mt-5">
-          <label htmlFor="introduction" className="block mb-2 text-sm">
-            Introduction
-          </label>
-          <textarea
-            id="introduction"
-            className="input"
-            name="introduction"
-            required
-            value={form.values.introduction}
-            onChange={form.handleChange}
-            rows={6}
-          />
-        </div>
-        <div className="mt-5">
-          <Button type="submit" isLoading={form.isSubmitting}>
-            Save
-          </Button>
-        </div>
-      </form>
-      <div className="mt-14 border-t pt-8">
-        <h3 className="text-red-500 text-lg mb-5">Danger Zone</h3>
-        <form onSubmit={deleteSiteForm.handleSubmit}>
-          <Button
-            variantColor="red"
-            type="submit"
-            isLoading={deleteSiteForm.isSubmitting}
-          >
-            Delete Site
-          </Button>
+    <DashboardLayout mainWidth="md">
+      <SettingsLayout title="Site" subtitle="Manage settings for this site">
+        <form onSubmit={form.handleSubmit}>
+          <div>
+            <label htmlFor="name" className="block mb-2 text-sm">
+              Name
+            </label>
+            <input
+              id="name"
+              className="input is-block"
+              name="name"
+              required
+              value={form.values.name}
+              onChange={form.handleChange}
+            />
+          </div>
+          <div className="mt-5">
+            <label htmlFor="introduction" className="block mb-2 text-sm">
+              Introduction
+            </label>
+            <textarea
+              id="introduction"
+              className="input is-block"
+              name="introduction"
+              required
+              value={form.values.introduction}
+              onChange={form.handleChange}
+              rows={6}
+            />
+          </div>
+          <div className="mt-5">
+            <Button type="submit" isLoading={form.isSubmitting}>
+              Save
+            </Button>
+          </div>
         </form>
-      </div>
-    </SettingsLayout>
+        <div className="mt-14 border-t pt-8">
+          <h3 className="text-red-500 text-lg mb-5">Danger Zone</h3>
+          <form onSubmit={deleteSiteForm.handleSubmit}>
+            <Button
+              variantColor="red"
+              type="submit"
+              isLoading={deleteSiteForm.isSubmitting}
+            >
+              Delete Site
+            </Button>
+          </form>
+        </div>
+      </SettingsLayout>
+    </DashboardLayout>
   )
 }

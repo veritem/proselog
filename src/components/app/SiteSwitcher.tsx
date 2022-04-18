@@ -3,7 +3,7 @@ import { gql } from "graphql-tag"
 import { Popover } from "@headlessui/react"
 import Link from "next/link"
 
-export const query = gql`
+gql`
   query sitesForSiteSwitcher {
     viewer {
       id
@@ -30,11 +30,11 @@ export const SiteSwitcher: React.FC<{ subdomain: string }> = ({
   return (
     <div className="px-3 pt-3 pb-2 text-sm">
       <Popover className="relative">
-        <Popover.Button className="h-8 px-2 flex rounded-md hover:bg-zinc-50 items-center justify-center">
-          {activeSite?.name}
+        <Popover.Button className="h-8 px-2 flex w-full rounded-lg hover:bg-zinc-200 transition-colors items-center justify-start">
+          <span className="truncate">{activeSite?.name}</span>
         </Popover.Button>
-        <Popover.Panel className="absolute left-0 z-10 pt-1 bg-white">
-          <div className="min-w-[280px] rounded-lg shadow-popover">
+        <Popover.Panel className="absolute left-0 z-10 pt-1 ">
+          <div className="min-w-[280px] rounded-lg shadow-modal bg-white">
             <div className="px-4 py-2 border-b text-sm text-zinc-500">
               {sitesResult.data?.viewer?.email}
             </div>
@@ -44,9 +44,9 @@ export const SiteSwitcher: React.FC<{ subdomain: string }> = ({
                   <a
                     key={site.id}
                     href={`/dashboard/${site.subdomain}`}
-                    className="flex px-2 h-8 rounded-lg items-center justify-between hover:bg-zinc-50"
+                    className="flex px-2 h-8 rounded-lg items-center justify-between hover:bg-zinc-100"
                   >
-                    <span>{site.name}</span>
+                    <span className="truncate w-8/12">{site.name}</span>
                     {activeSite?.id === site.id && (
                       <span className="text-indigo-500">
                         <svg
@@ -69,7 +69,7 @@ export const SiteSwitcher: React.FC<{ subdomain: string }> = ({
             </div>
             <div className="border-t py-2 px-2">
               <Link href={`/dashboard/new-site`}>
-                <a className="rounded-lg text-sm text-zinc-500 flex px-2 h-8 items-center hover:bg-zinc-50">
+                <a className="rounded-lg text-sm text-zinc-500 flex px-2 h-8 items-center hover:bg-zinc-100">
                   Create a new site
                 </a>
               </Link>

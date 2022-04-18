@@ -3,7 +3,8 @@ module.exports = {
   theme: {
     extend: {
       boxShadow: {
-        popover: "rgb(0 0 0 / 6%) 0px 7px 24px",
+        modal: `1px 0px 7px -3px rgb(0 0 0 / 42%)`,
+        button: `0 1.5px 1px var(--shadow-color-button)`,
       },
     },
   },
