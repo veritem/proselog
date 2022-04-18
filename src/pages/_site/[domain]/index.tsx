@@ -6,6 +6,7 @@ import { Button } from "$src/components/ui/Button"
 import { Avatar } from "$src/components/ui/Avatar"
 import { formatDate } from "$src/lib/date"
 import Head from "next/head"
+import { getUserContentsUrl } from "$src/lib/user-contents-helpers"
 
 gql`
   query SiteHomeData($domainOrSubdomain: String!) {
@@ -44,7 +45,7 @@ export default function SiteIndexPage() {
   })
 
   const site = siteHomeResult.data?.site
-  const avatars = [site?.owner.avatar]
+  const avatars = [getUserContentsUrl(site?.owner.avatar)]
 
   const posts = site?.posts.nodes
 
