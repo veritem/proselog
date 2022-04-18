@@ -1,9 +1,19 @@
+import { IS_PROD, S3_BUCKET_NAME, S3_ENDPOINT } from "$src/config"
 import { getAuthCookie } from "$src/lib/edge-function-helpers"
 import { NextRequest, NextResponse } from "next/server"
 
 export default (req: NextRequest) => {
   const host = req.headers.get("host")
   const { pathname } = req.nextUrl
+
+  if (!IS_PROD && pathname.startsWith("/dev-s3-proxy/")) {
+    return NextResponse.rewrite(
+      `https://${S3_BUCKET_NAME}.${S3_ENDPOINT}${pathname.replace(
+        "/dev-s3-proxy/",
+        "/",
+      )}`,
+    )
+  }
 
   if (pathname.startsWith("/uploads/")) {
     return NextResponse.next()

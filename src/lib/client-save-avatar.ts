@@ -7,10 +7,10 @@ export const useClientSaveAvatar = () => {
   const [, updateProfile] = useUpdateUserProfileMutation()
 
   return async (userId: string, blob: Blob) => {
-    const { url } = await uploadFileInBrowser(blob)
+    const { filename } = await uploadFileInBrowser(blob)
     const { error, data } = await updateProfile({
       userId,
-      avatar: url,
+      avatar: filename,
     })
     if (error) {
       toast.error(error.message)

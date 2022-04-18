@@ -12,9 +12,11 @@ const AvatarEditorModal: React.FC<{
   saveAvatar: SaveAvatar
 }> = ({ isOpen, setIsOpen, image, saveAvatar }) => {
   const editorRef = useRef<ReactAvatarEditor | null>(null)
+  const [saving, setSaving] = useState(false)
 
   const cropAndSave = async () => {
     if (!editorRef.current) return
+    setSaving(true)
     const canvas = editorRef.current.getImage()
     const blob = await new Promise<Blob>((resolve, reject) => {
       canvas.toBlob((blob) => {
@@ -24,6 +26,7 @@ const AvatarEditorModal: React.FC<{
     })
     await saveAvatar(blob)
     setIsOpen(false)
+    setSaving(false)
   }
 
   return (
@@ -52,7 +55,7 @@ const AvatarEditorModal: React.FC<{
           </div>
 
           <div className="h-16 border-t flex items-center px-5">
-            <Button isBlock onClick={cropAndSave}>
+            <Button isBlock onClick={cropAndSave} isLoading={saving}>
               Crop and Save
             </Button>
           </div>

@@ -8,6 +8,7 @@ import {
   useViewerQuery,
 } from "$src/generated/graphql"
 import { useClientSaveAvatar } from "$src/lib/client-save-avatar"
+import { getUserContentsUrl } from "$src/lib/user-contents-helpers"
 import { useFormik } from "formik"
 import { useRouter } from "next/router"
 import React, { useEffect } from "react"
@@ -65,7 +66,9 @@ export default function AccountSettingsPage() {
             <AvatarEditor
               render={({ onClick }) => (
                 <Avatar
-                  images={[viewerResult.data?.viewer?.avatar]}
+                  images={[
+                    getUserContentsUrl(viewerResult.data?.viewer?.avatar),
+                  ]}
                   size={140}
                   name={viewerResult.data?.viewer?.name}
                   bgColor="#ccc"

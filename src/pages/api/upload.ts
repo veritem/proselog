@@ -4,6 +4,8 @@ import connect, { Middleware } from "next-connect"
 import { corsMiddleware } from "$src/lib/api-routes"
 import fs from "fs"
 import { nanoid } from "nanoid"
+import { getAuthUser } from "$server/auth"
+import { s3uploadFile } from "$server/s3"
 
 export const config = {
   api: {
@@ -29,19 +31,33 @@ const uploadMiddleware: Middleware<NextApiRequest, NextApiResponse> = (
 
 const handler: NextApiHandler = async (req, res) => {
   const file = (req as any).files.file[0] as File | undefined
+  const type = req.body.type?.[0] as string | undefined
 
-  if (file) {
-    const filename = `${nanoid()}.jpg`
-    fs.mkdirSync("./public/uploads", { recursive: true })
-    fs.copyFileSync(file.path, `./public/uploads/${filename}`)
+  if (!file) {
+    return res.status(400).json({ message: "No file" })
+  }
+
+  if (!type) {
+    return res.status(400).json({ message: "No type" })
+  }
+
+  const user = await getAuthUser(req)
+
+  if (!user) {
+    return res.status(401).json({ message: "Unauthorized" })
+  }
+
+  if (type === "image") {
+    const filename = `${user.id}/${nanoid()}.jpg`
+    await s3uploadFile(filename, fs.createReadStream(file.path))
+
     res.send({
-      url: `/uploads/${filename}`,
+      filename,
     })
     return
   }
 
-  res.status(400)
-  res.end("no file")
+  res.status(400).json({ message: "Invalid type" })
 }
 
 export default connect()
