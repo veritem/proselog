@@ -170,9 +170,7 @@ export default class PostResolver {
 
   @FieldResolver((returns) => String)
   async contentHTML(@Root() post: Post) {
-    console.log("??")
     const { html } = await renderPostContent(post.content)
-    console.log(html)
     return html
   }
 }

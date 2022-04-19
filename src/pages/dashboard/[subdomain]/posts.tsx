@@ -1,12 +1,11 @@
 import { DashboardLayout } from "$src/components/app/DashboardLayout"
 import {
   useDeletePostMutation,
-  usePostsForDashboardQuery,
   PostVisibility,
+  useDashboardPostsPageDataQuery,
 } from "$src/generated/graphql"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import dayjs from "dayjs"
 import clsx from "clsx"
 import { useState } from "react"
 import toast from "react-hot-toast"
@@ -20,7 +19,7 @@ export default function DashboardPostsPage() {
 
   const [visibility, setVisibility] = useState(PostVisibility.All)
 
-  const [postsResult, refreshPostsResult] = usePostsForDashboardQuery({
+  const [pageResult, refreshPageResult] = useDashboardPostsPageDataQuery({
     variables: {
       domainOrSubdomain: subdomain,
       visibility,
@@ -30,7 +29,7 @@ export default function DashboardPostsPage() {
 
   const [, deletePostMutation] = useDeletePostMutation()
 
-  const posts = postsResult.data?.site?.posts
+  const posts = pageResult.data?.site?.posts
   const [selectedPostIds, setSelectedPostIds] = useState<string[]>([])
 
   const toggleSelectedPostId = (id: string) => {
@@ -76,7 +75,7 @@ export default function DashboardPostsPage() {
     )
 
     setSelectedPostIds([])
-    refreshPostsResult()
+    refreshPageResult()
 
     if (failed > 0) {
       toast.error(`${deleted} deleted, ${failed} failed`, {
@@ -90,7 +89,7 @@ export default function DashboardPostsPage() {
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout documentTitle="Posts">
       <div className="px-12 mt-1 flex items-center justify-between h-12 text-sm">
         <div>
           <select

@@ -66,6 +66,7 @@ export type MutationDeleteSiteArgs = {
 
 export type MutationRequestLoginLinkArgs = {
   email: Scalars["String"]
+  next: Scalars["String"]
 }
 
 export type MutationUpdateMembershipLastSwitchedToArgs = {
@@ -201,6 +202,15 @@ export type UserSiteArgs = {
   domainOrSubdomain: Scalars["String"]
 }
 
+export type DashboardSiteDataQueryVariables = Exact<{
+  domainOrSubdomain: Scalars["String"]
+}>
+
+export type DashboardSiteDataQuery = {
+  __typename?: "Query"
+  site: { __typename?: "Site"; id: string; name: string }
+}
+
 export type SitesForSiteSwitcherQueryVariables = Exact<{ [key: string]: never }>
 
 export type SitesForSiteSwitcherQuery = {
@@ -239,6 +249,31 @@ export type UserSiteLayoutQuery = {
   }
 }
 
+export type DashboardPostsPageDataQueryVariables = Exact<{
+  domainOrSubdomain: Scalars["String"]
+  visibility?: InputMaybe<PostVisibility>
+}>
+
+export type DashboardPostsPageDataQuery = {
+  __typename?: "Query"
+  site: {
+    __typename?: "Site"
+    id: string
+    name: string
+    posts: {
+      __typename?: "PostsConnection"
+      nodes: Array<{
+        __typename?: "Post"
+        id: string
+        title: string
+        content: string
+        publishedAt: any
+        published: boolean
+      }>
+    }
+  }
+}
+
 export type CreatePostMutationVariables = Exact<{
   siteId: Scalars["String"]
   title: Scalars["String"]
@@ -262,26 +297,6 @@ export type CreateSiteMutation = {
     id: string
     name: string
     subdomain: string
-  }
-}
-
-export type DashboardHomeQueryVariables = Exact<{
-  domainOrSubdomain: Scalars["String"]
-}>
-
-export type DashboardHomeQuery = {
-  __typename?: "Query"
-  site: {
-    __typename?: "Site"
-    id: string
-    name: string
-    subdomain: string
-    stats: {
-      __typename?: "SiteStats"
-      id: string
-      postCount: number
-      subscriberCount: number
-    }
   }
 }
 
@@ -320,32 +335,9 @@ export type PostForEditQuery = {
   }
 }
 
-export type PostsForDashboardQueryVariables = Exact<{
-  domainOrSubdomain: Scalars["String"]
-  visibility?: InputMaybe<PostVisibility>
-}>
-
-export type PostsForDashboardQuery = {
-  __typename?: "Query"
-  site: {
-    __typename?: "Site"
-    id: string
-    posts: {
-      __typename?: "PostsConnection"
-      nodes: Array<{
-        __typename?: "Post"
-        id: string
-        title: string
-        content: string
-        publishedAt: any
-        published: boolean
-      }>
-    }
-  }
-}
-
 export type RequestLoginLinkMutationVariables = Exact<{
   email: Scalars["String"]
+  next: Scalars["String"]
 }>
 
 export type RequestLoginLinkMutation = {
@@ -470,6 +462,26 @@ export type SiteIndexPageQuery = {
   }
 }
 
+export type SubdomainIndexDataQueryVariables = Exact<{
+  domainOrSubdomain: Scalars["String"]
+}>
+
+export type SubdomainIndexDataQuery = {
+  __typename?: "Query"
+  site: {
+    __typename?: "Site"
+    id: string
+    name: string
+    subdomain: string
+    stats: {
+      __typename?: "SiteStats"
+      id: string
+      postCount: number
+      subscriberCount: number
+    }
+  }
+}
+
 export type NewSiteDataQueryVariables = Exact<{ [key: string]: never }>
 
 export type NewSiteDataQuery = {
@@ -477,6 +489,67 @@ export type NewSiteDataQuery = {
   viewer?: { __typename?: "User"; id: string; email: string } | null
 }
 
+export const DashboardSiteDataDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "DashboardSiteData" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "domainOrSubdomain" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "site" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "domainOrSubdomain" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "domainOrSubdomain" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useDashboardSiteDataQuery(
+  options: Omit<Urql.UseQueryArgs<DashboardSiteDataQueryVariables>, "query">,
+) {
+  return Urql.useQuery<DashboardSiteDataQuery>({
+    query: DashboardSiteDataDocument,
+    ...options,
+  })
+}
 export const SitesForSiteSwitcherDocument = {
   kind: "Document",
   definitions: [
@@ -638,6 +711,129 @@ export function useUserSiteLayoutQuery(
 ) {
   return Urql.useQuery<UserSiteLayoutQuery>({
     query: UserSiteLayoutDocument,
+    ...options,
+  })
+}
+export const DashboardPostsPageDataDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "DashboardPostsPageData" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "domainOrSubdomain" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "visibility" },
+          },
+          type: {
+            kind: "NamedType",
+            name: { kind: "Name", value: "PostVisibility" },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "site" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "domainOrSubdomain" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "domainOrSubdomain" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "posts" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "visibility" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "visibility" },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "nodes" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "title" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "content" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "publishedAt" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "published" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useDashboardPostsPageDataQuery(
+  options: Omit<
+    Urql.UseQueryArgs<DashboardPostsPageDataQueryVariables>,
+    "query"
+  >,
+) {
+  return Urql.useQuery<DashboardPostsPageDataQuery>({
+    query: DashboardPostsPageDataDocument,
     ...options,
   })
 }
@@ -820,86 +1016,6 @@ export function useCreateSiteMutation() {
     CreateSiteDocument,
   )
 }
-export const DashboardHomeDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "dashboardHome" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "domainOrSubdomain" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "site" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "domainOrSubdomain" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "domainOrSubdomain" },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-                { kind: "Field", name: { kind: "Name", value: "subdomain" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "stats" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "postCount" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "subscriberCount" },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode
-
-export function useDashboardHomeQuery(
-  options: Omit<Urql.UseQueryArgs<DashboardHomeQueryVariables>, "query">,
-) {
-  return Urql.useQuery<DashboardHomeQuery>({
-    query: DashboardHomeDocument,
-    ...options,
-  })
-}
 export const DeletePostDocument = {
   kind: "Document",
   definitions: [
@@ -1061,125 +1177,6 @@ export function usePostForEditQuery(
     ...options,
   })
 }
-export const PostsForDashboardDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "postsForDashboard" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "domainOrSubdomain" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "visibility" },
-          },
-          type: {
-            kind: "NamedType",
-            name: { kind: "Name", value: "PostVisibility" },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "site" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "domainOrSubdomain" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "domainOrSubdomain" },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "posts" },
-                  arguments: [
-                    {
-                      kind: "Argument",
-                      name: { kind: "Name", value: "visibility" },
-                      value: {
-                        kind: "Variable",
-                        name: { kind: "Name", value: "visibility" },
-                      },
-                    },
-                  ],
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "nodes" },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "id" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "title" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "content" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "publishedAt" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "published" },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode
-
-export function usePostsForDashboardQuery(
-  options: Omit<Urql.UseQueryArgs<PostsForDashboardQueryVariables>, "query">,
-) {
-  return Urql.useQuery<PostsForDashboardQuery>({
-    query: PostsForDashboardDocument,
-    ...options,
-  })
-}
 export const RequestLoginLinkDocument = {
   kind: "Document",
   definitions: [
@@ -1202,6 +1199,17 @@ export const RequestLoginLinkDocument = {
             },
           },
         },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "next" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1216,6 +1224,14 @@ export const RequestLoginLinkDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "email" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "next" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "next" },
                 },
               },
             ],
@@ -1919,6 +1935,86 @@ export function useSiteIndexPageQuery(
 ) {
   return Urql.useQuery<SiteIndexPageQuery>({
     query: SiteIndexPageDocument,
+    ...options,
+  })
+}
+export const SubdomainIndexDataDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "SubdomainIndexData" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "domainOrSubdomain" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "site" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "domainOrSubdomain" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "domainOrSubdomain" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "subdomain" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "stats" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "postCount" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "subscriberCount" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useSubdomainIndexDataQuery(
+  options: Omit<Urql.UseQueryArgs<SubdomainIndexDataQueryVariables>, "query">,
+) {
+  return Urql.useQuery<SubdomainIndexDataQuery>({
+    query: SubdomainIndexDataDocument,
     ...options,
   })
 }

@@ -2,11 +2,15 @@ import { prisma } from "$server/prisma"
 import { Args, Mutation, Resolver } from "type-graphql"
 import dayjs from "dayjs"
 import { RequestLoginLinkArgs } from "./auth.types"
+import { ContextType, GqlContext } from "$server/decorators"
 
 @Resolver()
 export default class AuthResolver {
   @Mutation((returns) => Boolean)
-  async requestLoginLink(@Args() args: RequestLoginLinkArgs) {
+  async requestLoginLink(
+    @GqlContext() ctx: ContextType,
+    @Args() args: RequestLoginLinkArgs,
+  ) {
     const token = await prisma.loginToken.create({
       data: {
         email: args.email,
@@ -14,10 +18,12 @@ export default class AuthResolver {
       },
     })
 
-    console.log(
-      `Login link:`,
-      `http://localhost:3000/api/login?token=${token.id}`,
-    )
+    const url = `http://localhost:3000/api/login?${new URLSearchParams([
+      ["token", token.id],
+      ["next", args.next],
+    ]).toString()}`
+
+    console.log(`Login link:`, url)
 
     return true
   }

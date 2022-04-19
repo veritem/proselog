@@ -6,7 +6,6 @@ import { singletonAsync } from "./singleton"
 import { AUTH_COOKIE_NAME, AUTH_SECRET } from "$src/config"
 import { nanoid } from "nanoid"
 import Cookie from "cookie"
-import { verifyJWT } from "./jwt"
 import { Membership, User } from "@prisma/client"
 
 export type AuthUser = User & {
@@ -14,28 +13,20 @@ export type AuthUser = User & {
 }
 
 const findUserFromToken = async (token: string) => {
-  if (token.startsWith("PK_")) {
-    return prisma.user.findUnique({
-      where: {
-        apiToken: token,
-      },
-      include: {
-        memberships: true,
-      },
-    })
-  }
-
-  const payload = await verifyJWT(token)
-  if (!payload) return null
-
-  return prisma.user.findUnique({
+  const accessToken = await prisma.accessToken.findUnique({
     where: {
-      id: payload.userId,
+      token,
     },
     include: {
-      memberships: true,
+      user: {
+        include: {
+          memberships: true,
+        },
+      },
     },
   })
+
+  return accessToken?.user
 }
 
 export const getAuthUser = async (
@@ -60,7 +51,7 @@ export const setAuthCookie = (res: ServerResponse, token: string) => {
   const value = Cookie.serialize(AUTH_COOKIE_NAME, token, {
     path: "/",
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "strict",
     maxAge: 60 * 60 * 24 * 30, // 30 days
     secure: process.env.NODE_ENV === "production",
   })

@@ -9,24 +9,28 @@ import {
   ssrExchange,
 } from "urql"
 
-export const createUrqlClient = () => {
+const API_URL = `${API_ENDPOINT}/api/graphql`
+
+export const createUrqlClient = (initialState?: any) => {
   const ssr = ssrExchange({
     isClient: process.browser,
   })
-  return createClient({
-    url: `${API_ENDPOINT}/api/graphql`,
+  ssr.restoreData(initialState)
+  const client = createClient({
+    url: API_URL,
     fetchOptions: {
-      credentials: "include",
+      credentials: "same-origin",
     },
     requestPolicy: "cache-and-network",
     exchanges: [dedupExchange, cacheExchange, ssr, fetchExchange],
   })
+  return { client, ssr }
 }
 
 let urqlClient: Client | undefined
 
-const initializeUrqlClient = () => {
-  const client = urqlClient ?? createUrqlClient()
+const initializeUrqlClient = (initialState: any) => {
+  const client = urqlClient ?? createUrqlClient(initialState).client
   if (!process.browser) {
     return client
   }
@@ -36,6 +40,6 @@ const initializeUrqlClient = () => {
   return client
 }
 
-export const useUrqlClient = () => {
-  return React.useMemo(() => initializeUrqlClient(), [])
+export const useUrqlClient = (initialState: any) => {
+  return React.useMemo(() => initializeUrqlClient(initialState), [initialState])
 }

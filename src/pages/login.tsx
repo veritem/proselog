@@ -18,6 +18,7 @@ export default function LoginPage() {
       setLoginResult(null)
       const { error } = await requestLoginLinkMutation({
         email: values.email,
+        next: `${location.protocol}//${location.host}`,
       })
       if (error) {
         alert(error)

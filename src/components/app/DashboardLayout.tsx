@@ -1,4 +1,7 @@
+import { useDashboardSiteDataQuery } from "$src/generated/graphql"
 import clsx from "clsx"
+import gql from "graphql-tag"
+import Head from "next/head"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import React from "react"
@@ -30,12 +33,28 @@ export const Main: React.FC<{
   )
 }
 
+gql`
+  query DashboardSiteData($domainOrSubdomain: String!) {
+    site(domainOrSubdomain: $domainOrSubdomain) {
+      id
+      name
+    }
+  }
+`
+
 export const DashboardLayout: React.FC<{
   children?: React.ReactNode
   mainWidth?: MainWidth
-}> = ({ children, mainWidth }) => {
+  documentTitle?: string
+}> = ({ children, mainWidth, documentTitle }) => {
   const router = useRouter()
   const subdomain = router.query.subdomain as string
+  const [siteDataResult] = useDashboardSiteDataQuery({
+    variables: {
+      domainOrSubdomain: subdomain,
+    },
+    pause: !subdomain,
+  })
   const links = [
     {
       href: `/dashboard/${subdomain}`,
@@ -101,56 +120,65 @@ export const DashboardLayout: React.FC<{
     },
   ]
 
+  const siteName = siteDataResult.data?.site.name
+
   return (
-    <div className="flex">
-      <Sidebar>
-        <div className="">
-          <SiteSwitcher subdomain={subdomain} />
-        </div>
+    <>
+      <Head>
+        <title>
+          {documentTitle && siteName && `${documentTitle} - ${siteName}`}
+        </title>
+      </Head>
+      <div className="flex">
+        <Sidebar>
+          <div className="">
+            <SiteSwitcher subdomain={subdomain} />
+          </div>
 
-        <div className="px-3 mb-3">
-          <a
-            className="text-sm text-zinc-500 space-x-2 transition-colors hover:text-zinc-800 hover:bg-zinc-200 h-8 border rounded-lg flex justify-center items-center border-zinc-200"
-            target={"_blank"}
-            rel="noopener noreferrer"
-            href={`http://${subdomain}.localhost:3000`}
-          >
-            <svg
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
+          <div className="px-3 mb-3">
+            <a
+              className="text-sm text-zinc-500 space-x-2 transition-colors hover:text-zinc-800 hover:bg-zinc-200 h-8 border rounded-lg flex justify-center items-center border-zinc-200"
+              target={"_blank"}
+              rel="noopener noreferrer"
+              href={`http://${subdomain}.localhost:3000`}
             >
-              <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-              <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-            </svg>
-            <span>View Site</span>
-          </a>
-        </div>
+              <svg
+                width="1em"
+                height="1em"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+              </svg>
+              <span>View Site</span>
+            </a>
+          </div>
 
-        <div className="px-3 space-y-[2px] text-zinc-500">
-          {links.map((link) => {
-            const active = router.asPath === link.href
-            return (
-              <Link href={link.href} key={link.href}>
-                <a
-                  className={clsx(
-                    `flex px-2 h-8 text-sm items-center rounded-lg`,
-                    active
-                      ? `bg-zinc-200 font-medium text-zinc-800`
-                      : `hover:bg-zinc-200 hover:bg-opacity-50`,
-                  )}
-                >
-                  <span className="mr-2 text-lg">{link.icon}</span>
-                  <span>{link.text}</span>
-                </a>
-              </Link>
-            )
-          })}
-        </div>
-      </Sidebar>
-      <Main width={mainWidth}>{children}</Main>
-    </div>
+          <div className="px-3 space-y-[2px] text-zinc-500">
+            {links.map((link) => {
+              const active = router.asPath === link.href
+              return (
+                <Link href={link.href} key={link.href}>
+                  <a
+                    className={clsx(
+                      `flex px-2 h-8 text-sm items-center rounded-lg`,
+                      active
+                        ? `bg-zinc-200 font-medium text-zinc-800`
+                        : `hover:bg-zinc-200 hover:bg-opacity-50`,
+                    )}
+                  >
+                    <span className="mr-2 text-lg">{link.icon}</span>
+                    <span>{link.text}</span>
+                  </a>
+                </Link>
+              )
+            })}
+          </div>
+        </Sidebar>
+        <Main width={mainWidth}>{children}</Main>
+      </div>
+    </>
   )
 }

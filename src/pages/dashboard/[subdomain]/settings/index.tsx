@@ -79,7 +79,7 @@ export default function SiteSettingsPage() {
   }, [siteResult.data])
 
   return (
-    <DashboardLayout mainWidth="md">
+    <DashboardLayout mainWidth="md" documentTitle="Site Settings">
       <SettingsLayout title="Site" subtitle="Manage settings for this site">
         <form onSubmit={form.handleSubmit}>
           <div>

@@ -45,7 +45,7 @@ export const Avatar: React.FC<
       </span>
     )
   }
-  console.log(image)
+
   return (
     <span
       {...props}

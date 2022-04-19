@@ -1,7 +1,10 @@
 import { APP_NAME } from "$src/config"
 import Link from "next/link"
+import React from "react"
 
-export const AppLayout: React.FC = ({ children }) => {
+export const AppLayout: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   return (
     <>
       <header className="border-b">

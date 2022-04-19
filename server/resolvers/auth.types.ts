@@ -4,4 +4,7 @@ import { ArgsType, Field } from "type-graphql"
 export class RequestLoginLinkArgs {
   @Field()
   email: string
+
+  @Field()
+  next: string
 }

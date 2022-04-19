@@ -51,6 +51,7 @@
     "react-hot-toast": "^2.2.0",
     "reflect-metadata": "0.1.13",
     "type-graphql": "1.1.1",
+    "ua-parser-js": "^1.0.2",
     "urql": "2.2.0",
     "uuid": "^8.3.2"
   },
@@ -70,6 +71,7 @@
     "@types/react": "18.0.5",
     "@types/react-avatar-editor": "^12.0.0",
     "@types/react-dom": "18.0.1",
+    "@types/ua-parser-js": "^0.7.36",
     "@types/uuid": "^8.3.4",
     "autoprefixer": "10.4.4",
     "dotenv": "^16.0.0",

@@ -1,9 +1,10 @@
-query postsForDashboard(
+query DashboardPostsPageData(
   $domainOrSubdomain: String!
   $visibility: PostVisibility
 ) {
   site(domainOrSubdomain: $domainOrSubdomain) {
     id
+    name
     posts(visibility: $visibility) {
       nodes {
         id

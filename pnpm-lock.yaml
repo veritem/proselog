@@ -27,6 +27,7 @@ specifiers:
   '@types/react': 18.0.5
   '@types/react-avatar-editor': ^12.0.0
   '@types/react-dom': 18.0.1
+  '@types/ua-parser-js': ^0.7.36
   '@types/uuid': ^8.3.4
   apollo-server-core: 3.6.7
   apollo-server-micro: 3.6.7
@@ -62,6 +63,7 @@ specifiers:
   tailwindcss: 3.0.24
   type-graphql: 1.1.1
   typescript: 4.6.3
+  ua-parser-js: ^1.0.2
   urql: 2.2.0
   uuid: ^8.3.2
   vitest: ^0.9.3
@@ -102,6 +104,7 @@ dependencies:
   react-hot-toast: 2.2.0_react-dom@18.0.0+react@18.0.0
   reflect-metadata: 0.1.13
   type-graphql: 1.1.1_aea24acf06b899fbc466d3b3b949c72d
+  ua-parser-js: 1.0.2
   urql: 2.2.0_graphql@15.8.0+react@18.0.0
   uuid: 8.3.2
 
@@ -121,6 +124,7 @@ devDependencies:
   '@types/react': 18.0.5
   '@types/react-avatar-editor': 12.0.0
   '@types/react-dom': 18.0.1
+  '@types/ua-parser-js': 0.7.36
   '@types/uuid': 8.3.4
   autoprefixer: 10.4.4_postcss@8.4.12
   dotenv: 16.0.0
@@ -2819,6 +2823,10 @@ packages:
   /@types/semver/7.3.9:
     resolution: {integrity: sha512-L/TMpyURfBkf+o/526Zb6kd/tchUP3iBDEPjqjb+U2MAJhVRxxrmr2fwpe08E7QsV7YLcpq0tUaQ9O9x97ZIxQ==}
     dev: false
+
+  /@types/ua-parser-js/0.7.36:
+    resolution: {integrity: sha512-N1rW+njavs70y2cApeIw1vLMYXRwfBy+7trgavGuuTfOd7j1Yh7QTRc/yqsPl6ncokt72ZXuxEU0PiCp9bSwNQ==}
+    dev: true
 
   /@types/uuid/8.3.4:
     resolution: {integrity: sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==}
@@ -6559,6 +6567,10 @@ packages:
   /ua-parser-js/0.7.31:
     resolution: {integrity: sha512-qLK/Xe9E2uzmYI3qLeOmI0tEOt+TBBQyUIAh4aAgU05FVYzeZrKUdkAZfBNVGRaHVgV0TDkdEngJSw/SyQchkQ==}
     dev: true
+
+  /ua-parser-js/1.0.2:
+    resolution: {integrity: sha512-00y/AXhx0/SsnI51fTc0rLRmafiGOM4/O+ny10Ps7f+j/b8p/ZY11ytMgznXkOVo4GQ+KwQG5UQLkLGirsACRg==}
+    dev: false
 
   /uc.micro/1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}

@@ -11,18 +11,18 @@ generator client {
 }
 
 model User {
-  id            String       @id @default(uuid())
+  id            String        @id @default(uuid())
   name          String
-  username      String       @unique
-  email         String       @unique
+  username      String        @unique
+  email         String        @unique
   emailVerified DateTime?
   avatar        String?
   bio           String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  apiToken      String       @unique
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   deletedAt     DateTime?
   memberships   Membership[]
+  accessTokens  AccessToken[]
 
   @@map("users")
 }
@@ -33,6 +33,16 @@ model LoginToken {
   expiresAt DateTime
 
   @@map("login_tokens")
+}
+
+model AccessToken {
+  id     String @id @default(uuid())
+  name   String
+  token  String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@map("access_tokens")
 }
 
 enum MembershipRole {

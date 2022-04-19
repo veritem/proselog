@@ -1,6 +1,16 @@
 import { UserSiteLayout } from "$src/components/app/UserSiteLayout"
-import { useSitePostPageDataQuery } from "$src/generated/graphql"
+import {
+  SitePostPageDataDocument,
+  SitePostPageDataQuery,
+  SitePostPageDataQueryVariables,
+  UserSiteLayoutDocument,
+  UserSiteLayoutQuery,
+  UserSiteLayoutQueryVariables,
+  useSitePostPageDataQuery,
+} from "$src/generated/graphql"
 import { formatDate } from "$src/lib/date"
+import { serverSidePropsHandler } from "$src/lib/server-side-props"
+import { createUrqlClient } from "$src/lib/urql-client"
 import { useRouter } from "next/router"
 import { gql } from "urql"
 
@@ -18,6 +28,31 @@ gql`
     }
   }
 `
+
+export const getServerSideProps = serverSidePropsHandler(async (ctx) => {
+  const { client, ssr } = createUrqlClient()
+  await Promise.all([
+    client
+      .query<SitePostPageDataQuery, SitePostPageDataQueryVariables>(
+        SitePostPageDataDocument,
+        {
+          domainOrSubdomain: ctx.query.domain as string,
+          slugOrId: ctx.query.post as string,
+        },
+      )
+      .toPromise(),
+    client
+      .query<UserSiteLayoutQuery, UserSiteLayoutQueryVariables>(
+        UserSiteLayoutDocument,
+        { domainOrSubdomain: ctx.query.domain as string },
+      )
+      .toPromise(),
+  ])
+  const urqlState = ssr.extractData()
+  return {
+    props: { urqlState },
+  }
+})
 
 export default function SitePostPage() {
   const router = useRouter()

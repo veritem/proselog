@@ -58,7 +58,7 @@ export default function AccountSettingsPage() {
   }, [viewerResult.data])
 
   return (
-    <DashboardLayout mainWidth="md">
+    <DashboardLayout mainWidth="md" documentTitle="Account">
       <SettingsLayout title="Account">
         <form onSubmit={form.handleSubmit}>
           <div>

@@ -1,9 +1,16 @@
 import { useRouter } from "next/router"
 import { gql } from "graphql-tag"
-import { useSiteIndexPageQuery } from "$src/generated/graphql"
+import {
+  UserSiteLayoutDocument,
+  UserSiteLayoutQuery,
+  UserSiteLayoutQueryVariables,
+  useSiteIndexPageQuery,
+} from "$src/generated/graphql"
 import Link from "next/link"
 import { formatDate } from "$src/lib/date"
 import { UserSiteLayout } from "$src/components/app/UserSiteLayout"
+import { serverSidePropsHandler } from "$src/lib/server-side-props"
+import { createUrqlClient } from "$src/lib/urql-client"
 
 gql`
   query SiteIndexPage($domainOrSubdomain: String!) {
@@ -21,6 +28,23 @@ gql`
     }
   }
 `
+
+export const getServerSideProps = serverSidePropsHandler(async (ctx) => {
+  const { client, ssr } = createUrqlClient()
+
+  await client
+    .query<UserSiteLayoutQuery, UserSiteLayoutQueryVariables>(
+      UserSiteLayoutDocument,
+      { domainOrSubdomain: ctx.query.domain as string },
+    )
+    .toPromise()
+
+  return {
+    props: {
+      urqlState: ssr.extractData(),
+    },
+  }
+})
 
 export default function SiteIndexPage() {
   const router = useRouter()
