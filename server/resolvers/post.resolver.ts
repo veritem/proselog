@@ -1,5 +1,6 @@
 import { ContextType, GqlContext } from "$server/decorators"
 import { getGuard } from "$server/guard"
+import { getExcerpt, renderPostContent } from "$server/markdown"
 import { prisma } from "$server/prisma"
 import { ApolloError } from "apollo-server-core"
 import { nanoid } from "nanoid"
@@ -68,6 +69,7 @@ export default class PostResolver {
       data: {
         title: args.title,
         content: args.content,
+        excerpt: "",
         slug: nanoid(7),
         site: {
           connect: {
@@ -111,6 +113,7 @@ export default class PostResolver {
         content: args.content,
         published: args.published,
         publishedAt: args.publishedAt,
+        excerpt: args.excerpt,
       },
     })
   }
@@ -158,5 +161,18 @@ export default class PostResolver {
     })
 
     return site
+  }
+
+  @FieldResolver((returns) => String)
+  autoExcerpt(@Root() post: Post) {
+    return post.excerpt || getExcerpt(post.content)
+  }
+
+  @FieldResolver((returns) => String)
+  async contentHTML(@Root() post: Post) {
+    console.log("??")
+    const { html } = await renderPostContent(post.content)
+    console.log(html)
+    return html
   }
 }

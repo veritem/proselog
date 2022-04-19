@@ -53,6 +53,9 @@ export class Post {
 
   @Field()
   siteId: string
+
+  @Field()
+  excerpt: string
 }
 
 @ObjectType({ simpleResolvers: true })
@@ -80,6 +83,9 @@ export class UpdatePostArgs {
 
   @Field({ nullable: true })
   content?: string
+
+  @Field({ nullable: true })
+  excerpt?: string
 
   @Field({ nullable: true })
   published?: boolean

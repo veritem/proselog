@@ -1,4 +1,5 @@
 import "../css/tailwind.css"
+import "../css/prose.css"
 import { Provider as UrqlProvider } from "urql"
 import { useUrqlClient } from "$src/lib/urql-client"
 import { Toaster } from "react-hot-toast"

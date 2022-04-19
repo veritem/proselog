@@ -69,6 +69,7 @@ model Site {
   primaryDomain   Domain?      @relation(name: "SitePrimaryDomain", fields: [primaryDomainId], references: [id])
   primaryDomainId String?      @unique
   bio             String?
+  twitter         String?
   deletedAt       DateTime?
   memberships     Membership[]
 
@@ -84,6 +85,7 @@ model Post {
   published        Boolean   @default(false)
   title            String
   content          String
+  excerpt          String
   format           String    @default("markdown")
   slug             String    @unique
   site             Site      @relation(name: "SitePosts", fields: [siteId], references: [id], onDelete: Cascade)

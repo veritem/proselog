@@ -61,6 +61,10 @@
   @apply text-white;
 }
 
+.button.is-secondary {
+  @apply bg-white;
+}
+
 .button.is-ghost {
   @apply hover:bg-zinc-100;
 }
