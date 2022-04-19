@@ -40,7 +40,7 @@ export default function SitePostPage() {
         <h2 className="text-4xl font-bold mt-1">{post?.title}</h2>
       </div>
       <div
-        className="mt-14 prose"
+        className="my-14 prose"
         dangerouslySetInnerHTML={{ __html: post?.contentHTML || "" }}
       ></div>
     </UserSiteLayout>
