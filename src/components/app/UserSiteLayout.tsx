@@ -6,7 +6,6 @@ import { Avatar } from "$src/components/ui/Avatar"
 import Head from "next/head"
 import { getUserContentsUrl } from "$src/lib/user-contents-helpers"
 import React, { useMemo } from "react"
-import { Button } from "../ui/Button"
 import clsx from "clsx"
 
 gql`
@@ -32,7 +31,7 @@ const DropdownMenu: React.FC<{ links: { text: string; href: string }[] }> = ({
     () => (
       <button
         type="button"
-        className="ml-5 hover:text-indigo-500 h-10 w-10 rounded-lg flex items-center justify-center"
+        className="ml-5 cursor-default hover:text-indigo-500 h-10 w-10 rounded-lg flex items-center justify-center"
       >
         <svg
           className="w-6 h-6"
@@ -48,19 +47,21 @@ const DropdownMenu: React.FC<{ links: { text: string; href: string }[] }> = ({
   )
 
   return (
-    <div className="inline-flex relative group">
+    <div className="relative group">
       {button}
-      <div className="text-right pb-2 -mt-[1px] -mr-[1px] absolute w-32 right-0 top-0 rounded-lg border hidden bg-white group-hover:block">
+      <div className="group-hover:block hidden -mr-[1px] -mt-[1px] text-right pb-2 absolute w-32 right-0 top-0 rounded-lg border bg-white ">
         <div className="flex justify-end">{button}</div>
-        {links.map((link) => {
-          return (
-            <Link key={link.href + link.text} href={link.href}>
-              <a className="flex h-8 justify-end items-center px-3 w-full hover:text-indigo-500">
-                {link.text}
-              </a>
-            </Link>
-          )
-        })}
+        <div className="w-full">
+          {links.map((link) => {
+            return (
+              <Link key={link.href + link.text} href={link.href}>
+                <a className="flex h-8 justify-end items-center px-3 w-full hover:text-indigo-500">
+                  <span>{link.text}</span>
+                </a>
+              </Link>
+            )
+          })}
+        </div>
       </div>
     </div>
   )
@@ -102,7 +103,7 @@ export const UserSiteLayout: React.FC<{
         <title>{title ? `${title} - ${site?.name}` : site?.name}</title>
       </Head>
       <div>
-        <header className="border-b fixed top-0 left-0 right-0 h-16 bg-white bg-opacity-80 backdrop-blur-lg text-zinc-500">
+        <header className="z-[9999] border-b fixed top-0 left-0 right-0 h-16 bg-white bg-opacity-80 backdrop-blur-lg text-zinc-500">
           <div className="flex justify-between items-center h-16 px-5 max-w-screen-md mx-auto">
             <div className="flex items-center">
               <Link href="/">
