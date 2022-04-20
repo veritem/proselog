@@ -74,14 +74,14 @@ export default function SiteIndexPage() {
           {posts?.map((post) => {
             return (
               <div key={post.id} className="block">
-                <div className="text-sm text-zinc-400 mb-1">
-                  {formatDate(post.publishedAt)}
-                </div>
                 <h3 className="text-2xl font-medium">
                   <Link href={post.permalink}>
                     <a className="hover:text-indigo-500">{post.title}</a>
                   </Link>
                 </h3>
+                <div className="text-sm text-zinc-400 mt-1">
+                  {formatDate(post.publishedAt)}
+                </div>
                 <div className="mt-3 text-zinc-500">
                   {post.autoExcerpt}
                   {"..."}
