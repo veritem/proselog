@@ -34,6 +34,7 @@ const apiHandler: NextApiHandler = async (req, res) => {
     },
   })
 
+  console.log("Starting apollo server...")
   await apolloServer.start()
 
   handler = apolloServer.createHandler({
