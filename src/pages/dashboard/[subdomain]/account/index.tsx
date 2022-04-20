@@ -59,7 +59,10 @@ export default function AccountSettingsPage() {
 
   return (
     <DashboardLayout mainWidth="md" documentTitle="Account">
-      <SettingsLayout title="Account">
+      <SettingsLayout
+        title="Account"
+        subtitle="Manage settings for your account"
+      >
         <form onSubmit={form.handleSubmit}>
           <div>
             <label className="block mb-2 text-sm">Profile Picture</label>

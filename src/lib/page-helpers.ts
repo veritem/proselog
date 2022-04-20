@@ -1,22 +1,24 @@
 import dayjs from "dayjs"
-import { PostVisibility } from "$src/generated/graphql"
+import { PageVisibilityEnum } from "$src/generated/graphql"
 import { useMemo } from "react"
 
-export const usePostVisibility = ({
+export const usePageVisibility = ({
   published,
   publishedAt,
 }: {
   published: boolean
   publishedAt: string | Date | null
 }) => {
-  const visibility = useMemo<Omit<PostVisibility, PostVisibility.All>>(() => {
-    return getPostVisibility({ published, publishedAt })
+  const visibility = useMemo<
+    Omit<PageVisibilityEnum, PageVisibilityEnum.All>
+  >(() => {
+    return getPageVisibility({ published, publishedAt })
   }, [published, publishedAt])
 
   return visibility
 }
 
-export const getPostVisibility = ({
+export const getPageVisibility = ({
   published,
   publishedAt,
 }: {
@@ -24,10 +26,10 @@ export const getPostVisibility = ({
   publishedAt: string | Date | null
 }) => {
   if (!published) {
-    return PostVisibility.Draft
+    return PageVisibilityEnum.Draft
   }
   if (published && publishedAt && dayjs(publishedAt).isBefore(new Date())) {
-    return PostVisibility.Published
+    return PageVisibilityEnum.Published
   }
-  return PostVisibility.Scheduled
+  return PageVisibilityEnum.Scheduled
 }

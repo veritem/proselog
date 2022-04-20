@@ -32,8 +32,11 @@ export const serverSidePropsHandler = <TProps extends object>(
         }
       }
       return result
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
+      if (error.graphQLErrors) {
+        console.log(JSON.stringify(error.graphQLErrors, null, 2))
+      }
       if (error instanceof Redirect) {
         return {
           redirect: {
@@ -47,6 +50,7 @@ export const serverSidePropsHandler = <TProps extends object>(
           notFound: true,
         }
       }
+      ctx.res.statusCode = 500
       return {
         props: {
           error: (error as any).message,

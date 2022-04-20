@@ -1,16 +1,20 @@
-mutation updatePost(
-  $id: String!
+mutation createOrUpdatePage(
+  $siteId: String!
+  $pageId: String
   $title: String
   $content: String
   $published: Boolean
   $publishedAt: DateTime
+  $type: PageTypeEnum
 ) {
-  updatePost(
-    id: $id
+  createOrUpdatePage(
+    siteId: $siteId
+    pageId: $pageId
     title: $title
     content: $content
     published: $published
     publishedAt: $publishedAt
+    type: $type
   ) {
     id
   }

@@ -34,21 +34,26 @@ export type Membership = {
 
 export type Mutation = {
   __typename?: "Mutation"
-  createPost: Post
+  createOrUpdatePage: Page
   createSite: Site
-  deletePost: Scalars["Boolean"]
+  deletePage: Scalars["Boolean"]
   deleteSite: Scalars["Boolean"]
   requestLoginLink: Scalars["Boolean"]
   updateMembershipLastSwitchedTo: Scalars["Boolean"]
-  updatePost: Post
   updateSite: Site
   updateUserProfile: User
 }
 
-export type MutationCreatePostArgs = {
-  content: Scalars["String"]
+export type MutationCreateOrUpdatePageArgs = {
+  content?: InputMaybe<Scalars["String"]>
+  excerpt?: InputMaybe<Scalars["String"]>
+  pageId?: InputMaybe<Scalars["String"]>
+  published?: InputMaybe<Scalars["Boolean"]>
+  publishedAt?: InputMaybe<Scalars["DateTime"]>
   siteId: Scalars["String"]
-  title: Scalars["String"]
+  slug?: InputMaybe<Scalars["String"]>
+  title?: InputMaybe<Scalars["String"]>
+  type?: InputMaybe<PageTypeEnum>
 }
 
 export type MutationCreateSiteArgs = {
@@ -56,7 +61,7 @@ export type MutationCreateSiteArgs = {
   subdomain: Scalars["String"]
 }
 
-export type MutationDeletePostArgs = {
+export type MutationDeletePageArgs = {
   id: Scalars["String"]
 }
 
@@ -71,15 +76,6 @@ export type MutationRequestLoginLinkArgs = {
 
 export type MutationUpdateMembershipLastSwitchedToArgs = {
   siteId: Scalars["String"]
-}
-
-export type MutationUpdatePostArgs = {
-  content?: InputMaybe<Scalars["String"]>
-  excerpt?: InputMaybe<Scalars["String"]>
-  id: Scalars["String"]
-  published?: InputMaybe<Scalars["Boolean"]>
-  publishedAt?: InputMaybe<Scalars["DateTime"]>
-  title?: InputMaybe<Scalars["String"]>
 }
 
 export type MutationUpdateSiteArgs = {
@@ -97,51 +93,59 @@ export type MutationUpdateUserProfileArgs = {
   username?: InputMaybe<Scalars["String"]>
 }
 
-export type Pagination = {
-  __typename?: "Pagination"
-  hasMore: Scalars["Boolean"]
-  total: Scalars["Int"]
-}
-
-export type Post = {
-  __typename?: "Post"
+export type Page = {
+  __typename?: "Page"
   autoExcerpt: Scalars["String"]
   content: Scalars["String"]
   contentHTML: Scalars["String"]
   createdAt: Scalars["DateTime"]
   excerpt: Scalars["String"]
   id: Scalars["String"]
+  permalink: Scalars["String"]
   published: Scalars["Boolean"]
   publishedAt: Scalars["DateTime"]
   site: Site
   siteId: Scalars["String"]
   slug: Scalars["String"]
   title: Scalars["String"]
+  type: PageTypeEnum
   updatedAt: Scalars["DateTime"]
 }
 
-export enum PostVisibility {
-  All = "all",
-  Draft = "draft",
-  Published = "published",
-  Scheduled = "scheduled",
+export enum PageTypeEnum {
+  Page = "PAGE",
+  Post = "POST",
 }
 
-export type PostsConnection = {
-  __typename?: "PostsConnection"
-  nodes: Array<Post>
+export enum PageVisibilityEnum {
+  All = "ALL",
+  Draft = "DRAFT",
+  Published = "PUBLISHED",
+  Scheduled = "SCHEDULED",
+}
+
+export type PagesConnection = {
+  __typename?: "PagesConnection"
+  nodes: Array<Page>
   pagination: Pagination
+}
+
+export type Pagination = {
+  __typename?: "Pagination"
+  hasMore: Scalars["Boolean"]
+  total: Scalars["Int"]
 }
 
 export type Query = {
   __typename?: "Query"
-  post: Post
+  page: Page
   site: Site
   user?: Maybe<User>
   viewer?: Maybe<User>
 }
 
-export type QueryPostArgs = {
+export type QueryPageArgs = {
+  domainOrSubdomain?: InputMaybe<Scalars["String"]>
   slugOrId: Scalars["String"]
 }
 
@@ -160,17 +164,18 @@ export type Site = {
   id: Scalars["String"]
   name: Scalars["String"]
   owner: User
-  posts: PostsConnection
+  pages: PagesConnection
   stats: SiteStats
   subdomain: Scalars["String"]
   updatedAt: Scalars["DateTime"]
   userId: Scalars["String"]
 }
 
-export type SitePostsArgs = {
+export type SitePagesArgs = {
   cursor?: InputMaybe<Scalars["String"]>
   take?: InputMaybe<Scalars["Int"]>
-  visibility?: InputMaybe<PostVisibility>
+  type?: InputMaybe<PageTypeEnum>
+  visibility?: InputMaybe<PageVisibilityEnum>
 }
 
 export type SiteStats = {
@@ -249,40 +254,28 @@ export type UserSiteLayoutQuery = {
   }
 }
 
-export type DashboardPostsPageDataQueryVariables = Exact<{
-  domainOrSubdomain: Scalars["String"]
-  visibility?: InputMaybe<PostVisibility>
+export type SiteIdBySubdomainQueryVariables = Exact<{
+  subdomain: Scalars["String"]
 }>
 
-export type DashboardPostsPageDataQuery = {
+export type SiteIdBySubdomainQuery = {
   __typename?: "Query"
-  site: {
-    __typename?: "Site"
-    id: string
-    name: string
-    posts: {
-      __typename?: "PostsConnection"
-      nodes: Array<{
-        __typename?: "Post"
-        id: string
-        title: string
-        content: string
-        publishedAt: any
-        published: boolean
-      }>
-    }
-  }
+  site: { __typename?: "Site"; id: string }
 }
 
-export type CreatePostMutationVariables = Exact<{
+export type CreateOrUpdatePageMutationVariables = Exact<{
   siteId: Scalars["String"]
-  title: Scalars["String"]
-  content: Scalars["String"]
+  pageId?: InputMaybe<Scalars["String"]>
+  title?: InputMaybe<Scalars["String"]>
+  content?: InputMaybe<Scalars["String"]>
+  published?: InputMaybe<Scalars["Boolean"]>
+  publishedAt?: InputMaybe<Scalars["DateTime"]>
+  type?: InputMaybe<PageTypeEnum>
 }>
 
-export type CreatePostMutation = {
+export type CreateOrUpdatePageMutation = {
   __typename?: "Mutation"
-  createPost: { __typename?: "Post"; id: string }
+  createOrUpdatePage: { __typename?: "Page"; id: string }
 }
 
 export type CreateSiteMutationVariables = Exact<{
@@ -300,13 +293,13 @@ export type CreateSiteMutation = {
   }
 }
 
-export type DeletePostMutationVariables = Exact<{
+export type DeletePageMutationVariables = Exact<{
   id: Scalars["String"]
 }>
 
-export type DeletePostMutation = {
+export type DeletePageMutation = {
   __typename?: "Mutation"
-  deletePost: boolean
+  deletePage: boolean
 }
 
 export type DeleteSiteMutationVariables = Exact<{
@@ -318,17 +311,18 @@ export type DeleteSiteMutation = {
   deleteSite: boolean
 }
 
-export type PostForEditQueryVariables = Exact<{
+export type PageForEditPageQueryVariables = Exact<{
   slugOrId: Scalars["String"]
 }>
 
-export type PostForEditQuery = {
+export type PageForEditPageQuery = {
   __typename?: "Query"
-  post: {
-    __typename?: "Post"
+  page: {
+    __typename?: "Page"
     id: string
     slug: string
     title: string
+    type: PageTypeEnum
     content: string
     publishedAt: any
     published: boolean
@@ -360,6 +354,33 @@ export type SiteQuery = {
   }
 }
 
+export type SitePagesQueryVariables = Exact<{
+  domainOrSubdomain: Scalars["String"]
+  visibility?: InputMaybe<PageVisibilityEnum>
+  type?: InputMaybe<PageTypeEnum>
+}>
+
+export type SitePagesQuery = {
+  __typename?: "Query"
+  site: {
+    __typename?: "Site"
+    id: string
+    name: string
+    pages: {
+      __typename?: "PagesConnection"
+      nodes: Array<{
+        __typename?: "Page"
+        id: string
+        title: string
+        type: PageTypeEnum
+        content: string
+        publishedAt: any
+        published: boolean
+      }>
+    }
+  }
+}
+
 export type UpdateMembershipLastSwitchedToMutationVariables = Exact<{
   siteId: Scalars["String"]
 }>
@@ -367,19 +388,6 @@ export type UpdateMembershipLastSwitchedToMutationVariables = Exact<{
 export type UpdateMembershipLastSwitchedToMutation = {
   __typename?: "Mutation"
   updateMembershipLastSwitchedTo: boolean
-}
-
-export type UpdatePostMutationVariables = Exact<{
-  id: Scalars["String"]
-  title?: InputMaybe<Scalars["String"]>
-  content?: InputMaybe<Scalars["String"]>
-  published?: InputMaybe<Scalars["Boolean"]>
-  publishedAt?: InputMaybe<Scalars["DateTime"]>
-}>
-
-export type UpdatePostMutation = {
-  __typename?: "Mutation"
-  updatePost: { __typename?: "Post"; id: string }
 }
 
 export type UpdateSiteMutationVariables = Exact<{
@@ -422,20 +430,53 @@ export type ViewerQuery = {
   } | null
 }
 
-export type SitePostPageDataQueryVariables = Exact<{
+export type SitePageQueryQueryVariables = Exact<{
   domainOrSubdomain: Scalars["String"]
   slugOrId: Scalars["String"]
 }>
 
-export type SitePostPageDataQuery = {
+export type SitePageQueryQuery = {
   __typename?: "Query"
   site: { __typename?: "Site"; id: string; name: string }
-  post: {
-    __typename?: "Post"
+  page: {
+    __typename?: "Page"
     id: string
     title: string
+    type: PageTypeEnum
+    permalink: string
     publishedAt: any
     contentHTML: string
+  }
+}
+
+export type SiteAboutPageQueryVariables = Exact<{
+  domainOrSubdomain: Scalars["String"]
+}>
+
+export type SiteAboutPageQuery = {
+  __typename?: "Query"
+  site: { __typename?: "Site"; id: string; bio?: string | null }
+}
+
+export type SiteArchivesPageQueryVariables = Exact<{
+  domainOrSubdomain: Scalars["String"]
+}>
+
+export type SiteArchivesPageQuery = {
+  __typename?: "Query"
+  site: {
+    __typename?: "Site"
+    id: string
+    posts: {
+      __typename?: "PagesConnection"
+      nodes: Array<{
+        __typename?: "Page"
+        id: string
+        title: string
+        slug: string
+        publishedAt: any
+      }>
+    }
   }
 }
 
@@ -449,12 +490,12 @@ export type SiteIndexPageQuery = {
     __typename?: "Site"
     id: string
     posts: {
-      __typename?: "PostsConnection"
+      __typename?: "PagesConnection"
       nodes: Array<{
-        __typename?: "Post"
+        __typename?: "Page"
         id: string
         title: string
-        slug: string
+        permalink: string
         publishedAt: any
         autoExcerpt: string
       }>
@@ -714,19 +755,19 @@ export function useUserSiteLayoutQuery(
     ...options,
   })
 }
-export const DashboardPostsPageDataDocument = {
+export const SiteIdBySubdomainDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "DashboardPostsPageData" },
+      name: { kind: "Name", value: "SiteIdBySubdomain" },
       variableDefinitions: [
         {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "domainOrSubdomain" },
+            name: { kind: "Name", value: "subdomain" },
           },
           type: {
             kind: "NonNullType",
@@ -734,17 +775,6 @@ export const DashboardPostsPageDataDocument = {
               kind: "NamedType",
               name: { kind: "Name", value: "String" },
             },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "visibility" },
-          },
-          type: {
-            kind: "NamedType",
-            name: { kind: "Name", value: "PostVisibility" },
           },
         },
       ],
@@ -760,7 +790,7 @@ export const DashboardPostsPageDataDocument = {
                 name: { kind: "Name", value: "domainOrSubdomain" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "domainOrSubdomain" },
+                  name: { kind: "Name", value: "subdomain" },
                 },
               },
             ],
@@ -768,55 +798,6 @@ export const DashboardPostsPageDataDocument = {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "posts" },
-                  arguments: [
-                    {
-                      kind: "Argument",
-                      name: { kind: "Name", value: "visibility" },
-                      value: {
-                        kind: "Variable",
-                        name: { kind: "Name", value: "visibility" },
-                      },
-                    },
-                  ],
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "nodes" },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "id" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "title" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "content" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "publishedAt" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "published" },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
               ],
             },
           },
@@ -826,24 +807,21 @@ export const DashboardPostsPageDataDocument = {
   ],
 } as unknown as DocumentNode
 
-export function useDashboardPostsPageDataQuery(
-  options: Omit<
-    Urql.UseQueryArgs<DashboardPostsPageDataQueryVariables>,
-    "query"
-  >,
+export function useSiteIdBySubdomainQuery(
+  options: Omit<Urql.UseQueryArgs<SiteIdBySubdomainQueryVariables>, "query">,
 ) {
-  return Urql.useQuery<DashboardPostsPageDataQuery>({
-    query: DashboardPostsPageDataDocument,
+  return Urql.useQuery<SiteIdBySubdomainQuery>({
+    query: SiteIdBySubdomainDocument,
     ...options,
   })
 }
-export const CreatePostDocument = {
+export const CreateOrUpdatePageDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "mutation",
-      name: { kind: "Name", value: "createPost" },
+      name: { kind: "Name", value: "createOrUpdatePage" },
       variableDefinitions: [
         {
           kind: "VariableDefinition",
@@ -863,15 +841,17 @@ export const CreatePostDocument = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
+            name: { kind: "Name", value: "pageId" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
             name: { kind: "Name", value: "title" },
           },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
         {
           kind: "VariableDefinition",
@@ -879,12 +859,33 @@ export const CreatePostDocument = {
             kind: "Variable",
             name: { kind: "Name", value: "content" },
           },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "published" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "publishedAt" },
+          },
           type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
+            kind: "NamedType",
+            name: { kind: "Name", value: "DateTime" },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "type" } },
+          type: {
+            kind: "NamedType",
+            name: { kind: "Name", value: "PageTypeEnum" },
           },
         },
       ],
@@ -893,7 +894,7 @@ export const CreatePostDocument = {
         selections: [
           {
             kind: "Field",
-            name: { kind: "Name", value: "createPost" },
+            name: { kind: "Name", value: "createOrUpdatePage" },
             arguments: [
               {
                 kind: "Argument",
@@ -901,6 +902,14 @@ export const CreatePostDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "siteId" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "pageId" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "pageId" },
                 },
               },
               {
@@ -919,6 +928,30 @@ export const CreatePostDocument = {
                   name: { kind: "Name", value: "content" },
                 },
               },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "published" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "published" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "publishedAt" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "publishedAt" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "type" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "type" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
@@ -933,10 +966,11 @@ export const CreatePostDocument = {
   ],
 } as unknown as DocumentNode
 
-export function useCreatePostMutation() {
-  return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(
-    CreatePostDocument,
-  )
+export function useCreateOrUpdatePageMutation() {
+  return Urql.useMutation<
+    CreateOrUpdatePageMutation,
+    CreateOrUpdatePageMutationVariables
+  >(CreateOrUpdatePageDocument)
 }
 export const CreateSiteDocument = {
   kind: "Document",
@@ -1016,13 +1050,13 @@ export function useCreateSiteMutation() {
     CreateSiteDocument,
   )
 }
-export const DeletePostDocument = {
+export const DeletePageDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "mutation",
-      name: { kind: "Name", value: "deletePost" },
+      name: { kind: "Name", value: "deletePage" },
       variableDefinitions: [
         {
           kind: "VariableDefinition",
@@ -1041,7 +1075,7 @@ export const DeletePostDocument = {
         selections: [
           {
             kind: "Field",
-            name: { kind: "Name", value: "deletePost" },
+            name: { kind: "Name", value: "deletePage" },
             arguments: [
               {
                 kind: "Argument",
@@ -1059,9 +1093,9 @@ export const DeletePostDocument = {
   ],
 } as unknown as DocumentNode
 
-export function useDeletePostMutation() {
-  return Urql.useMutation<DeletePostMutation, DeletePostMutationVariables>(
-    DeletePostDocument,
+export function useDeletePageMutation() {
+  return Urql.useMutation<DeletePageMutation, DeletePageMutationVariables>(
+    DeletePageDocument,
   )
 }
 export const DeleteSiteDocument = {
@@ -1112,13 +1146,13 @@ export function useDeleteSiteMutation() {
     DeleteSiteDocument,
   )
 }
-export const PostForEditDocument = {
+export const PageForEditPageDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "postForEdit" },
+      name: { kind: "Name", value: "PageForEditPage" },
       variableDefinitions: [
         {
           kind: "VariableDefinition",
@@ -1140,7 +1174,7 @@ export const PostForEditDocument = {
         selections: [
           {
             kind: "Field",
-            name: { kind: "Name", value: "post" },
+            name: { kind: "Name", value: "page" },
             arguments: [
               {
                 kind: "Argument",
@@ -1157,6 +1191,7 @@ export const PostForEditDocument = {
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "slug" } },
                 { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "type" } },
                 { kind: "Field", name: { kind: "Name", value: "content" } },
                 { kind: "Field", name: { kind: "Name", value: "publishedAt" } },
                 { kind: "Field", name: { kind: "Name", value: "published" } },
@@ -1169,11 +1204,11 @@ export const PostForEditDocument = {
   ],
 } as unknown as DocumentNode
 
-export function usePostForEditQuery(
-  options: Omit<Urql.UseQueryArgs<PostForEditQueryVariables>, "query">,
+export function usePageForEditPageQuery(
+  options: Omit<Urql.UseQueryArgs<PageForEditPageQueryVariables>, "query">,
 ) {
-  return Urql.useQuery<PostForEditQuery>({
-    query: PostForEditDocument,
+  return Urql.useQuery<PageForEditPageQuery>({
+    query: PageForEditPageDocument,
     ...options,
   })
 }
@@ -1308,6 +1343,143 @@ export function useSiteQuery(
 ) {
   return Urql.useQuery<SiteQuery>({ query: SiteDocument, ...options })
 }
+export const SitePagesDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "SitePages" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "domainOrSubdomain" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "visibility" },
+          },
+          type: {
+            kind: "NamedType",
+            name: { kind: "Name", value: "PageVisibilityEnum" },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "type" } },
+          type: {
+            kind: "NamedType",
+            name: { kind: "Name", value: "PageTypeEnum" },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "site" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "domainOrSubdomain" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "domainOrSubdomain" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "pages" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "visibility" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "visibility" },
+                      },
+                    },
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "type" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "type" },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "nodes" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "title" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "type" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "content" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "publishedAt" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "published" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useSitePagesQuery(
+  options: Omit<Urql.UseQueryArgs<SitePagesQueryVariables>, "query">,
+) {
+  return Urql.useQuery<SitePagesQuery>({ query: SitePagesDocument, ...options })
+}
 export const UpdateMembershipLastSwitchedToDocument = {
   kind: "Document",
   definitions: [
@@ -1359,127 +1531,6 @@ export function useUpdateMembershipLastSwitchedToMutation() {
     UpdateMembershipLastSwitchedToMutation,
     UpdateMembershipLastSwitchedToMutationVariables
   >(UpdateMembershipLastSwitchedToDocument)
-}
-export const UpdatePostDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "updatePost" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "title" },
-          },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "content" },
-          },
-          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "published" },
-          },
-          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "publishedAt" },
-          },
-          type: {
-            kind: "NamedType",
-            name: { kind: "Name", value: "DateTime" },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "updatePost" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "id" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "id" },
-                },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "title" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "title" },
-                },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "content" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "content" },
-                },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "published" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "published" },
-                },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "publishedAt" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "publishedAt" },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode
-
-export function useUpdatePostMutation() {
-  return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(
-    UpdatePostDocument,
-  )
 }
 export const UpdateSiteDocument = {
   kind: "Document",
@@ -1735,13 +1786,13 @@ export function useViewerQuery(
 ) {
   return Urql.useQuery<ViewerQuery>({ query: ViewerDocument, ...options })
 }
-export const SitePostPageDataDocument = {
+export const SitePageQueryDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "SitePostPageData" },
+      name: { kind: "Name", value: "SitePageQuery" },
       variableDefinitions: [
         {
           kind: "VariableDefinition",
@@ -1798,7 +1849,7 @@ export const SitePostPageDataDocument = {
           },
           {
             kind: "Field",
-            name: { kind: "Name", value: "post" },
+            name: { kind: "Name", value: "page" },
             arguments: [
               {
                 kind: "Argument",
@@ -1808,12 +1859,22 @@ export const SitePostPageDataDocument = {
                   name: { kind: "Name", value: "slugOrId" },
                 },
               },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "domainOrSubdomain" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "domainOrSubdomain" },
+                },
+              },
             ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "type" } },
+                { kind: "Field", name: { kind: "Name", value: "permalink" } },
                 { kind: "Field", name: { kind: "Name", value: "publishedAt" } },
                 { kind: "Field", name: { kind: "Name", value: "contentHTML" } },
               ],
@@ -1825,11 +1886,174 @@ export const SitePostPageDataDocument = {
   ],
 } as unknown as DocumentNode
 
-export function useSitePostPageDataQuery(
-  options: Omit<Urql.UseQueryArgs<SitePostPageDataQueryVariables>, "query">,
+export function useSitePageQueryQuery(
+  options: Omit<Urql.UseQueryArgs<SitePageQueryQueryVariables>, "query">,
 ) {
-  return Urql.useQuery<SitePostPageDataQuery>({
-    query: SitePostPageDataDocument,
+  return Urql.useQuery<SitePageQueryQuery>({
+    query: SitePageQueryDocument,
+    ...options,
+  })
+}
+export const SiteAboutPageDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "SiteAboutPage" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "domainOrSubdomain" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "site" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "domainOrSubdomain" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "domainOrSubdomain" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "bio" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useSiteAboutPageQuery(
+  options: Omit<Urql.UseQueryArgs<SiteAboutPageQueryVariables>, "query">,
+) {
+  return Urql.useQuery<SiteAboutPageQuery>({
+    query: SiteAboutPageDocument,
+    ...options,
+  })
+}
+export const SiteArchivesPageDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "SiteArchivesPage" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "domainOrSubdomain" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "site" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "domainOrSubdomain" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "domainOrSubdomain" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "posts" },
+                  name: { kind: "Name", value: "pages" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "visibility" },
+                      value: { kind: "EnumValue", value: "PUBLISHED" },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "nodes" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "title" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "slug" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "publishedAt" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useSiteArchivesPageQuery(
+  options: Omit<Urql.UseQueryArgs<SiteArchivesPageQueryVariables>, "query">,
+) {
+  return Urql.useQuery<SiteArchivesPageQuery>({
+    query: SiteArchivesPageDocument,
     ...options,
   })
 }
@@ -1878,12 +2102,13 @@ export const SiteIndexPageDocument = {
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 {
                   kind: "Field",
-                  name: { kind: "Name", value: "posts" },
+                  alias: { kind: "Name", value: "posts" },
+                  name: { kind: "Name", value: "pages" },
                   arguments: [
                     {
                       kind: "Argument",
                       name: { kind: "Name", value: "visibility" },
-                      value: { kind: "EnumValue", value: "published" },
+                      value: { kind: "EnumValue", value: "PUBLISHED" },
                     },
                   ],
                   selectionSet: {
@@ -1905,7 +2130,7 @@ export const SiteIndexPageDocument = {
                             },
                             {
                               kind: "Field",
-                              name: { kind: "Name", value: "slug" },
+                              name: { kind: "Name", value: "permalink" },
                             },
                             {
                               kind: "Field",

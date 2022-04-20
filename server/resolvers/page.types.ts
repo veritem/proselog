@@ -2,36 +2,36 @@ import { ArgsType, Field, ObjectType, registerEnumType } from "type-graphql"
 import * as isoDate from "graphql-iso-date"
 import { Pagination } from "./shared.types"
 
-export enum PostVisibility {
-  all = "all",
-  published = "published",
-  draft = "draft",
-  scheduled = "scheduled",
+export enum PageVisibilityEnum {
+  ALL = "ALL",
+  PUBLISHED = "PUBLISHED",
+  DRAFT = "DRAFT",
+  SCHEDULED = "SCHEDULED",
 }
 
-registerEnumType(PostVisibility, {
-  name: "PostVisibility",
+registerEnumType(PageVisibilityEnum, {
+  name: "PageVisibilityEnum",
 })
 
-@ArgsType()
-export class CreatePostArgs {
-  @Field()
-  title: string
-
-  @Field()
-  content: string
-
-  @Field()
-  siteId: string
+export enum PageTypeEnum {
+  PAGE = "PAGE",
+  POST = "POST",
 }
 
+registerEnumType(PageTypeEnum, {
+  name: "PageTypeEnum",
+})
+
 @ObjectType({ simpleResolvers: true })
-export class Post {
+export class Page {
   @Field()
   id: string
 
   @Field()
   slug: string
+
+  @Field((type) => PageTypeEnum)
+  type: PageTypeEnum
 
   @Field()
   title: string
@@ -59,24 +59,30 @@ export class Post {
 }
 
 @ObjectType({ simpleResolvers: true })
-export class PostsConnection {
-  @Field((type) => [Post])
-  nodes: Post[]
+export class PagesConnection {
+  @Field((type) => [Page])
+  nodes: Page[]
 
   @Field((type) => Pagination)
   pagination: Pagination
 }
 
 @ArgsType()
-export class PostArgs {
+export class PageArgs {
   @Field()
   slugOrId: string
+
+  @Field({ nullable: true, description: `Optional when slugOrId is an id` })
+  domainOrSubdomain?: string
 }
 
 @ArgsType()
-export class UpdatePostArgs {
+export class CreateOrUpdatePageArgs {
   @Field()
-  id: string
+  siteId: string
+
+  @Field({ nullable: true })
+  pageId?: string
 
   @Field({ nullable: true })
   title?: string
@@ -92,10 +98,16 @@ export class UpdatePostArgs {
 
   @Field((type) => isoDate.GraphQLDateTime, { nullable: true })
   publishedAt?: Date
+
+  @Field({ nullable: true })
+  slug?: string
+
+  @Field((type) => PageTypeEnum, { nullable: true })
+  type?: PageTypeEnum
 }
 
 @ArgsType()
-export class DeletePostArgs {
+export class DeletePageArgs {
   @Field()
   id: string
 }

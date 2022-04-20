@@ -1,6 +1,6 @@
 import {
   Site as DB_Site,
-  Post as DB_Post,
+  Page as DB_Page,
   MembershipRole,
   Membership,
 } from "@prisma/client"
@@ -40,16 +40,16 @@ export const getGuard = <TRequireAuth extends boolean>(
       },
       isAdminOrGreater,
     },
-    post: {
+    page: {
       create(site: Partial<DB_Site>) {
         return allow.site.update(site)
       },
-      read(post: Partial<DB_Post>) {
+      read(page: Partial<DB_Page>) {
         const isPublished =
-          post.published && post.publishedAt && post.publishedAt <= new Date()
+          page.published && page.publishedAt && page.publishedAt <= new Date()
         return isPublished
-          ? !post.deletedAt
-          : !post.deletedAt && isAdminOrGreater(post.siteId)
+          ? !page.deletedAt
+          : !page.deletedAt && isAdminOrGreater(page.siteId)
       },
       update(site: Partial<DB_Site>) {
         return allow.site.update(site)

@@ -39,6 +39,7 @@
     "graphql-iso-date": "3.6.1",
     "graphql-tag": "2.12.6",
     "jose": "4.6.1",
+    "limax": "^3.0.0",
     "markdown-it": "^12.3.2",
     "micro": "9.3.4",
     "multiparty": "^4.2.3",

@@ -143,3 +143,17 @@ textarea.input {
 .post-status-circle.is-scheduled {
   @apply bg-yellow-500;
 }
+
+.page-title {
+  @apply relative;
+}
+
+.page-title:after {
+  content: "";
+  @apply absolute;
+  @apply h-[2px];
+  @apply bg-indigo-500;
+  @apply w-10;
+  @apply bottom-0;
+  @apply left-0;
+}

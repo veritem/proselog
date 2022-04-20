@@ -1,6 +1,6 @@
 import Markdown from "markdown-it"
 
-export const renderPostContent = async (content: string) => {
+export const renderPageContent = async (content: string) => {
   const md = new Markdown({
     html: false,
     linkify: true,

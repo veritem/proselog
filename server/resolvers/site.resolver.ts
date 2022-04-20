@@ -5,7 +5,7 @@ import {
   checkSubdomain,
   getSiteByDomainOrSubdomain,
 } from "$server/services/site.service"
-import { MembershipRole, Prisma } from "@prisma/client"
+import { MembershipRole, PageType, Prisma } from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
 import { nanoid } from "nanoid"
 import {
@@ -16,13 +16,13 @@ import {
   Resolver,
   Root,
 } from "type-graphql"
-import { PostsConnection, PostVisibility } from "./post.types"
+import { Page, PagesConnection, PageVisibilityEnum } from "./page.types"
 import {
   CreateSiteArgs,
   DeleteSiteArgs,
   Site,
   SiteArgs,
-  SitePostsArgs,
+  SitePagesArgs,
   SiteStats,
   UpdateSiteArgs,
 } from "./site.types"
@@ -65,6 +65,17 @@ export default class SiteResolver {
             },
             role: MembershipRole.OWNER,
             acceptedAt: new Date(),
+          },
+        },
+        pages: {
+          create: {
+            title: "About",
+            slug: "about",
+            excerpt: "",
+            content: `My name is ${args.name} and I'm a new site.`,
+            type: PageType.PAGE,
+            published: true,
+            publishedAt: new Date(),
           },
         },
       },
@@ -144,36 +155,37 @@ export default class SiteResolver {
     return true
   }
 
-  @FieldResolver((returns) => PostsConnection)
-  async posts(
+  @FieldResolver((returns) => PagesConnection)
+  async pages(
     @GqlContext() ctx: ContextType,
     @Root() site: Site,
-    @Args() args: SitePostsArgs,
-  ): Promise<PostsConnection> {
+    @Args() args: SitePagesArgs,
+  ): Promise<PagesConnection> {
     const guard = getGuard(ctx)
 
     const now = new Date()
 
-    const where: Prisma.PostWhereInput = {
+    const where: Prisma.PageWhereInput = {
       siteId: site.id,
       deletedAt: null,
+      type: args.type,
     }
-    if (args.visibility === PostVisibility.published) {
+    if (args.visibility === PageVisibilityEnum.PUBLISHED) {
       where.published = true
       where.publishedAt = {
         lte: now,
       }
-    } else if (args.visibility === PostVisibility.scheduled) {
+    } else if (args.visibility === PageVisibilityEnum.SCHEDULED) {
       where.published = true
       where.publishedAt = {
         gt: now,
       }
-    } else if (args.visibility === PostVisibility.draft) {
+    } else if (args.visibility === PageVisibilityEnum.DRAFT) {
       where.published = false
     }
 
-    const [posts, total] = await Promise.all([
-      prisma.post.findMany({
+    const [pages, total] = await Promise.all([
+      prisma.page.findMany({
         where,
         orderBy: {
           createdAt: "desc",
@@ -185,19 +197,19 @@ export default class SiteResolver {
             }
           : undefined,
       }),
-      await prisma.post.count({
+      await prisma.page.count({
         where: {
           siteId: site.id,
         },
       }),
     ])
 
-    guard.allow.EVERY(posts.map((post) => () => guard.allow.post.read(post)))
+    guard.allow.EVERY(pages.map((page) => () => guard.allow.page.read(page)))
 
-    const hasMore = posts.length > args.take
+    const hasMore = pages.length > args.take
 
     return {
-      nodes: posts,
+      nodes: pages as Page[],
       pagination: {
         hasMore,
         total,
@@ -225,10 +237,11 @@ export default class SiteResolver {
 
   @FieldResolver((returns) => SiteStats)
   async stats(@Root() site: Site): Promise<SiteStats> {
-    const postCount = await prisma.post.count({
+    const postCount = await prisma.page.count({
       where: {
         deletedAt: null,
         siteId: site.id,
+        type: PageType.POST,
       },
     })
 

@@ -16,11 +16,11 @@ gql`
   query SiteIndexPage($domainOrSubdomain: String!) {
     site(domainOrSubdomain: $domainOrSubdomain) {
       id
-      posts(visibility: published) {
+      posts: pages(visibility: PUBLISHED) {
         nodes {
           id
           title
-          slug
+          permalink
           publishedAt
           autoExcerpt
         }
@@ -32,16 +32,22 @@ gql`
 export const getServerSideProps = serverSidePropsHandler(async (ctx) => {
   const { client, ssr } = createUrqlClient()
 
-  await client
+  const { error } = await client
     .query<UserSiteLayoutQuery, UserSiteLayoutQueryVariables>(
       UserSiteLayoutDocument,
       { domainOrSubdomain: ctx.query.domain as string },
     )
     .toPromise()
 
+  if (error) {
+    throw error
+  }
+
+  const urqlState = ssr.extractData()
+
   return {
     props: {
-      urqlState: ssr.extractData(),
+      urqlState,
     },
   }
 })
@@ -64,7 +70,7 @@ export default function SiteIndexPage() {
   return (
     <>
       <UserSiteLayout>
-        <div className="my-20 space-y-20">
+        <div className="space-y-14">
           {posts?.map((post) => {
             return (
               <div key={post.id} className="block">
@@ -72,7 +78,7 @@ export default function SiteIndexPage() {
                   {formatDate(post.publishedAt)}
                 </div>
                 <h3 className="text-2xl font-medium">
-                  <Link href={`/${post.slug}`}>
+                  <Link href={post.permalink}>
                     <a className="hover:text-indigo-500">{post.title}</a>
                   </Link>
                 </h3>

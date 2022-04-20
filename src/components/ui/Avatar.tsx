@@ -8,8 +8,9 @@ export const Avatar: React.FC<
     name?: string | null
     size?: number
     bgColor?: string
+    rounded?: boolean
   } & React.HTMLAttributes<HTMLSpanElement>
-> = ({ images, size, name, bgColor, className, ...props }) => {
+> = ({ images, size, name, bgColor, className, rounded, ...props }) => {
   size = size || 60
 
   const fontSize = size * 0.5
@@ -26,12 +27,15 @@ export const Avatar: React.FC<
     }
   }, [images])
 
+  const borderRadius = rounded === false ? "rounded-lg" : "rounded-full"
+
   if (!image) {
     return (
       <span
         {...props}
         className={clsx(
-          `inline-flex text-zinc-500 bg-white rounded-full items-center justify-center text-xl font-medium uppercase`,
+          `inline-flex text-zinc-500 bg-white items-center justify-center text-xl font-medium uppercase`,
+          borderRadius,
           className,
         )}
         style={{
@@ -50,7 +54,8 @@ export const Avatar: React.FC<
     <span
       {...props}
       className={clsx(
-        `inline-flex text-zinc-500 bg-white rounded-full items-center justify-center text-xl font-medium uppercase`,
+        `inline-flex text-zinc-500 bg-white  items-center justify-center text-xl font-medium uppercase`,
+        borderRadius,
         className,
       )}
       style={{
@@ -59,7 +64,7 @@ export const Avatar: React.FC<
       }}
     >
       <Image
-        className="rounded-full"
+        className={borderRadius}
         src={image}
         width={size}
         height={size}

@@ -6,6 +6,10 @@ export default async (req: NextRequest) => {
   const host = req.headers.get("host")
   const { pathname } = req.nextUrl
 
+  if (pathname === "/favicon.ico") {
+    return new Response("not found", { status: 404 })
+  }
+
   if (pathname === "/login") {
     return NextResponse.next()
   }

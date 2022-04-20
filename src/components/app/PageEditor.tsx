@@ -1,9 +1,11 @@
 import { Button } from "$src/components/ui/Button"
 import { Editor } from "$src/components/ui/Editor"
 import {
-  PostVisibility,
-  usePostForEditQuery,
-  useUpdatePostMutation,
+  PageTypeEnum,
+  PageVisibilityEnum,
+  useCreateOrUpdatePageMutation,
+  usePageForEditPageQuery,
+  useSiteIdBySubdomainQuery,
 } from "$src/generated/graphql"
 import { Popover } from "@headlessui/react"
 import clsx from "clsx"
@@ -11,26 +13,32 @@ import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import dayjs from "dayjs"
-import { usePostVisibility } from "$src/lib/post-helpers"
+import { usePageVisibility } from "$src/lib/page-helpers"
 
 const getInputDatetimeValue = (date: Date | string) => {
   const str = dayjs(date).format()
   return str.substring(0, ((str.indexOf("T") | 0) + 6) | 0)
 }
 
-export default function EditPostPage() {
+export const PageEditor: React.FC<{ type: PageTypeEnum }> = ({ type }) => {
   const router = useRouter()
-  const postId = router.query.postId as string
+  const pageId = router.query.pageId as string | undefined
   const subdomain = router.query.subdomain as string
-  const [, updatePostMutation] = useUpdatePostMutation()
+  const [, createOrUpdatePageMutation] = useCreateOrUpdatePageMutation()
 
   const [published, setPublished] = useState(false)
   const [publishedAt, setPublishedAt] = useState<Date | null>(null)
-  const [postResult] = usePostForEditQuery({
+  const [pageForEditPageQuery] = usePageForEditPageQuery({
     variables: {
-      slugOrId: postId,
+      slugOrId: pageId!,
     },
-    pause: !postId,
+    pause: !pageId,
+  })
+  const [siteIdBySubdomainQuery] = useSiteIdBySubdomainQuery({
+    variables: {
+      subdomain,
+    },
+    pause: !subdomain,
   })
 
   const [form, setForm] = useState({
@@ -51,18 +59,27 @@ export default function EditPostPage() {
   const submit = async ({ onSuccess }: { onSuccess: () => void }) => {
     setFormSubmitting(true)
     try {
-      const { error, data } = await updatePostMutation({
-        id: postId,
+      const { error, data } = await createOrUpdatePageMutation({
+        siteId: siteIdBySubdomainQuery.data!.site.id,
+        pageId,
         title: form.title,
         content: form.content,
         publishedAt: new Date(form.publishedAt),
         published: form.published,
+        type,
       })
       if (error) {
         toast.error(error.message)
       } else if (data) {
         onSuccess()
         toast.success("success")
+        if (!pageId) {
+          router.push(
+            `/dashboard/${subdomain}/edit-${
+              type === PageTypeEnum.Post ? "post" : "page"
+            }/${data.createOrUpdatePage.id}`,
+          )
+        }
       }
     } finally {
       setFormSubmitting(false)
@@ -75,21 +92,21 @@ export default function EditPostPage() {
 
   const openSettings = () => {}
 
-  const visibility = usePostVisibility({ published, publishedAt })
+  const visibility = usePageVisibility({ published, publishedAt })
 
   useEffect(() => {
-    if (postResult.data) {
+    if (pageForEditPageQuery.data) {
       setForm({
         ...form,
-        title: postResult.data.post.title,
-        content: postResult.data.post.content,
-        published: postResult.data.post.published,
-        publishedAt: postResult.data.post.publishedAt,
+        title: pageForEditPageQuery.data.page.title,
+        content: pageForEditPageQuery.data.page.content,
+        published: pageForEditPageQuery.data.page.published,
+        publishedAt: pageForEditPageQuery.data.page.publishedAt,
       })
-      setPublished(postResult.data.post.published)
-      setPublishedAt(new Date(postResult.data.post.publishedAt))
+      setPublished(pageForEditPageQuery.data.page.published)
+      setPublishedAt(new Date(pageForEditPageQuery.data.page.publishedAt))
     }
-  }, [postResult.data])
+  }, [pageForEditPageQuery.data])
 
   return (
     <div>
@@ -108,9 +125,9 @@ export default function EditPostPage() {
               published ? `text-indigo-500` : `text-zinc-300`,
             )}
           >
-            {visibility === PostVisibility.Published
+            {visibility === PageVisibilityEnum.Published
               ? "Published"
-              : visibility === PostVisibility.Scheduled
+              : visibility === PageVisibilityEnum.Scheduled
               ? "Scheduled"
               : "Draft"}
           </span>

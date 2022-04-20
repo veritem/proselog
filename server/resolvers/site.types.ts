@@ -1,7 +1,7 @@
-import { Args, ArgsType, Field, Int, ObjectType } from "type-graphql"
+import { ArgsType, Field, Int, ObjectType } from "type-graphql"
 import * as isoDate from "graphql-iso-date"
 import { PaginationArgs } from "./shared.types"
-import { PostVisibility } from "./post.types"
+import { PageTypeEnum, PageVisibilityEnum } from "./page.types"
 
 @ObjectType({ simpleResolvers: true })
 export class Site {
@@ -58,11 +58,16 @@ export class DeleteSiteArgs {
 }
 
 @ArgsType()
-export class SitePostsArgs extends PaginationArgs {
-  @Field((type) => PostVisibility, {
-    defaultValue: PostVisibility.published,
+export class SitePagesArgs extends PaginationArgs {
+  @Field((type) => PageVisibilityEnum, {
+    defaultValue: PageVisibilityEnum.PUBLISHED,
   })
-  visibility: PostVisibility
+  visibility: PageVisibilityEnum
+
+  @Field((type) => PageTypeEnum, {
+    defaultValue: PageTypeEnum.POST,
+  })
+  type: PageTypeEnum
 }
 
 @ArgsType()

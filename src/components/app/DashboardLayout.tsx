@@ -89,6 +89,24 @@ export const DashboardLayout: React.FC<{
       text: "Posts",
     },
     {
+      href: `/dashboard/${subdomain}/pages`,
+      icon: (
+        <svg width="1em" height="1em" viewBox="0 0 24 24">
+          <g
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2.2"
+          >
+            <path d="M12 11h5m-5-4h5m-9 8V3.6a.6.6 0 0 1 .6-.6h11.8a.6.6 0 0 1 .6.6V17a4 4 0 0 1-4 4v0"></path>
+            <path d="M5 15h7.4c.331 0 .603.267.63.597C13.153 17.115 13.78 21 17 21H6a3 3 0 0 1-3-3v-1a2 2 0 0 1 2-2Z"></path>
+          </g>
+        </svg>
+      ),
+      text: "Pages",
+    },
+    {
       href: `/dashboard/${subdomain}/settings`,
       icon: (
         <svg width="1em" height="1em" viewBox="0 0 16 16">

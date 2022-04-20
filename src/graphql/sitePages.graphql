@@ -1,14 +1,16 @@
-query DashboardPostsPageData(
+query SitePages(
   $domainOrSubdomain: String!
-  $visibility: PostVisibility
+  $visibility: PageVisibilityEnum
+  $type: PageTypeEnum
 ) {
   site(domainOrSubdomain: $domainOrSubdomain) {
     id
     name
-    posts(visibility: $visibility) {
+    pages(visibility: $visibility, type: $type) {
       nodes {
         id
         title
+        type
         content
         publishedAt
         published

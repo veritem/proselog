@@ -74,7 +74,7 @@ model Site {
   updatedAt       DateTime     @updatedAt
   name            String
   subdomain       String       @unique
-  posts           Post[]       @relation(name: "SitePosts")
+  pages           Page[]       @relation(name: "SitePages")
   domains         Domain[]     @relation(name: "SiteDomains")
   primaryDomain   Domain?      @relation(name: "SitePrimaryDomain", fields: [primaryDomainId], references: [id])
   primaryDomainId String?      @unique
@@ -86,24 +86,31 @@ model Site {
   @@map("sites")
 }
 
-model Post {
+enum PageType {
+  POST
+  PAGE
+}
+
+model Page {
   id               String    @id @default(uuid())
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   contentUpdatedAt DateTime  @default(now())
   publishedAt      DateTime  @default(now())
   published        Boolean   @default(false)
+  type             PageType  @default(POST)
   title            String
   content          String
   excerpt          String
   format           String    @default("markdown")
-  slug             String    @unique
-  site             Site      @relation(name: "SitePosts", fields: [siteId], references: [id], onDelete: Cascade)
+  slug             String
+  site             Site      @relation(name: "SitePages", fields: [siteId], references: [id], onDelete: Cascade)
   siteId           String
-  tags             PostTag[] @relation(name: "PostTags")
+  tags             PageTag[] @relation(name: "PageTags")
   deletedAt        DateTime?
 
-  @@map("posts")
+  @@unique([siteId, slug])
+  @@map("pages")
 }
 
 model Domain {
@@ -118,14 +125,13 @@ model Domain {
   @@map("domains")
 }
 
-model PostTag {
+model PageTag {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String
   slug      String
-  posts     Post[]   @relation(name: "PostTags")
+  pages     Page[]   @relation(name: "PageTags")
 
-
-  @@map("post_tags")
+  @@map("page_tags")
 }

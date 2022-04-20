@@ -1,6 +1,7 @@
 import { prisma } from "$server/prisma"
 import { MembershipRole } from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
+import limax from "limax"
 
 export const checkSubdomain = async ({
   subdomain,
@@ -65,4 +66,8 @@ export const getSiteByDomainOrSubdomain = async (domainOrSubdomain: string) => {
   }
 
   return site
+}
+
+export const getTitleSlug = (title: string) => {
+  return limax(title)
 }
