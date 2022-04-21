@@ -1,6 +1,8 @@
 import { getAuthUser } from "$server/auth"
+import { APP_NAME } from "$src/config"
 import { clientState } from "$src/lib/client-state"
 import { serverSidePropsHandler } from "$src/lib/server-side-props"
+import Head from "next/head"
 import Link from "next/link"
 
 type Props = {
@@ -35,6 +37,9 @@ export default function Page({ isLoggedIn }: Props) {
         ]
   return (
     <>
+      <Head>
+        <title>{APP_NAME}</title>
+      </Head>
       <div className="h-screen flex items-center justify-center">
         <div className="-mt-20">
           <div className="max-w-screen-md mx-auto px-5">
