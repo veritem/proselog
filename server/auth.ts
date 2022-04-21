@@ -3,10 +3,10 @@ import { EncryptJWT, jwtDecrypt } from "jose"
 import { prisma } from "./prisma"
 import { IncomingMessage, ServerResponse } from "http"
 import { singletonAsync } from "./singleton"
-import { AUTH_COOKIE_NAME, AUTH_SECRET } from "$src/config"
+import { AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS, AUTH_SECRET } from "$src/config"
 import { nanoid } from "nanoid"
 import Cookie from "cookie"
-import { Membership, User } from "@prisma/client"
+import type { Membership, User } from "@prisma/client"
 
 export type AuthUser = User & {
   memberships: Membership[]
@@ -48,13 +48,7 @@ export const getAuthUser = async (
 }
 
 export const setAuthCookie = (res: ServerResponse, token: string) => {
-  const value = Cookie.serialize(AUTH_COOKIE_NAME, token, {
-    path: "/",
-    httpOnly: true,
-    sameSite: "strict",
-    maxAge: 60 * 60 * 24 * 30, // 30 days
-    secure: process.env.NODE_ENV === "production",
-  })
+  const value = Cookie.serialize(AUTH_COOKIE_NAME, token, AUTH_COOKIE_OPTIONS)
   res.setHeader("set-cookie", value)
 }
 

@@ -79,7 +79,7 @@ export type MutationUpdateMembershipLastSwitchedToArgs = {
 }
 
 export type MutationUpdateSiteArgs = {
-  bio?: InputMaybe<Scalars["String"]>
+  description?: InputMaybe<Scalars["String"]>
   id: Scalars["String"]
   name?: InputMaybe<Scalars["String"]>
   subdomain?: InputMaybe<Scalars["String"]>
@@ -159,8 +159,8 @@ export type QueryUserArgs = {
 
 export type Site = {
   __typename?: "Site"
-  bio?: Maybe<Scalars["String"]>
   createdAt: Scalars["DateTime"]
+  description?: Maybe<Scalars["String"]>
   id: Scalars["String"]
   name: Scalars["String"]
   owner: User
@@ -243,7 +243,7 @@ export type UserSiteLayoutQuery = {
     __typename?: "Site"
     id: string
     name: string
-    bio?: string | null
+    description?: string | null
     subdomain: string
     owner: {
       __typename?: "User"
@@ -252,15 +252,6 @@ export type UserSiteLayoutQuery = {
       avatar?: string | null
     }
   }
-}
-
-export type SiteIdBySubdomainQueryVariables = Exact<{
-  subdomain: Scalars["String"]
-}>
-
-export type SiteIdBySubdomainQuery = {
-  __typename?: "Query"
-  site: { __typename?: "Site"; id: string }
 }
 
 export type CreateOrUpdatePageMutationVariables = Exact<{
@@ -350,8 +341,17 @@ export type SiteQuery = {
     id: string
     name: string
     subdomain: string
-    bio?: string | null
+    description?: string | null
   }
+}
+
+export type SiteIdBySubdomainQueryVariables = Exact<{
+  subdomain: Scalars["String"]
+}>
+
+export type SiteIdBySubdomainQuery = {
+  __typename?: "Query"
+  site: { __typename?: "Site"; id: string }
 }
 
 export type SitePagesQueryVariables = Exact<{
@@ -394,7 +394,7 @@ export type UpdateSiteMutationVariables = Exact<{
   id: Scalars["String"]
   name?: InputMaybe<Scalars["String"]>
   subdomain?: InputMaybe<Scalars["String"]>
-  bio?: InputMaybe<Scalars["String"]>
+  description?: InputMaybe<Scalars["String"]>
 }>
 
 export type UpdateSiteMutation = {
@@ -447,15 +447,6 @@ export type SitePageQueryQuery = {
     publishedAt: any
     contentHTML: string
   }
-}
-
-export type SiteAboutPageQueryVariables = Exact<{
-  domainOrSubdomain: Scalars["String"]
-}>
-
-export type SiteAboutPageQuery = {
-  __typename?: "Query"
-  site: { __typename?: "Site"; id: string; bio?: string | null }
 }
 
 export type SiteArchivesPageQueryVariables = Exact<{
@@ -721,7 +712,7 @@ export const UserSiteLayoutDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
-                { kind: "Field", name: { kind: "Name", value: "bio" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
                 { kind: "Field", name: { kind: "Name", value: "subdomain" } },
                 {
                   kind: "Field",
@@ -752,66 +743,6 @@ export function useUserSiteLayoutQuery(
 ) {
   return Urql.useQuery<UserSiteLayoutQuery>({
     query: UserSiteLayoutDocument,
-    ...options,
-  })
-}
-export const SiteIdBySubdomainDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "SiteIdBySubdomain" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "subdomain" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "site" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "domainOrSubdomain" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "subdomain" },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode
-
-export function useSiteIdBySubdomainQuery(
-  options: Omit<Urql.UseQueryArgs<SiteIdBySubdomainQueryVariables>, "query">,
-) {
-  return Urql.useQuery<SiteIdBySubdomainQuery>({
-    query: SiteIdBySubdomainDocument,
     ...options,
   })
 }
@@ -1328,7 +1259,7 @@ export const SiteDocument = {
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
                 { kind: "Field", name: { kind: "Name", value: "subdomain" } },
-                { kind: "Field", name: { kind: "Name", value: "bio" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
               ],
             },
           },
@@ -1342,6 +1273,66 @@ export function useSiteQuery(
   options: Omit<Urql.UseQueryArgs<SiteQueryVariables>, "query">,
 ) {
   return Urql.useQuery<SiteQuery>({ query: SiteDocument, ...options })
+}
+export const SiteIdBySubdomainDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "SiteIdBySubdomain" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "subdomain" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "site" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "domainOrSubdomain" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "subdomain" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useSiteIdBySubdomainQuery(
+  options: Omit<Urql.UseQueryArgs<SiteIdBySubdomainQueryVariables>, "query">,
+) {
+  return Urql.useQuery<SiteIdBySubdomainQuery>({
+    query: SiteIdBySubdomainDocument,
+    ...options,
+  })
 }
 export const SitePagesDocument = {
   kind: "Document",
@@ -1566,7 +1557,10 @@ export const UpdateSiteDocument = {
         },
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "bio" } },
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "description" },
+          },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
       ],
@@ -1603,10 +1597,10 @@ export const UpdateSiteDocument = {
               },
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "bio" },
+                name: { kind: "Name", value: "description" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "bio" },
+                  name: { kind: "Name", value: "description" },
                 },
               },
             ],
@@ -1891,67 +1885,6 @@ export function useSitePageQueryQuery(
 ) {
   return Urql.useQuery<SitePageQueryQuery>({
     query: SitePageQueryDocument,
-    ...options,
-  })
-}
-export const SiteAboutPageDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "SiteAboutPage" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "domainOrSubdomain" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "site" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "domainOrSubdomain" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "domainOrSubdomain" },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "bio" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode
-
-export function useSiteAboutPageQuery(
-  options: Omit<Urql.UseQueryArgs<SiteAboutPageQueryVariables>, "query">,
-) {
-  return Urql.useQuery<SiteAboutPageQuery>({
-    query: SiteAboutPageDocument,
     ...options,
   })
 }

@@ -24,7 +24,7 @@ export class Site {
   userId: string
 
   @Field({ nullable: true })
-  bio?: string
+  description?: string
 }
 
 @ArgsType()
@@ -48,7 +48,7 @@ export class UpdateSiteArgs {
   subdomain?: string
 
   @Field({ nullable: true })
-  bio?: string
+  description?: string
 }
 
 @ArgsType()

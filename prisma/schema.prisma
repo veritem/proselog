@@ -78,7 +78,7 @@ model Site {
   domains         Domain[]     @relation(name: "SiteDomains")
   primaryDomain   Domain?      @relation(name: "SitePrimaryDomain", fields: [primaryDomainId], references: [id])
   primaryDomainId String?      @unique
-  bio             String?
+  description     String?
   twitter         String?
   deletedAt       DateTime?
   memberships     Membership[]

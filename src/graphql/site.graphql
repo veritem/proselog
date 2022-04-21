@@ -3,6 +3,6 @@ query site($domainOrSubdomain: String!) {
     id
     name
     subdomain
-    bio
+    description
   }
 }

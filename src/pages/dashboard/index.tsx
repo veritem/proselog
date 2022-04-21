@@ -5,7 +5,7 @@ import { redirect, serverSidePropsHandler } from "$src/lib/server-side-props"
 export const getServerSideProps = serverSidePropsHandler(async (ctx) => {
   const user = await getAuthUser(ctx.req)
   if (!user) {
-    return redirect("/login")
+    return redirect("/")
   }
   const site = await getUserLastActiveSite(user.id)
   if (!site) {

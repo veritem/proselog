@@ -54,7 +54,8 @@
     "type-graphql": "1.1.1",
     "ua-parser-js": "^1.0.2",
     "urql": "2.2.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "valtio": "^1.6.0"
   },
   "devDependencies": {
     "@egoist/prettier-config": "1.0.0",

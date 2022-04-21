@@ -2,13 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-fans: theme("fontFamily.sans");
-  --shadow-color-button: theme("colors.gray.300");
-  /* Accent color for form controls */
-  accent-color: theme("colors.indigo.500");
-}
-
 *,
 *:after,
 *:before {

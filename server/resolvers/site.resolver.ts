@@ -117,7 +117,7 @@ export default class SiteResolver {
       data: {
         name: args.name,
         subdomain: args.subdomain,
-        bio: args.bio,
+        description: args.description,
       },
     })
 

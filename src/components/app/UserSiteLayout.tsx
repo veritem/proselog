@@ -7,13 +7,14 @@ import Head from "next/head"
 import { getUserContentsUrl } from "$src/lib/user-contents-helpers"
 import React, { useMemo } from "react"
 import clsx from "clsx"
+import { clientState } from "$src/lib/client-state"
 
 gql`
   query UserSiteLayout($domainOrSubdomain: String!) {
     site(domainOrSubdomain: $domainOrSubdomain) {
       id
       name
-      bio
+      description
       subdomain
       owner {
         id
@@ -24,9 +25,9 @@ gql`
   }
 `
 
-const DropdownMenu: React.FC<{ links: { text: string; href: string }[] }> = ({
-  links,
-}) => {
+const DropdownMenu: React.FC<{
+  links: { text: string; href?: string; onClick?: () => void }[]
+}> = ({ links }) => {
   const button = useMemo(
     () => (
       <button
@@ -53,12 +54,23 @@ const DropdownMenu: React.FC<{ links: { text: string; href: string }[] }> = ({
         <div className="flex justify-end">{button}</div>
         <div className="w-full">
           {links.map((link) => {
+            if (link.href) {
+              return (
+                <Link key={link.href + link.text} href={link.href}>
+                  <a className="flex h-8 justify-end items-center px-3 w-full hover:text-indigo-500">
+                    <span>{link.text}</span>
+                  </a>
+                </Link>
+              )
+            }
             return (
-              <Link key={link.href + link.text} href={link.href}>
-                <a className="flex h-8 justify-end items-center px-3 w-full hover:text-indigo-500">
-                  <span>{link.text}</span>
-                </a>
-              </Link>
+              <button
+                key={link.text}
+                onClick={link.onClick}
+                className="flex h-8 justify-end items-center px-3 w-full hover:text-indigo-500"
+              >
+                <span>{link.text}</span>
+              </button>
             )
           })}
         </div>
@@ -93,8 +105,17 @@ export const UserSiteLayout: React.FC<{
 
   const dropdownLinks = [
     { text: "Archives", href: "/archives" },
-    { text: "Settings", href: `/settings` },
-    { text: "Log out", href: `/logout` },
+    {
+      text: "Log in",
+      onClick() {
+        clientState.loginModalOpened = true
+      },
+    },
+    { text: "Dashboard", href: `/dashboard` },
+    {
+      text: "Log out",
+      href: "/logout",
+    },
   ]
 
   return (
@@ -103,7 +124,7 @@ export const UserSiteLayout: React.FC<{
         <title>{title ? `${title} - ${site?.name}` : site?.name}</title>
       </Head>
       <div>
-        <header className="z-[9999] border-b fixed top-0 left-0 right-0 h-16 bg-white bg-opacity-80 backdrop-blur-lg text-zinc-500">
+        <header className="z-10 border-b fixed top-0 left-0 right-0 h-16 bg-white bg-opacity-80 backdrop-blur-lg text-zinc-500">
           <div className="flex justify-between items-center h-16 px-5 max-w-screen-md mx-auto">
             <div className="flex items-center">
               <Link href="/">

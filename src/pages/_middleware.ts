@@ -1,5 +1,9 @@
-import { IS_PROD, S3_BUCKET_NAME, S3_ENDPOINT } from "$src/config"
-import { getAuthCookie } from "$src/lib/edge-function-helpers"
+import {
+  AUTH_COOKIE_OPTIONS,
+  IS_PROD,
+  S3_BUCKET_NAME,
+  S3_ENDPOINT,
+} from "$src/config"
 import { NextRequest, NextResponse } from "next/server"
 
 export default async (req: NextRequest) => {
@@ -25,6 +29,10 @@ export default async (req: NextRequest) => {
     return NextResponse.redirect(url).cookie(
       process.env.AUTH_COOKIE_NAME,
       token,
+      {
+        ...AUTH_COOKIE_OPTIONS,
+        domain: `.${url.hostname}`,
+      },
     )
   }
 
@@ -52,13 +60,6 @@ export default async (req: NextRequest) => {
     const domain = host?.replace(`.${process.env.OUR_DOMAIN}`, "")
     const url = req.nextUrl.clone()
     url.pathname = `/_site/${domain}${url.pathname}`
-    return NextResponse.rewrite(url)
-  }
-
-  // When logged in, redirect homepage to the dashboard
-  if (req.nextUrl.pathname === "/" && getAuthCookie(req)) {
-    const url = req.nextUrl.clone()
-    url.pathname = "/dashboard"
     return NextResponse.rewrite(url)
   }
 
