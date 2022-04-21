@@ -1,11 +1,15 @@
 import { DashboardLayout } from "$src/components/app/DashboardLayout"
 import { SettingsLayout } from "$src/components/app/SettingsLayout"
+import { Avatar } from "$src/components/ui/Avatar"
+import { AvatarEditor } from "$src/components/ui/AvatarEditor"
 import { Button } from "$src/components/ui/Button"
 import {
   useSiteQuery,
   useUpdateSiteMutation,
   useDeleteSiteMutation,
 } from "$src/generated/graphql"
+import { useClientSaveAvatar } from "$src/lib/client-save-avatar"
+import { getUserContentsUrl } from "$src/lib/user-contents-helpers"
 import { useFormik } from "formik"
 import { useRouter } from "next/router"
 import { useEffect } from "react"
@@ -22,6 +26,8 @@ export default function SiteSettingsPage() {
   })
   const [, updateSiteMutation] = useUpdateSiteMutation()
   const [, deleteSiteMutation] = useDeleteSiteMutation()
+
+  const clientSaveAvatar = useClientSaveAvatar({ type: "site" })
 
   const site = siteResult.data?.site
 
@@ -83,6 +89,25 @@ export default function SiteSettingsPage() {
       <SettingsLayout title="Site" subtitle="Manage settings for this site">
         <form onSubmit={form.handleSubmit}>
           <div>
+            <label className="block mb-2 text-sm">Icon</label>
+            <AvatarEditor
+              render={({ onClick }) => (
+                <Avatar
+                  images={[getUserContentsUrl(siteResult.data?.site?.icon)]}
+                  size={140}
+                  name={siteResult.data?.site?.name}
+                  bgColor="#ccc"
+                  tabIndex={-1}
+                  className="cursor-default focus:ring-2 ring-offset-1 ring-zinc-200"
+                  onClick={onClick}
+                />
+              )}
+              saveAvatar={(blob) =>
+                clientSaveAvatar(siteResult.data!.site!.id, blob)
+              }
+            />
+          </div>
+          <div className="mt-5">
             <label htmlFor="name" className="block mb-2 text-sm">
               Name
             </label>

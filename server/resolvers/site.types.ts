@@ -25,6 +25,9 @@ export class Site {
 
   @Field({ nullable: true })
   description?: string
+
+  @Field({ nullable: true })
+  icon?: string
 }
 
 @ArgsType()
@@ -49,6 +52,9 @@ export class UpdateSiteArgs {
 
   @Field({ nullable: true })
   description?: string
+
+  @Field({ nullable: true })
+  icon?: string
 }
 
 @ArgsType()

@@ -19,7 +19,7 @@ export default function AccountSettingsPage() {
 
   const [viewerResult] = useViewerQuery({})
   const [, updateUserProfileMutation] = useUpdateUserProfileMutation()
-  const clientSaveAvatar = useClientSaveAvatar()
+  const clientSaveAvatar = useClientSaveAvatar({ type: "user" })
 
   const form = useFormik({
     initialValues: {

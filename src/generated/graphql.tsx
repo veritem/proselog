@@ -80,6 +80,7 @@ export type MutationUpdateMembershipLastSwitchedToArgs = {
 
 export type MutationUpdateSiteArgs = {
   description?: InputMaybe<Scalars["String"]>
+  icon?: InputMaybe<Scalars["String"]>
   id: Scalars["String"]
   name?: InputMaybe<Scalars["String"]>
   subdomain?: InputMaybe<Scalars["String"]>
@@ -161,6 +162,7 @@ export type Site = {
   __typename?: "Site"
   createdAt: Scalars["DateTime"]
   description?: Maybe<Scalars["String"]>
+  icon?: Maybe<Scalars["String"]>
   id: Scalars["String"]
   name: Scalars["String"]
   owner: User
@@ -228,7 +230,13 @@ export type SitesForSiteSwitcherQuery = {
     memberships: Array<{
       __typename?: "Membership"
       id: string
-      site: { __typename?: "Site"; id: string; name: string; subdomain: string }
+      site: {
+        __typename?: "Site"
+        id: string
+        name: string
+        subdomain: string
+        icon?: string | null
+      }
     }>
   } | null
 }
@@ -245,6 +253,7 @@ export type UserSiteLayoutQuery = {
     name: string
     description?: string | null
     subdomain: string
+    icon?: string | null
     owner: {
       __typename?: "User"
       id: string
@@ -340,6 +349,7 @@ export type SiteQuery = {
     __typename?: "Site"
     id: string
     name: string
+    icon?: string | null
     subdomain: string
     description?: string | null
   }
@@ -395,6 +405,7 @@ export type UpdateSiteMutationVariables = Exact<{
   name?: InputMaybe<Scalars["String"]>
   subdomain?: InputMaybe<Scalars["String"]>
   description?: InputMaybe<Scalars["String"]>
+  icon?: InputMaybe<Scalars["String"]>
 }>
 
 export type UpdateSiteMutation = {
@@ -642,6 +653,10 @@ export const SitesForSiteSwitcherDocument = {
                               kind: "Field",
                               name: { kind: "Name", value: "subdomain" },
                             },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "icon" },
+                            },
                           ],
                         },
                       },
@@ -714,6 +729,7 @@ export const UserSiteLayoutDocument = {
                 { kind: "Field", name: { kind: "Name", value: "name" } },
                 { kind: "Field", name: { kind: "Name", value: "description" } },
                 { kind: "Field", name: { kind: "Name", value: "subdomain" } },
+                { kind: "Field", name: { kind: "Name", value: "icon" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "owner" },
@@ -1258,6 +1274,7 @@ export const SiteDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "id" } },
                 { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "icon" } },
                 { kind: "Field", name: { kind: "Name", value: "subdomain" } },
                 { kind: "Field", name: { kind: "Name", value: "description" } },
               ],
@@ -1563,6 +1580,11 @@ export const UpdateSiteDocument = {
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
         },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "icon" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -1601,6 +1623,14 @@ export const UpdateSiteDocument = {
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "description" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "icon" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "icon" },
                 },
               },
             ],

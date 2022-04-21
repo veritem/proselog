@@ -2,6 +2,8 @@ import { useSitesForSiteSwitcherQuery } from "$src/generated/graphql"
 import { gql } from "graphql-tag"
 import { Popover } from "@headlessui/react"
 import Link from "next/link"
+import { Avatar } from "../ui/Avatar"
+import { getUserContentsUrl } from "$src/lib/user-contents-helpers"
 
 gql`
   query sitesForSiteSwitcher {
@@ -15,6 +17,7 @@ gql`
           id
           name
           subdomain
+          icon
         }
       }
     }
@@ -30,7 +33,12 @@ export const SiteSwitcher: React.FC<{ subdomain: string }> = ({
   return (
     <div className="px-3 pt-3 pb-2 text-sm">
       <Popover className="relative">
-        <Popover.Button className="h-8 px-2 flex w-full rounded-lg hover:bg-zinc-200 transition-colors items-center justify-start">
+        <Popover.Button className="h-10 px-2 space-x-2 flex w-full rounded-lg hover:bg-zinc-200 transition-colors items-center justify-start">
+          <Avatar
+            images={[getUserContentsUrl(activeSite?.icon)]}
+            name={activeSite?.name}
+            size={26}
+          />
           <span className="truncate">{activeSite?.name}</span>
         </Popover.Button>
         <Popover.Panel className="absolute left-0 z-10 pt-1 ">

@@ -118,6 +118,7 @@ export default class SiteResolver {
         name: args.name,
         subdomain: args.subdomain,
         description: args.description,
+        icon: args.icon,
       },
     })
 

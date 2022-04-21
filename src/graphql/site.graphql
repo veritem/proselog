@@ -2,6 +2,7 @@ query site($domainOrSubdomain: String!) {
   site(domainOrSubdomain: $domainOrSubdomain) {
     id
     name
+    icon
     subdomain
     description
   }

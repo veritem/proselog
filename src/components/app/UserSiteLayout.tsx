@@ -16,6 +16,7 @@ gql`
       name
       description
       subdomain
+      icon
       owner {
         id
         name
@@ -94,7 +95,7 @@ export const UserSiteLayout: React.FC<{
   })
 
   const site = siteResult.data?.site
-  const avatars = [getUserContentsUrl(site?.owner.avatar)]
+  const avatars = [getUserContentsUrl(site?.icon)]
 
   const navLinks = [
     {
@@ -129,12 +130,7 @@ export const UserSiteLayout: React.FC<{
             <div className="flex items-center">
               <Link href="/">
                 <a className="flex items-center text-lg space-x-3 text-black hover:text-indigo-500">
-                  <Avatar
-                    images={avatars}
-                    size={36}
-                    name={site?.name}
-                    rounded={false}
-                  />
+                  <Avatar images={avatars} size={36} name={site?.name} />
                   <span className="font-medium">{site?.name}</span>
                 </a>
               </Link>
