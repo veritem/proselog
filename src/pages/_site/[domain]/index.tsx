@@ -11,6 +11,10 @@ import { formatDate } from "$src/lib/date"
 import { UserSiteLayout } from "$src/components/app/UserSiteLayout"
 import { serverSidePropsHandler } from "$src/lib/server-side-props"
 import { createUrqlClient } from "$src/lib/urql-client"
+import { getAuthTokenFromRequest } from "$server/auth"
+import { IncomingMessage } from "http"
+import { IS_PROD } from "$src/config"
+import { getGraphqlEndpoint } from "$server/graphql-schema"
 
 gql`
   query SiteIndexPage($domainOrSubdomain: String!) {
@@ -30,7 +34,10 @@ gql`
 `
 
 export const getServerSideProps = serverSidePropsHandler(async (ctx) => {
-  const { client, ssr } = createUrqlClient()
+  const { client, ssr } = createUrqlClient({
+    token: getAuthTokenFromRequest(ctx.req),
+    endpoint: getGraphqlEndpoint(ctx.req),
+  })
 
   const { error } = await client
     .query<UserSiteLayoutQuery, UserSiteLayoutQueryVariables>(

@@ -1,10 +1,8 @@
-import { API_ENDPOINT } from "$src/config"
-
 export const uploadFileInBrowser = async (blob: Blob) => {
   const form = new FormData()
   form.append("file", blob)
   form.append("type", "image")
-  const res = await fetch(`${API_ENDPOINT}/api/upload`, {
+  const res = await fetch(`/api/upload`, {
     credentials: "same-origin",
     body: form,
     method: "POST",

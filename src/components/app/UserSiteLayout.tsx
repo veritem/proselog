@@ -8,9 +8,13 @@ import { getUserContentsUrl } from "$src/lib/user-contents-helpers"
 import React, { useMemo } from "react"
 import clsx from "clsx"
 import { clientState } from "$src/lib/client-state"
+import { truthy } from "$src/lib/utils"
 
 gql`
   query UserSiteLayout($domainOrSubdomain: String!) {
+    viewer {
+      id
+    }
     site(domainOrSubdomain: $domainOrSubdomain) {
       id
       name
@@ -87,14 +91,14 @@ export const UserSiteLayout: React.FC<{
   const router = useRouter()
   const domainOrSubdomain = router.query.domain as string
 
-  const [siteResult] = useUserSiteLayoutQuery({
+  const [queryResult] = useUserSiteLayoutQuery({
     variables: {
       domainOrSubdomain,
     },
     pause: !domainOrSubdomain,
   })
 
-  const site = siteResult.data?.site
+  const site = queryResult.data?.site
   const avatars = [getUserContentsUrl(site?.icon)]
 
   const navLinks = [
@@ -104,20 +108,22 @@ export const UserSiteLayout: React.FC<{
     },
   ]
 
+  const isLoggedIn = !!queryResult.data?.viewer
+
   const dropdownLinks = [
     { text: "Archives", href: "/archives" },
-    {
+    !isLoggedIn && {
       text: "Log in",
       onClick() {
         clientState.loginModalOpened = true
       },
     },
-    { text: "Dashboard", href: `/dashboard` },
-    {
+    isLoggedIn && { text: "Dashboard", href: `/dashboard` },
+    isLoggedIn && {
       text: "Log out",
       href: "/logout",
     },
-  ]
+  ].filter(truthy)
 
   return (
     <>

@@ -247,6 +247,7 @@ export type UserSiteLayoutQueryVariables = Exact<{
 
 export type UserSiteLayoutQuery = {
   __typename?: "Query"
+  viewer?: { __typename?: "User"; id: string } | null
   site: {
     __typename?: "Site"
     id: string
@@ -709,6 +710,16 @@ export const UserSiteLayoutDocument = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "viewer" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
           {
             kind: "Field",
             name: { kind: "Name", value: "site" },

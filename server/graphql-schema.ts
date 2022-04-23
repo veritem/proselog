@@ -1,3 +1,5 @@
+import { IS_PROD } from "$src/config"
+import { IncomingMessage } from "http"
 import { AuthChecker, buildSchema } from "type-graphql"
 import { ContextType } from "./decorators"
 import { singletonAsync } from "./singleton"
@@ -41,3 +43,7 @@ export const schema = singletonAsync(
   // Always rebuild schema on each request in development
   process.env.NODE_ENV === "production",
 )
+
+export const getGraphqlEndpoint = (req: IncomingMessage) => {
+  return `${IS_PROD ? "https" : "http"}://${req.headers.host}`
+}

@@ -1,4 +1,3 @@
-import { API_ENDPOINT } from "$src/config"
 import React from "react"
 import {
   Client,
@@ -9,17 +8,28 @@ import {
   ssrExchange,
 } from "urql"
 
-const API_URL = `${API_ENDPOINT}/api/graphql`
-
-export const createUrqlClient = (initialState?: any) => {
+export const createUrqlClient = ({
+  initialState,
+  token,
+  endpoint,
+}: {
+  initialState?: any
+  token?: string
+  endpoint?: string
+} = {}) => {
   const ssr = ssrExchange({
     isClient: process.browser,
   })
   ssr.restoreData(initialState)
+  const headers: Record<string, string> = {}
+  if (token) {
+    headers.authorization = `Bearer ${token}`
+  }
   const client = createClient({
-    url: API_URL,
+    url: `${endpoint || ""}/api/graphql`,
     fetchOptions: {
       credentials: "same-origin",
+      headers,
     },
     requestPolicy: "cache-and-network",
     exchanges: [dedupExchange, cacheExchange, ssr, fetchExchange],
@@ -29,8 +39,8 @@ export const createUrqlClient = (initialState?: any) => {
 
 let urqlClient: Client | undefined
 
-const initializeUrqlClient = (initialState: any) => {
-  const client = urqlClient ?? createUrqlClient(initialState).client
+const initializeUrqlClient = (initialState: Record<string, any>) => {
+  const client = urqlClient ?? createUrqlClient({ initialState }).client
   if (!process.browser) {
     return client
   }
@@ -40,6 +50,6 @@ const initializeUrqlClient = (initialState: any) => {
   return client
 }
 
-export const useUrqlClient = (initialState: any) => {
+export const useUrqlClient = (initialState: Record<string, any>) => {
   return React.useMemo(() => initializeUrqlClient(initialState), [initialState])
 }

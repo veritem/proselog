@@ -29,13 +29,19 @@ const findUserFromToken = async (token: string) => {
   return accessToken?.user
 }
 
-export const getAuthUser = async (
-  req: IncomingMessage,
-): Promise<AuthUser | null> => {
+export const getAuthTokenFromRequest = (req: IncomingMessage) => {
   let token = req.headers["authorization"]?.replace(/[Bb]earer\s/, "")
   if (!token && req.headers.cookie) {
     token = Cookie.parse(req.headers.cookie)[process.env.AUTH_COOKIE_NAME]
   }
+  return token
+}
+
+export const getAuthUser = async (
+  req: IncomingMessage,
+): Promise<AuthUser | null> => {
+  const token = getAuthTokenFromRequest(req)
+
   if (token) {
     const user = await findUserFromToken(token)
 

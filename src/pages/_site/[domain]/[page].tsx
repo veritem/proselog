@@ -1,3 +1,5 @@
+import { getAuthTokenFromRequest } from "$server/auth"
+import { getGraphqlEndpoint } from "$server/graphql-schema"
 import { PageLayout } from "$src/components/app/PageLayout"
 import { UserSiteLayout } from "$src/components/app/UserSiteLayout"
 import {
@@ -38,7 +40,10 @@ type Props = {
 }
 
 export const getServerSideProps = serverSidePropsHandler<Props>(async (ctx) => {
-  const { client, ssr } = createUrqlClient()
+  const { client, ssr } = createUrqlClient({
+    token: getAuthTokenFromRequest(ctx.req),
+    endpoint: getGraphqlEndpoint(ctx.req),
+  })
   const domainOrSubdomain = ctx.query.domain as string
   const slug = ctx.query.page as string
   await Promise.all([
