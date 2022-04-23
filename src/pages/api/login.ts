@@ -93,6 +93,7 @@ const handler: NextApiHandler = async (req, res) => {
   nextUrl.searchParams.set("token", accessToken.token)
   nextUrl.searchParams.set("next_path", nextUrl.pathname)
   nextUrl.pathname = "/auth/complete"
+  console.log("redirecting to", nextUrl.href)
   res.redirect(nextUrl.href)
 }
 

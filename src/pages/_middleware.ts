@@ -19,7 +19,9 @@ export default async (req: NextRequest) => {
   }
 
   if (pathname === "/auth/complete") {
-    const url = req.nextUrl.clone()
+    const url = new URL(
+      `${IS_PROD ? "https" : "http"}://${host}${pathname}${req.nextUrl.search}`,
+    )
     const token = url.searchParams.get("token") as string
     const nextPath = url.searchParams.get("next_path") as string
     url.searchParams.delete("token")
