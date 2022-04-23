@@ -1,5 +1,4 @@
 import { setAuthCookie } from "$server/auth"
-import { getJWT } from "$server/jwt"
 import { prisma } from "$server/prisma"
 import { nanoid } from "nanoid"
 import { NextApiHandler } from "next"
@@ -82,7 +81,7 @@ const handler: NextApiHandler = async (req, res) => {
     // Check if the host belong to a site
     const existing = await prisma.domain.findUnique({
       where: {
-        domain: nextUrl.host,
+        domain: nextUrl.hostname,
       },
     })
     if (!existing) {
