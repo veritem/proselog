@@ -26,7 +26,12 @@ export const Main: React.FC<{
 }> = ({ children, width }) => {
   return (
     <div className="pl-64 w-full">
-      <div className={clsx(width === "md" ? `max-w-screen-md` : "w-full")}>
+      <div
+        className={clsx(
+          width === "md" ? `max-w-screen-md` : "w-full",
+          "mx-auto",
+        )}
+      >
         {children}
       </div>
     </div>
