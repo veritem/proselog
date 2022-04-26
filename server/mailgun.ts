@@ -12,7 +12,7 @@ const getClient = () =>
     const client = mg.client({
       username: "api",
       key: process.env.MAILGUN_APIKEY,
-      url: process.env.MAILGUN_EU ? `https://api.eu.mailgun.net/v3` : undefined,
+      url: process.env.MAILGUN_EU ? `https://api.eu.mailgun.net` : undefined,
     })
     return client
   })
@@ -32,11 +32,11 @@ export const sendLoginEmail = async (loginLink: string, email: string) => {
 
   console.log(message)
 
-  if (IS_PROD) {
+  if (!IS_PROD) {
     return
   }
 
   const client = getClient()
 
-  await client.messages.create(DOMAIN, message)
+  await client.messages.create(DOMAIN, message).then(console.log)
 }
