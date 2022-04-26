@@ -32,7 +32,7 @@ export const sendLoginEmail = async (loginLink: string, email: string) => {
 
   console.log(message)
 
-  if (!IS_PROD) {
+  if (IS_PROD) {
     return
   }
 
