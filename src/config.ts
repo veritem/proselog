@@ -1,5 +1,6 @@
 import { CookieSerializeOptions } from "cookie"
 
+export const OUR_DOMAIN = process.env.OUR_DOMAIN
 export const IS_PROD = process.env.NODE_ENV === "production"
 export const AUTH_SECRET = process.env.AUTH_SECRET
 export const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME

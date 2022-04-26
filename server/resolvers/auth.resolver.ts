@@ -4,6 +4,7 @@ import dayjs from "dayjs"
 import { RequestLoginLinkArgs } from "./auth.types"
 import { ContextType, GqlContext } from "$server/decorators"
 import { sendLoginEmail } from "$server/mailgun"
+import { IS_PROD, OUR_DOMAIN } from "$src/config"
 
 @Resolver()
 export default class AuthResolver {
@@ -19,7 +20,9 @@ export default class AuthResolver {
       },
     })
 
-    const url = `http://localhost:3000/api/login?${new URLSearchParams([
+    const url = `${
+      IS_PROD ? "https" : "http"
+    }://${OUR_DOMAIN}/api/login?${new URLSearchParams([
       ["token", token.id],
       ["next", args.next],
     ]).toString()}`
