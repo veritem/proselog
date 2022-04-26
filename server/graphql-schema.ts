@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import { IS_PROD } from "$src/config"
 import { IncomingMessage } from "http"
 import { AuthChecker, buildSchema } from "type-graphql"

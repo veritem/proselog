@@ -1,4 +1,3 @@
-import "reflect-metadata"
 import { ApolloServer } from "apollo-server-micro"
 import { NextApiHandler } from "next"
 import connect from "next-connect"
