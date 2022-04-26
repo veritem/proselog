@@ -3,6 +3,7 @@ import { Args, Mutation, Resolver } from "type-graphql"
 import dayjs from "dayjs"
 import { RequestLoginLinkArgs } from "./auth.types"
 import { ContextType, GqlContext } from "$server/decorators"
+import { sendLoginEmail } from "$server/mailgun"
 
 @Resolver()
 export default class AuthResolver {
@@ -23,7 +24,7 @@ export default class AuthResolver {
       ["next", args.next],
     ]).toString()}`
 
-    console.log(`Login link:`, url)
+    await sendLoginEmail(url, args.email)
 
     return true
   }
