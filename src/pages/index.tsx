@@ -45,7 +45,7 @@ export default function Page({ isLoggedIn }: Props) {
           <div className="max-w-screen-md mx-auto px-5">
             <div>
               <span className="inline-block text-3xl lg:text-7xl px-3 rounded-lg py-2 font-bold bg-indigo-600 text-white">
-                Typelog
+                {APP_NAME}
               </span>
             </div>
             <div className="italic text-zinc-500 text-sm mt-1">
