@@ -19,7 +19,9 @@ export const PagesManager: React.FC<{ type: PageTypeEnum }> = ({ type }) => {
   const subdomain = router.query.subdomain as string
   const isPost = type === PageTypeEnum.Post
 
-  const [visibility, setVisibility] = useState(PageVisibilityEnum.All)
+  const [visibility, setVisibility] = useState<PageVisibilityEnum>(
+    PageVisibilityEnum.All,
+  )
 
   const [pagesQuery, refreshPagesQuery] = useSitePagesQuery({
     variables: {
@@ -114,14 +116,16 @@ export const PagesManager: React.FC<{ type: PageTypeEnum }> = ({ type }) => {
     },
   ]
 
-  const switchTab = (type: PageTypeEnum) => {}
+  const switchTab = (type: PageVisibilityEnum) => {
+    setVisibility(type)
+  }
 
   return (
     <DashboardLayout documentTitle={isPost ? "Posts" : "Pages"}>
       <div className="border-b h-14">
         <div className="px-5 max-w-screen-xl mx-auto flex items-center justify-between h-full text-sm">
           <div className="h-full">
-            <div className="h-full flex items-center space-x-4">
+            <div className="h-full flex items-center space-x-4 text-gray-400">
               {tabs.map((tab) => {
                 const active = visibility === tab.value
                 return (
@@ -132,8 +136,8 @@ export const PagesManager: React.FC<{ type: PageTypeEnum }> = ({ type }) => {
                     className={clsx(
                       `flex border-b-2 h-full items-center mt-[3px] px-2 justify-center`,
                       active
-                        ? `border-indigo-500`
-                        : `border-transparent hover:border-zinc-300`,
+                        ? `border-indigo-500 text-indigo-500`
+                        : `border-transparent hover:border-zinc-300 hover:text-gray-500`,
                     )}
                   >
                     {tab.text}
@@ -170,39 +174,17 @@ export const PagesManager: React.FC<{ type: PageTypeEnum }> = ({ type }) => {
                 page.type === PageTypeEnum.Post ? "post" : "page"
               }/${page.id}`}
             >
-              <a className="group hover:bg-zinc-50 rounded-lg h-12 pr-12 -mx-12 flex items-center">
-                <span
-                  className={clsx(
-                    `relative w-12 group-hover:visible h-12 flex items-center justify-center cursor-default`,
-                    !selectedPageIds.includes(page.id) && `invisible`,
-                  )}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    toggleSelectedPageId(page.id)
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    tabIndex={-1}
-                    checked={selectedPageIds.includes(page.id)}
-                    onClick={(e) => e.stopPropagation()}
-                    onChange={() => {
-                      toggleSelectedPageId(page.id)
-                    }}
-                  />
-                </span>
-                <span className="flex-shrink-0 flex">
-                  <span
-                    className={clsx(
-                      `post-status-circle`,
-                      `is-${getPageVisibility(page)}`,
-                    )}
-                  ></span>
-                </span>
-                <span className="w-full px-3">{page.title}</span>
-                <span className="flex-shrink-0 text-zinc-400 text-sm">
-                  {formatDate(page.publishedAt)}
-                </span>
+              <a className="group hover:bg-zinc-100 rounded-lg py-2 block px-2 transition-colors">
+                <div className="flex items-center">
+                  <span>{page.title}</span>
+                </div>
+                <div className="text-zinc-400 text-xs mt-1">
+                  <span className="capitalize">
+                    {getPageVisibility(page).toLowerCase()}
+                  </span>
+                  <span className="mx-2">·</span>
+                  <span>{formatDate(page.publishedAt)}</span>
+                </div>
               </a>
             </Link>
           )
