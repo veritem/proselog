@@ -55,7 +55,7 @@ export default function Page({ isLoggedIn }: Props) {
               {links.map((link) => {
                 if (link.href) {
                   return (
-                    <Link href={link.href} key={link.href}>
+                    <Link href={link.href} key={link.text}>
                       <a className="font-bold nav-link underline">
                         {link.text}
                       </a>
@@ -67,7 +67,7 @@ export default function Page({ isLoggedIn }: Props) {
                     type="button"
                     className="font-bold nav-link underline"
                     onClick={link.onClick}
-                    key={link.href}
+                    key={link.text}
                   >
                     {link.text}
                   </button>

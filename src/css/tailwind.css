@@ -5,7 +5,7 @@
 *,
 *:after,
 *:before {
-  @apply border-zinc-100;
+  border-color: var(--border-color);
 }
 
 .container {

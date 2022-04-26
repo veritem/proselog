@@ -1,4 +1,5 @@
 :root {
+  --border-color: #eee;
   --font-fans: theme("fontFamily.sans");
   --shadow-color-button: theme("colors.gray.300");
   /* Accent color for form controls */

@@ -11,9 +11,9 @@ export const Sidebar: React.FC<{
   children: React.ReactNode
 }> = ({ children }) => {
   return (
-    <div className="w-64 bg-zinc-100 fixed top-0 bottom-0 left-0">
+    <div className="w-[280px] fixed top-0 bottom-0 left-0">
       {children}
-      <div className="w-[1px] bg-zinc-200 absolute top-0 right-0 bottom-0"></div>
+      <div className="w-[1px] bg-border absolute top-0 right-0 bottom-0"></div>
     </div>
   )
 }
@@ -25,7 +25,7 @@ export const Main: React.FC<{
   width?: MainWidth
 }> = ({ children, width }) => {
   return (
-    <div className="pl-64 w-full">
+    <div className="pl-[280px] w-full">
       <div
         className={clsx(
           width === "md" ? `max-w-screen-md` : "w-full",
@@ -154,29 +154,8 @@ export const DashboardLayout: React.FC<{
       </Head>
       <div className="flex">
         <Sidebar>
-          <div className="">
+          <div className="mb-2">
             <SiteSwitcher subdomain={subdomain} />
-          </div>
-
-          <div className="px-3 mb-3">
-            <a
-              className="text-sm text-zinc-500 space-x-2 transition-colors hover:text-zinc-800 hover:bg-zinc-200 h-8 border rounded-lg flex justify-center items-center border-zinc-200"
-              target={"_blank"}
-              rel="noopener noreferrer"
-              href={`http://${subdomain}.localhost:3000`}
-            >
-              <svg
-                width="1em"
-                height="1em"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-                <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-              </svg>
-              <span>View Site</span>
-            </a>
           </div>
 
           <div className="px-3 space-y-[2px] text-zinc-500">
@@ -186,9 +165,9 @@ export const DashboardLayout: React.FC<{
                 <Link href={link.href} key={link.href}>
                   <a
                     className={clsx(
-                      `flex px-2 h-8 text-sm items-center rounded-lg`,
+                      `flex px-2 h-9 text-sm items-center rounded-lg`,
                       active
-                        ? `bg-zinc-200 font-medium text-zinc-800`
+                        ? `bg-zinc-100 font-medium text-zinc-800`
                         : `hover:bg-zinc-200 hover:bg-opacity-50`,
                     )}
                   >

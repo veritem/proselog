@@ -1,5 +1,6 @@
 import { DashboardLayout } from "$src/components/app/DashboardLayout"
 import {
+  PageVisibilityEnum,
   useSubdomainIndexDataQuery,
   useUpdateMembershipLastSwitchedToMutation,
 } from "$src/generated/graphql"
@@ -8,7 +9,10 @@ import { useRouter } from "next/router"
 import { useEffect } from "react"
 
 gql`
-  query SubdomainIndexData($domainOrSubdomain: String!) {
+  query SubdomainIndexData(
+    $domainOrSubdomain: String!
+    $visibility: PageVisibilityEnum
+  ) {
     site(domainOrSubdomain: $domainOrSubdomain) {
       id
       name
@@ -18,6 +22,14 @@ gql`
         postCount
         subscriberCount
       }
+      pages(type: POST, visibility: $visibility) {
+        nodes {
+          id
+          title
+          publishedAt
+          published
+        }
+      }
     }
   }
 `
@@ -26,9 +38,11 @@ export default function SubdomainIndex() {
   const router = useRouter()
   const subdomain = router.query.subdomain as string
 
+  const visibility = PageVisibilityEnum.All
   const [queryResult] = useSubdomainIndexDataQuery({
     variables: {
       domainOrSubdomain: subdomain,
+      visibility,
     },
     pause: !subdomain,
   })
@@ -43,12 +57,11 @@ export default function SubdomainIndex() {
     }
   }, [queryResult.data])
 
-  const siteName = queryResult.data?.site.name
   const stats = queryResult.data?.site.stats
 
   return (
     <DashboardLayout documentTitle={"Dashboard"}>
-      <div className="p-5">
+      <div className="p-5 lg:max-w-screen-lg  2xl:max-w-screen-xl mx-auto">
         {stats && (
           <div className="flex space-x-12">
             <div>

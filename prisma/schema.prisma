@@ -2,12 +2,14 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
 }
 
 model User {
@@ -77,7 +79,7 @@ model Site {
   subdomain       String       @unique
   pages           Page[]       @relation(name: "SitePages")
   domains         Domain[]     @relation(name: "SiteDomains")
-  primaryDomain   Domain?      @relation(name: "SitePrimaryDomain", fields: [primaryDomainId], references: [id])
+  primaryDomain   Domain?      @relation(name: "SitePrimaryDomain", fields: [primaryDomainId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   primaryDomainId String?      @unique
   description     String?
   twitter         String?
@@ -107,7 +109,6 @@ model Page {
   slug             String
   site             Site      @relation(name: "SitePages", fields: [siteId], references: [id], onDelete: Cascade)
   siteId           String
-  tags             PageTag[] @relation(name: "PageTags")
   deletedAt        DateTime?
 
   @@unique([siteId, slug])
@@ -124,15 +125,4 @@ model Domain {
   primaryDomainForSite Site?    @relation(name: "SitePrimaryDomain")
 
   @@map("domains")
-}
-
-model PageTag {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String
-  slug      String
-  pages     Page[]   @relation(name: "PageTags")
-
-  @@map("page_tags")
 }

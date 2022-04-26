@@ -508,6 +508,7 @@ export type SiteIndexPageQuery = {
 
 export type SubdomainIndexDataQueryVariables = Exact<{
   domainOrSubdomain: Scalars["String"]
+  visibility?: InputMaybe<PageVisibilityEnum>
 }>
 
 export type SubdomainIndexDataQuery = {
@@ -522,6 +523,16 @@ export type SubdomainIndexDataQuery = {
       id: string
       postCount: number
       subscriberCount: number
+    }
+    pages: {
+      __typename?: "PagesConnection"
+      nodes: Array<{
+        __typename?: "Page"
+        id: string
+        title: string
+        publishedAt: any
+        published: boolean
+      }>
     }
   }
 }
@@ -2159,6 +2170,17 @@ export const SubdomainIndexDataDocument = {
             },
           },
         },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "visibility" },
+          },
+          type: {
+            kind: "NamedType",
+            name: { kind: "Name", value: "PageVisibilityEnum" },
+          },
+        },
       ],
       selectionSet: {
         kind: "SelectionSet",
@@ -2196,6 +2218,55 @@ export const SubdomainIndexDataDocument = {
                       {
                         kind: "Field",
                         name: { kind: "Name", value: "subscriberCount" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "pages" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "type" },
+                      value: { kind: "EnumValue", value: "POST" },
+                    },
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "visibility" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "visibility" },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "nodes" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "title" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "publishedAt" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "published" },
+                            },
+                          ],
+                        },
                       },
                     ],
                   },
