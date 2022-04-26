@@ -27,7 +27,7 @@ export default class AuthResolver {
       ["next", args.next],
     ]).toString()}`
 
-    await sendLoginEmail(url, args.email)
+    await sendLoginEmail(url, args.email).catch(console.error)
 
     return true
   }
