@@ -33,7 +33,7 @@ export const SiteSwitcher: React.FC<{ subdomain: string }> = ({
   return (
     <div className="px-3 pt-3 pb-2 text-sm">
       <Popover className="relative">
-        <Popover.Button className="h-10 px-2 justify-between flex w-full rounded-lg hover:bg-zinc-100 transition-colors items-center">
+        <Popover.Button className="h-8 px-2 justify-between flex w-full rounded-lg hover:bg-gray-200 hover:bg-opacity-50 transition-colors items-center">
           <div className="flex items-center space-x-2">
             <Avatar
               images={[getUserContentsUrl(activeSite?.icon)]}

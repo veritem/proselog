@@ -14,6 +14,7 @@ import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import dayjs from "dayjs"
 import { usePageVisibility } from "$src/lib/page-helpers"
+import { DashboardLayout } from "./DashboardLayout"
 
 const getInputDatetimeValue = (date: Date | string) => {
   const str = dayjs(date).format()
@@ -109,15 +110,9 @@ export const PageEditor: React.FC<{ type: PageTypeEnum }> = ({ type }) => {
   }, [pageForEditPageQuery.data])
 
   return (
-    <div>
-      <div className="flex justify-between px-5 h-20 items-center fixed left-0 top-0 right-0 z-10 bg-white bg-opacity-80 backdrop-blur-lg">
-        <button
-          type="button"
-          className="border text-zinc-500 rounded-lg px-3 h-9 inline-flex items-center hover:bg-zinc-100 transition-colors"
-          onClick={goBack}
-        >
-          ⬅️ back
-        </button>
+    <DashboardLayout documentTitle={form.title}>
+      <div className="flex justify-between absolute top-0 left-0 right-0 z-10 px-5 h-14 border-b items-center text-sm">
+        <div></div>
         <div className="flex items-center space-x-3">
           <span
             className={clsx(
@@ -132,14 +127,14 @@ export const PageEditor: React.FC<{ type: PageTypeEnum }> = ({ type }) => {
               : "Draft"}
           </span>
           <Popover className="relative">
-            <Popover.Button className="button is-primary select-none">
+            <Popover.Button className="button is-primary rounded-lg select-none">
               Publish
             </Popover.Button>
 
             <Popover.Panel className="absolute right-0 z-10 pt-2">
               {({ close }) => {
                 return (
-                  <div className="border p-3 rounded-lg min-w-[240px] bg-white shadow-modal">
+                  <div className="border p-5 rounded-lg min-w-[240px] bg-white shadow-modal">
                     <div className="space-y-3">
                       <label className="block">
                         <span className="block text-zinc-400 font-medium text-sm">
@@ -180,35 +175,35 @@ export const PageEditor: React.FC<{ type: PageTypeEnum }> = ({ type }) => {
               }}
             </Popover.Panel>
           </Popover>
-          <button
-            type="button"
-            className="border text-zinc-500 rounded-lg px-3 h-9 inline-flex items-center hover:bg-zinc-100 transition-colors"
-            onClick={openSettings}
-          >
-            Settings ⚙️
-          </button>
         </div>
       </div>
-      <div className="max-w-2xl mx-auto py-5 pt-20 px-5">
-        <div>
-          <input
-            type="text"
-            name="title"
-            value={form.title}
-            onChange={(e) => updateField("title", e.target.value)}
-            className="bg-zinc-100 transition-colors px-3 h-12 rounded-lg inline-flex items-center border-none text-xl w-full focus:outline-none"
-            placeholder="Title goes here.."
-          />
-        </div>
-        <div className="mt-5">
-          <div className="bg-zinc-100 rounded-lg p-2">
-            <Editor
-              value={form.content}
-              onChange={(value) => updateField("content", value)}
-            />
+      <div className="h-screen pt-14 flex w-full">
+        <div className="h-full overflow-auto w-full">
+          <div className="max-w-screen-md mx-auto py-5 px-5">
+            <div>
+              <input
+                type="text"
+                name="title"
+                value={form.title}
+                onChange={(e) => updateField("title", e.target.value)}
+                className="h-12 inline-flex items-center border-none text-xl w-full focus:outline-none"
+                placeholder="Title goes here.."
+              />
+            </div>
+            <div className="mt-5">
+              <div className="">
+                <Editor
+                  value={form.content}
+                  onChange={(value) => updateField("content", value)}
+                />
+              </div>
+            </div>
           </div>
         </div>
+        <div className="h-full overflow-auto flex-shrink-0 w-[280px] border-l bg-gray-50 p-5">
+          settings
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   )
 }

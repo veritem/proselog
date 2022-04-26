@@ -95,43 +95,55 @@ export const PagesManager: React.FC<{ type: PageTypeEnum }> = ({ type }) => {
     }
   }
 
+  const tabs = [
+    {
+      value: PageVisibilityEnum.All,
+      text: `All ${isPost ? "Posts" : "Pages"}`,
+    },
+    {
+      value: PageVisibilityEnum.Published,
+      text: "Published",
+    },
+    {
+      value: PageVisibilityEnum.Draft,
+      text: "Draft",
+    },
+    {
+      value: PageVisibilityEnum.Scheduled,
+      text: "Scheduled",
+    },
+  ]
+
+  const switchTab = (type: PageTypeEnum) => {}
+
   return (
     <DashboardLayout documentTitle={isPost ? "Posts" : "Pages"}>
       <div className="border-b h-14">
         <div className="px-5 max-w-screen-xl mx-auto flex items-center justify-between h-full text-sm">
-          <div>
-            <select
-              className="-ml-2 mr-3 bg-zinc-100 shadow-button rounded-md p-1"
-              onChange={(e) =>
-                setVisibility(e.target.value as PageVisibilityEnum)
-              }
-            >
-              <option value={PageVisibilityEnum.All}>
-                All {isPost ? "Posts" : "Pages"}
-              </option>
-              <option value={PageVisibilityEnum.Draft}>Drafts</option>
-              <option value={PageVisibilityEnum.Published}>Published</option>
-              <option value={PageVisibilityEnum.Scheduled}>Scheduled</option>
-            </select>
-            {hasSelectedPageIds && (
-              <>
-                <Button
-                  size="small"
-                  variantColor="red"
-                  type="button"
-                  onClick={deletedSelectedPages}
-                >
-                  Delete
-                </Button>
-                <span className="ml-3 text-zinc-400">
-                  {selectedPageIds.length} selected
-                </span>
-              </>
-            )}
+          <div className="h-full">
+            <div className="h-full flex items-center space-x-4">
+              {tabs.map((tab) => {
+                const active = visibility === tab.value
+                return (
+                  <button
+                    type="button"
+                    key={tab.text}
+                    onClick={() => switchTab(tab.value as any)}
+                    className={clsx(
+                      `flex border-b-2 h-full items-center mt-[3px] px-2 justify-center`,
+                      active
+                        ? `border-indigo-500`
+                        : `border-transparent hover:border-zinc-300`,
+                    )}
+                  >
+                    {tab.text}
+                  </button>
+                )
+              })}
+            </div>
           </div>
           <div>
             <Button
-              size="small"
               onClick={() =>
                 router.push(
                   `/dashboard/${subdomain}/new-${isPost ? "post" : "page"}`,

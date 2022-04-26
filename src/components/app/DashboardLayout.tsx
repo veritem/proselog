@@ -11,7 +11,7 @@ export const Sidebar: React.FC<{
   children: React.ReactNode
 }> = ({ children }) => {
   return (
-    <div className="w-[280px] fixed top-0 bottom-0 left-0">
+    <div className="w-[240px] fixed top-0 bottom-0 left-0 bg-zinc-50">
       {children}
       <div className="w-[1px] bg-border absolute top-0 right-0 bottom-0"></div>
     </div>
@@ -25,11 +25,11 @@ export const Main: React.FC<{
   width?: MainWidth
 }> = ({ children, width }) => {
   return (
-    <div className="pl-[280px] w-full">
+    <div className="pl-[240px] w-full">
       <div
         className={clsx(
           width === "md" ? `max-w-screen-md` : "w-full",
-          "mx-auto",
+          "mx-auto relative",
         )}
       >
         {children}
@@ -165,10 +165,10 @@ export const DashboardLayout: React.FC<{
                 <Link href={link.href} key={link.href}>
                   <a
                     className={clsx(
-                      `flex px-2 h-9 text-sm items-center rounded-lg`,
+                      `flex px-2 h-8 text-sm items-center rounded-lg`,
                       active
-                        ? `bg-zinc-100 font-medium text-zinc-800`
-                        : `hover:bg-zinc-200 hover:bg-opacity-50`,
+                        ? `bg-gray-200 font-medium text-gray-800`
+                        : `hover:bg-gray-200 hover:bg-opacity-50`,
                     )}
                   >
                     <span className="mr-2 text-lg">{link.icon}</span>

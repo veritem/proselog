@@ -7,7 +7,8 @@ export const Button: React.FC<
     isBlock?: boolean
     variant?: "primary" | "ghost"
     variantColor?: "green" | "red"
-    size?: "small"
+    size?: "sm"
+    rounded?: "full" | "lg"
   }
 > = ({
   type,
@@ -18,6 +19,7 @@ export const Button: React.FC<
   variant,
   variantColor,
   size,
+  rounded,
   ...props
 }) => {
   return (
@@ -32,6 +34,7 @@ export const Button: React.FC<
         variantColor && `is-${variantColor}`,
         size && `is-${size}`,
         `is-${variant || "primary"}`,
+        rounded === "full" ? "rounded-full" : "rounded-lg",
       )}
     >
       {children}
