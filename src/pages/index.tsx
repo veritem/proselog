@@ -1,5 +1,6 @@
 import { getAuthUser } from "$server/auth"
 import { APP_NAME } from "$src/config"
+import { clientLogout } from "$src/lib/client-auth"
 import { clientState } from "$src/lib/client-state"
 import { serverSidePropsHandler } from "$src/lib/server-side-props"
 import Head from "next/head"
@@ -24,7 +25,9 @@ export default function Page({ isLoggedIn }: Props) {
           },
           {
             text: "Log out",
-            href: "/logout",
+            onClick() {
+              clientLogout()
+            },
           },
         ]
       : [

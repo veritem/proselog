@@ -1,4 +1,4 @@
-import { IS_PROD } from "$src/config"
+import { IS_PROD, OUR_DOMAIN } from "$src/config"
 
 export function getUserContentsUrl(filename: string): string
 export function getUserContentsUrl(filename: undefined | null): undefined
@@ -8,7 +8,7 @@ export function getUserContentsUrl<T extends string | undefined | null>(
 export function getUserContentsUrl(filename: string | undefined | null) {
   if (!filename) return undefined
   if (IS_PROD) {
-    return `https://usercontents.${process.env.OUR_DOMAIN}/${filename}`
+    return `https://usercontents.${OUR_DOMAIN}/${filename}`
   }
   return `/dev-s3-proxy/${filename}`
 }

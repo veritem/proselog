@@ -29,6 +29,7 @@ specifiers:
   '@types/react-dom': 18.0.1
   '@types/ua-parser-js': ^0.7.36
   '@types/uuid': ^8.3.4
+  '@upstash/redis': ^1.3.1
   apollo-server-core: 3.6.7
   apollo-server-micro: 3.6.7
   autoprefixer: 10.4.4
@@ -84,6 +85,7 @@ dependencies:
   '@headlessui/react': 1.5.0_react-dom@18.0.0+react@18.0.0
   '@panva/hkdf': 1.0.1
   '@prisma/client': 3.12.0_prisma@3.12.0
+  '@upstash/redis': 1.3.1
   apollo-server-core: 3.6.7_graphql@15.8.0
   apollo-server-micro: 3.6.7_graphql@15.8.0+micro@9.3.4
   class-validator: 0.13.2
@@ -2995,6 +2997,14 @@ packages:
       '@types/node': 17.0.21
     dev: true
 
+  /@upstash/redis/1.3.1:
+    resolution: {integrity: sha512-47s6X2WkcemX/Qz1hZqKOmzXWk8oIRqnsUNgnQalKOwi7fkFauN3UVMExigq0gcNrXRSIdpXizHytXKMDbI32w==}
+    dependencies:
+      isomorphic-fetch: 3.0.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@urql/core/2.4.3_graphql@15.8.0:
     resolution: {integrity: sha512-FpapxUKF0nLdzRLoB1QsudDjeLXJhBwzkzl8bSOJ6Cnj7LRRKJ+dYdqHfqGykswB/ILrkZks2Isp4a4BhqyUow==}
     peerDependencies:
@@ -5026,7 +5036,6 @@ packages:
       whatwg-fetch: 3.6.2
     transitivePeerDependencies:
       - encoding
-    dev: true
 
   /isomorphic-ws/4.0.1_ws@8.2.3:
     resolution: {integrity: sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w==}
@@ -7065,7 +7074,6 @@ packages:
 
   /whatwg-fetch/3.6.2:
     resolution: {integrity: sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==}
-    dev: true
 
   /whatwg-url/5.0.0:
     resolution: {integrity: sha1-lmRU6HZUYuN2RNNib2dCzotwll0=}

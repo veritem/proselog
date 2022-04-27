@@ -1,5 +1,7 @@
 import { setAuthCookie } from "$server/auth"
 import { prisma } from "$server/prisma"
+import { OUR_DOMAIN } from "$src/config"
+import dayjs from "dayjs"
 import { nanoid } from "nanoid"
 import { NextApiHandler } from "next"
 import { UAParser } from "ua-parser-js"
@@ -55,6 +57,7 @@ const handler: NextApiHandler = async (req, res) => {
 
   const ua = new UAParser(userAgentString)
 
+  const publicId = nanoid(32)
   const accessToken = await prisma.accessToken.create({
     data: {
       user: {
@@ -64,19 +67,21 @@ const handler: NextApiHandler = async (req, res) => {
       },
       token: nanoid(32),
       name: `Login via ${ua.getOS().name} ${ua.getBrowser().name}`,
+      publicId,
+      publicIdExpiresAt: dayjs().add(1, "minute").toDate(),
     },
   })
 
   if (process.env.NODE_ENV === "development") {
     console.log("login with token", accessToken.token)
   }
-  setAuthCookie(res, accessToken.token)
+  setAuthCookie(res, OUR_DOMAIN, accessToken.token)
 
   const nextUrl = new URL(next)
 
   if (
-    nextUrl.host !== process.env.OUR_DOMAIN &&
-    nextUrl.hostname.endsWith(`.${process.env.OUR_DOMAIN}`)
+    nextUrl.host !== OUR_DOMAIN &&
+    nextUrl.hostname.endsWith(`.${OUR_DOMAIN}`)
   ) {
     // Check if the host belong to a site
     const existing = await prisma.domain.findUnique({
@@ -90,9 +95,9 @@ const handler: NextApiHandler = async (req, res) => {
     }
   }
 
-  nextUrl.searchParams.set("token", accessToken.token)
-  nextUrl.searchParams.set("next_path", nextUrl.pathname)
-  nextUrl.pathname = "/auth/complete"
+  nextUrl.searchParams.set("id", publicId)
+  nextUrl.searchParams.set("path", nextUrl.pathname)
+  nextUrl.pathname = "/api/login-complete"
   console.log("redirecting to", nextUrl.href)
   res.redirect(nextUrl.href)
 }

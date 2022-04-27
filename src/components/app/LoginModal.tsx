@@ -1,5 +1,6 @@
 import { Button } from "$src/components/ui/Button"
 import { useRequestLoginLinkMutation } from "$src/generated/graphql"
+import { getClientLoginNext } from "$src/lib/client-auth"
 import { clientState } from "$src/lib/client-state"
 import { Dialog } from "@headlessui/react"
 import { useFormik } from "formik"
@@ -19,7 +20,7 @@ export const LoginModal: React.FC = () => {
       setLoginResult(null)
       const { error } = await requestLoginLinkMutation({
         email: values.email,
-        next: `${location.protocol}//${location.host}${location.pathname}`,
+        next: getClientLoginNext(),
       })
       if (error) {
         alert(error)

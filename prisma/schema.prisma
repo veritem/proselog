@@ -36,11 +36,14 @@ model LoginToken {
 }
 
 model AccessToken {
-  id     String @id @default(uuid())
-  name   String
-  token  String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
+  id                String    @id @default(uuid())
+  name              String
+  token             String    @unique
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String
+  // Allow to get the access token via publicId in /api/login-complete
+  publicId          String?   @unique
+  publicIdExpiresAt DateTime?
 
   @@map("access_tokens")
 }

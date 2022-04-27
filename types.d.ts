@@ -6,7 +6,7 @@ declare namespace NodeJS {
     AUTH_COOKIE_NAME: string
     AUTH_COOKIE_DOMAIN?: string
     AUTH_SECRET: string
-    OUR_DOMAIN: string
+    NEXT_PUBLIC_OUR_DOMAIN: string
     S3_REGION: string
     S3_ACCESS_KEY_ID: string
     S3_SECRET_ACCESS_KEY: string

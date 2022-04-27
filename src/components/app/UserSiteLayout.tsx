@@ -9,6 +9,7 @@ import React, { useMemo } from "react"
 import clsx from "clsx"
 import { clientState } from "$src/lib/client-state"
 import { truthy } from "$src/lib/utils"
+import { clientLogout } from "$src/lib/client-auth"
 
 gql`
   query UserSiteLayout($domainOrSubdomain: String!) {
@@ -121,7 +122,9 @@ export const UserSiteLayout: React.FC<{
     isLoggedIn && { text: "Dashboard", href: `/dashboard` },
     isLoggedIn && {
       text: "Log out",
-      href: "/logout",
+      onClick() {
+        clientLogout()
+      },
     },
   ].filter(truthy)
 

@@ -1,7 +1,7 @@
 import Mailgun from "mailgun.js"
 import FormData from "form-data"
 import { singleton } from "./singleton"
-import { APP_NAME, IS_PROD } from "$src/config"
+import { APP_NAME, IS_PROD, OUR_DOMAIN } from "$src/config"
 import { MailgunMessageData } from "mailgun.js/interfaces/Messages"
 
 const DOMAIN = process.env.MAILGUN_DOMAIN
@@ -19,7 +19,7 @@ const getClient = () =>
 
 export const sendLoginEmail = async (loginLink: string, email: string) => {
   const message: MailgunMessageData = {
-    from: `${APP_NAME} <hi@${process.env.OUR_DOMAIN}>`,
+    from: `${APP_NAME} <hi@${OUR_DOMAIN}>`,
     to: email,
     subject: `Log in to ${APP_NAME}`,
     html: `<p>Please use the link below to log in to ${APP_NAME}:</p>

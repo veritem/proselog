@@ -1,6 +1,8 @@
 import {
-  AUTH_COOKIE_OPTIONS,
+  AUTH_COOKIE_NAME,
+  getAuthCookieOptions,
   IS_PROD,
+  OUR_DOMAIN,
   S3_BUCKET_NAME,
   S3_ENDPOINT,
 } from "$src/config"
@@ -18,23 +20,15 @@ export default async (req: NextRequest) => {
     return NextResponse.next()
   }
 
-  if (pathname === "/auth/complete") {
-    const url = new URL(
-      `${IS_PROD ? "https" : "http"}://${host}${pathname}${req.nextUrl.search}`,
-    )
-    const token = url.searchParams.get("token") as string
-    const nextPath = url.searchParams.get("next_path") as string
-    url.searchParams.delete("token")
-    url.searchParams.delete("next_path")
-    url.pathname = nextPath
-
-    return NextResponse.redirect(url).cookie(
-      process.env.AUTH_COOKIE_NAME,
-      token,
-      {
-        ...AUTH_COOKIE_OPTIONS,
-        domain: `.${url.hostname}`,
-      },
+  if (pathname === "/logout") {
+    const next = req.nextUrl.searchParams.get("next")
+    const url = next ? new URL(next) : req.nextUrl.clone()
+    if (!next) {
+      url.pathname = "/"
+    }
+    return NextResponse.redirect(url).clearCookie(
+      AUTH_COOKIE_NAME,
+      getAuthCookieOptions({ clearCookie: true }),
     )
   }
 
@@ -55,11 +49,8 @@ export default async (req: NextRequest) => {
     return NextResponse.next()
   }
 
-  if (
-    !host?.endsWith(process.env.OUR_DOMAIN) ||
-    host.endsWith(`.${process.env.OUR_DOMAIN}`)
-  ) {
-    const domain = host?.replace(`.${process.env.OUR_DOMAIN}`, "")
+  if (!host?.endsWith(OUR_DOMAIN) || host.endsWith(`.${OUR_DOMAIN}`)) {
+    const domain = host?.replace(`.${OUR_DOMAIN}`, "")
     const url = req.nextUrl.clone()
     url.pathname = `/_site/${domain}${url.pathname}`
     return NextResponse.rewrite(url)
