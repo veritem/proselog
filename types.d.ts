@@ -4,7 +4,6 @@ declare namespace NodeJS {
     NEXT_PUBLIC_APP_NAME: string
     DATABASE_URL: string
     AUTH_COOKIE_NAME: string
-    AUTH_COOKIE_DOMAIN?: string
     AUTH_SECRET: string
     NEXT_PUBLIC_OUR_DOMAIN: string
     S3_REGION: string
