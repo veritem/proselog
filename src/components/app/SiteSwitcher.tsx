@@ -55,7 +55,7 @@ export const SiteSwitcher: React.FC<{ subdomain: string }> = ({
             </svg>
           </span>
         </Popover.Button>
-        <Popover.Panel className="absolute left-0 z-10 pt-1 ">
+        <Popover.Panel className="absolute left-0 z-10 pt-1">
           <div className="min-w-[280px] rounded-lg shadow-modal bg-white">
             <div className="px-4 py-2 border-b text-sm text-zinc-500">
               {sitesResult.data?.viewer?.email}
