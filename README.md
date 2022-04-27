@@ -8,12 +8,6 @@ Follow the steps to run it locally.
 4. Initialize the database by running `pnpm prisma db push`
 5. Start dev server: `pnpm dev`
 
-### Start a MinIO instance
-
-```bash
-docker run -p 9000:9000 -p 9001:9001 -v /tmp/minio-data:/data --rm -d --name minio minio/minio server /data --console-address ":9001"
-```
-
 ## Architecture
 
 ### GraphQL API
