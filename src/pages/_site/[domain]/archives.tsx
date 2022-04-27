@@ -32,7 +32,7 @@ export default function SiteArchivesPage() {
   })
   const posts = queryResult.data?.site.posts.nodes
   return (
-    <UserSiteLayout title="Archives">
+    <UserSiteLayout title="Archives" useHomeHeader>
       <h2 className="text-xl font-bold page-title">Archives</h2>
       <div className="mt-5">
         {posts?.map((post) => {

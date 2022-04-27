@@ -127,7 +127,7 @@ export default function SiteSettingsPage() {
             <textarea
               id="description"
               className="input is-block"
-              name="bio"
+              name="description"
               value={form.values.description}
               onChange={form.handleChange}
               rows={6}

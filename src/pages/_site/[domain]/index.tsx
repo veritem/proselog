@@ -76,7 +76,7 @@ export default function SiteIndexPage() {
 
   return (
     <>
-      <UserSiteLayout>
+      <UserSiteLayout useHomeHeader>
         <div className="space-y-14">
           {posts?.map((post) => {
             return (

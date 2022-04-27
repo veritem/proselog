@@ -14,6 +14,7 @@ import {
 } from "$src/generated/graphql"
 import { notFound, serverSidePropsHandler } from "$src/lib/server-side-props"
 import { createUrqlClient } from "$src/lib/urql-client"
+import { useRouter } from "next/router"
 import { gql } from "urql"
 
 gql`
@@ -92,8 +93,9 @@ export default function SitePage({ domainOrSubdomain, slug }: Props) {
     return null
   }
 
+  const useHomeHeader = page.type === PageTypeEnum.Page
   return (
-    <UserSiteLayout title={page?.title}>
+    <UserSiteLayout title={page?.title} useHomeHeader={useHomeHeader}>
       <PageLayout page={page} />
     </UserSiteLayout>
   )
