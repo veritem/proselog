@@ -1,19 +1,17 @@
 import { useRouter } from "next/router"
 import { gql } from "graphql-tag"
 import {
-  UserSiteLayoutDocument,
-  UserSiteLayoutQuery,
-  UserSiteLayoutQueryVariables,
+  SiteLayoutDataDocument,
+  SiteLayoutDataQuery,
+  SiteLayoutDataQueryVariables,
   useSiteIndexPageQuery,
 } from "$src/generated/graphql"
 import Link from "next/link"
 import { formatDate } from "$src/lib/date"
-import { UserSiteLayout } from "$src/components/app/UserSiteLayout"
+import { SiteLayout } from "$src/components/site/SiteLayout"
 import { serverSidePropsHandler } from "$src/lib/server-side-props"
 import { createUrqlClient } from "$src/lib/urql-client"
 import { getAuthTokenFromRequest } from "$server/auth"
-import { IncomingMessage } from "http"
-import { IS_PROD } from "$src/config"
 import { getGraphqlEndpoint } from "$server/graphql-schema"
 
 gql`
@@ -40,8 +38,8 @@ export const getServerSideProps = serverSidePropsHandler(async (ctx) => {
   })
 
   const { error } = await client
-    .query<UserSiteLayoutQuery, UserSiteLayoutQueryVariables>(
-      UserSiteLayoutDocument,
+    .query<SiteLayoutDataQuery, SiteLayoutDataQueryVariables>(
+      SiteLayoutDataDocument,
       { domainOrSubdomain: ctx.query.domain as string },
     )
     .toPromise()
@@ -76,7 +74,7 @@ export default function SiteIndexPage() {
 
   return (
     <>
-      <UserSiteLayout useHomeHeader>
+      <SiteLayout useHomeHeader>
         <div className="space-y-14">
           {posts?.map((post) => {
             return (
@@ -97,7 +95,7 @@ export default function SiteIndexPage() {
             )
           })}
         </div>
-      </UserSiteLayout>
+      </SiteLayout>
     </>
   )
 }

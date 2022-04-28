@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
 import { gql } from "graphql-tag"
-import { useUserSiteLayoutQuery } from "$src/generated/graphql"
+import { useSiteLayoutDataQuery } from "$src/generated/graphql"
 import Link from "next/link"
 import { Avatar } from "$src/components/ui/Avatar"
 import Head from "next/head"
@@ -14,7 +14,7 @@ import { Button } from "../ui/Button"
 import { UniLink } from "../ui/UniLink"
 
 gql`
-  query UserSiteLayout($domainOrSubdomain: String!) {
+  query SiteLayoutData($domainOrSubdomain: String!) {
     viewer {
       id
     }
@@ -199,7 +199,7 @@ const HomeHeader: React.FC<{
   )
 }
 
-export const UserSiteLayout: React.FC<{
+export const SiteLayout: React.FC<{
   children: React.ReactNode
   title?: string
   useHomeHeader: boolean
@@ -207,7 +207,7 @@ export const UserSiteLayout: React.FC<{
   const router = useRouter()
   const domainOrSubdomain = router.query.domain as string
 
-  const [queryResult] = useUserSiteLayoutQuery({
+  const [queryResult] = useSiteLayoutDataQuery({
     variables: {
       domainOrSubdomain,
     },

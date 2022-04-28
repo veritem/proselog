@@ -86,7 +86,6 @@
   @apply h-10;
   @apply inline-flex;
   @apply items-center;
-  @apply min-w-[240px];
   @apply focus:ring-1;
   @apply focus:ring-indigo-400;
   @apply focus:border-indigo-400;
@@ -94,6 +93,10 @@
 
 .input.is-block {
   @apply w-full;
+}
+
+.input.has-addon {
+  @apply rounded-r-none;
 }
 
 textarea.input {
@@ -104,9 +107,10 @@ textarea.input {
 
 .label {
   @apply block;
-  @apply mb-1;
+  @apply mb-2;
   @apply text-sm;
-  @apply font-medium;
+  @apply font-bold;
+  @apply text-gray-700;
 }
 
 .post-status-circle {

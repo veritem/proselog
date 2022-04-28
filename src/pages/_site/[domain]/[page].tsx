@@ -1,15 +1,15 @@
 import { getAuthTokenFromRequest } from "$server/auth"
 import { getGraphqlEndpoint } from "$server/graphql-schema"
 import { PageLayout } from "$src/components/app/PageLayout"
-import { UserSiteLayout } from "$src/components/app/UserSiteLayout"
+import { SiteLayout } from "$src/components/site/SiteLayout"
 import {
   PageTypeEnum,
   SitePageQueryDocument,
   SitePageQueryQuery,
   SitePageQueryQueryVariables,
-  UserSiteLayoutDocument,
-  UserSiteLayoutQuery,
-  UserSiteLayoutQueryVariables,
+  SiteLayoutDataDocument,
+  SiteLayoutDataQuery,
+  SiteLayoutDataQueryVariables,
   useSitePageQueryQuery,
 } from "$src/generated/graphql"
 import { notFound, serverSidePropsHandler } from "$src/lib/server-side-props"
@@ -58,8 +58,8 @@ export const getServerSideProps = serverSidePropsHandler<Props>(async (ctx) => {
       )
       .toPromise(),
     client
-      .query<UserSiteLayoutQuery, UserSiteLayoutQueryVariables>(
-        UserSiteLayoutDocument,
+      .query<SiteLayoutDataQuery, SiteLayoutDataQueryVariables>(
+        SiteLayoutDataDocument,
         { domainOrSubdomain },
       )
       .toPromise(),
@@ -95,8 +95,8 @@ export default function SitePage({ domainOrSubdomain, slug }: Props) {
 
   const useHomeHeader = page.type === PageTypeEnum.Page
   return (
-    <UserSiteLayout title={page?.title} useHomeHeader={useHomeHeader}>
+    <SiteLayout title={page?.title} useHomeHeader={useHomeHeader}>
       <PageLayout page={page} />
-    </UserSiteLayout>
+    </SiteLayout>
   )
 }

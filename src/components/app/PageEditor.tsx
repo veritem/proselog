@@ -110,8 +110,8 @@ export const PageEditor: React.FC<{ type: PageTypeEnum }> = ({ type }) => {
   }, [pageForEditPageQuery.data])
 
   return (
-    <DashboardLayout documentTitle={form.title}>
-      <div className="flex justify-between absolute top-0 left-0 right-0 z-10 px-5 h-14 border-b items-center text-sm">
+    <DashboardLayout documentTitle={form.title} fullWidth>
+      <div className="flex justify-between absolute top-0 left-0 md:left-sidebar right-0 z-10 px-5 h-14 border-b items-center text-sm">
         <div></div>
         <div className="flex items-center space-x-3">
           <span
@@ -186,7 +186,7 @@ export const PageEditor: React.FC<{ type: PageTypeEnum }> = ({ type }) => {
                 name="title"
                 value={form.title}
                 onChange={(e) => updateField("title", e.target.value)}
-                className="h-12 inline-flex items-center border-none text-xl w-full focus:outline-none"
+                className="h-12 ml-1 inline-flex items-center border-none text-2xl font-bold w-full focus:outline-none"
                 placeholder="Title goes here.."
               />
             </div>

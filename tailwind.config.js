@@ -12,6 +12,9 @@ module.exports = {
         border: "var(--border-color)",
         accent: "var(--accent-color)",
       },
+      spacing: {
+        sidebar: `240px`,
+      },
     },
   },
   variants: {},

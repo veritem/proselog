@@ -1,4 +1,4 @@
-import { UserSiteLayout } from "$src/components/app/UserSiteLayout"
+import { SiteLayout } from "$src/components/site/SiteLayout"
 import { useSiteArchivesPageQuery } from "$src/generated/graphql"
 import { formatDate } from "$src/lib/date"
 import gql from "graphql-tag"
@@ -32,7 +32,7 @@ export default function SiteArchivesPage() {
   })
   const posts = queryResult.data?.site.posts.nodes
   return (
-    <UserSiteLayout title="Archives" useHomeHeader>
+    <SiteLayout title="Archives" useHomeHeader>
       <h2 className="text-xl font-bold page-title">Archives</h2>
       <div className="mt-5">
         {posts?.map((post) => {
@@ -48,6 +48,6 @@ export default function SiteArchivesPage() {
           )
         })}
       </div>
-    </UserSiteLayout>
+    </SiteLayout>
   )
 }

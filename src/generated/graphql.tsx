@@ -241,11 +241,11 @@ export type SitesForSiteSwitcherQuery = {
   } | null
 }
 
-export type UserSiteLayoutQueryVariables = Exact<{
+export type SiteLayoutDataQueryVariables = Exact<{
   domainOrSubdomain: Scalars["String"]
 }>
 
-export type UserSiteLayoutQuery = {
+export type SiteLayoutDataQuery = {
   __typename?: "Query"
   viewer?: { __typename?: "User"; id: string } | null
   site: {
@@ -695,13 +695,13 @@ export function useSitesForSiteSwitcherQuery(
     ...options,
   })
 }
-export const UserSiteLayoutDocument = {
+export const SiteLayoutDataDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "UserSiteLayout" },
+      name: { kind: "Name", value: "SiteLayoutData" },
       variableDefinitions: [
         {
           kind: "VariableDefinition",
@@ -776,11 +776,11 @@ export const UserSiteLayoutDocument = {
   ],
 } as unknown as DocumentNode
 
-export function useUserSiteLayoutQuery(
-  options: Omit<Urql.UseQueryArgs<UserSiteLayoutQueryVariables>, "query">,
+export function useSiteLayoutDataQuery(
+  options: Omit<Urql.UseQueryArgs<SiteLayoutDataQueryVariables>, "query">,
 ) {
-  return Urql.useQuery<UserSiteLayoutQuery>({
-    query: UserSiteLayoutDocument,
+  return Urql.useQuery<SiteLayoutDataQuery>({
+    query: SiteLayoutDataDocument,
     ...options,
   })
 }

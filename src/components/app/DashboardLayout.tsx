@@ -7,37 +7,6 @@ import { useRouter } from "next/router"
 import React from "react"
 import { SiteSwitcher } from "./SiteSwitcher"
 
-export const Sidebar: React.FC<{
-  children: React.ReactNode
-}> = ({ children }) => {
-  return (
-    <div className="w-[240px] fixed top-0 bottom-0 left-0 bg-zinc-50 z-10">
-      {children}
-      <div className="w-[1px] bg-border absolute top-0 right-0 bottom-0"></div>
-    </div>
-  )
-}
-
-type MainWidth = "md" | "full"
-
-export const Main: React.FC<{
-  children: React.ReactNode
-  width?: MainWidth
-}> = ({ children, width }) => {
-  return (
-    <div className="pl-[240px] w-full">
-      <div
-        className={clsx(
-          width === "md" ? `max-w-screen-md` : "w-full",
-          "mx-auto relative",
-        )}
-      >
-        {children}
-      </div>
-    </div>
-  )
-}
-
 gql`
   query DashboardSiteData($domainOrSubdomain: String!) {
     site(domainOrSubdomain: $domainOrSubdomain) {
@@ -47,11 +16,39 @@ gql`
   }
 `
 
+export const Sidebar: React.FC<{
+  children: React.ReactNode
+}> = ({ children }) => {
+  return (
+    <div className="w-sidebar fixed top-0 bottom-0 left-0 bg-zinc-50 z-10">
+      {children}
+      <div className="w-[1px] bg-border absolute top-0 right-0 bottom-0"></div>
+    </div>
+  )
+}
+
+export const Main: React.FC<{
+  children: React.ReactNode
+  fullWidth?: boolean
+}> = ({ children, fullWidth }) => {
+  return (
+    <div className="md:pl-sidebar w-full">
+      <div
+        className={clsx(
+          fullWidth ? "" : "max-w-screen-xl relative px-5 py-5 md:px-10",
+        )}
+      >
+        {children}
+      </div>
+    </div>
+  )
+}
+
 export const DashboardLayout: React.FC<{
   children?: React.ReactNode
-  mainWidth?: MainWidth
   documentTitle?: string
-}> = ({ children, mainWidth, documentTitle }) => {
+  fullWidth?: boolean
+}> = ({ children, documentTitle, fullWidth }) => {
   const router = useRouter()
   const subdomain = router.query.subdomain as string
   const [siteDataResult] = useDashboardSiteDataQuery({
@@ -60,9 +57,15 @@ export const DashboardLayout: React.FC<{
     },
     pause: !subdomain,
   })
-  const links = [
+  const links: {
+    href: string
+    isActive: (ctx: { href: string; pathname: string }) => boolean
+    icon: React.ReactNode
+    text: string
+  }[] = [
     {
       href: `/dashboard/${subdomain}`,
+      isActive: ({ href, pathname }) => href === pathname,
       icon: (
         <svg width="1em" height="1em" viewBox="0 0 24 24">
           <path
@@ -79,6 +82,7 @@ export const DashboardLayout: React.FC<{
     },
     {
       href: `/dashboard/${subdomain}/posts`,
+      isActive: ({ href, pathname }) => href === pathname,
       icon: (
         <svg width="1em" height="1em" viewBox="0 0 24 24">
           <path
@@ -95,6 +99,7 @@ export const DashboardLayout: React.FC<{
     },
     {
       href: `/dashboard/${subdomain}/pages`,
+      isActive: ({ href, pathname }) => href === pathname,
       icon: (
         <svg width="1em" height="1em" viewBox="0 0 24 24">
           <g
@@ -112,7 +117,9 @@ export const DashboardLayout: React.FC<{
       text: "Pages",
     },
     {
-      href: `/dashboard/${subdomain}/settings`,
+      href: `/dashboard/${subdomain}/settings/general`,
+      isActive: ({ pathname }) =>
+        pathname.startsWith(`/dashboard/${subdomain}/settings`),
       icon: (
         <svg width="1em" height="1em" viewBox="0 0 16 16">
           <g
@@ -130,7 +137,9 @@ export const DashboardLayout: React.FC<{
       text: "Settings",
     },
     {
-      href: `/dashboard/${subdomain}/account`,
+      href: `/dashboard/${subdomain}/account/profile`,
+      isActive: ({ pathname }) =>
+        pathname.startsWith(`/dashboard/${subdomain}/account`),
       icon: (
         <svg width="1em" height="1em" viewBox="0 0 24 24">
           <path
@@ -160,7 +169,10 @@ export const DashboardLayout: React.FC<{
 
           <div className="px-3 space-y-[2px] text-zinc-500">
             {links.map((link) => {
-              const active = router.asPath === link.href
+              const active = link.isActive({
+                pathname: router.asPath,
+                href: link.href,
+              })
               return (
                 <Link href={link.href} key={link.href}>
                   <a
@@ -179,7 +191,7 @@ export const DashboardLayout: React.FC<{
             })}
           </div>
         </Sidebar>
-        <Main width={mainWidth}>{children}</Main>
+        <Main fullWidth={fullWidth}>{children}</Main>
       </div>
     </>
   )
