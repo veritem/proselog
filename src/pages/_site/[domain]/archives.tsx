@@ -42,9 +42,7 @@ export default function SiteArchivesPage() {
                 {formatDate(post.publishedAt)}
               </span>
               <Link href={`/${post.slug}`}>
-                <a className="flex text-indigo-500 hover:underline">
-                  {post.title}
-                </a>
+                <a className="flex text-accent hover:underline">{post.title}</a>
               </Link>
             </div>
           )

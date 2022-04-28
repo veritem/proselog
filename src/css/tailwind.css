@@ -145,7 +145,7 @@ textarea.input {
   content: "";
   @apply absolute;
   @apply h-[2px];
-  @apply bg-indigo-500;
+  @apply bg-accent;
   @apply w-10;
   @apply bottom-0;
   @apply left-0;

@@ -7,15 +7,10 @@ module.exports = {
         "card-hover": `rgb(0 0 0 / 5%) 0px 0px 1px, rgb(0 0 0 / 12%) 0px 15px 30px`,
         card: `rgb(0 0 0 / 5%) 0px 0px 1px, rgb(0 0 0 / 4%) 0px 15px 30px`,
         button: `0 1.5px 1px var(--shadow-color-button)`,
-        base: `var(--shadow-base)`,
-        large: `var(--shadow-large)`,
-        tiny: `var(--shadow-tiny)`,
       },
       colors: {
         border: "var(--border-color)",
-      },
-      aspectRatio: {
-        card: "5 / 7",
+        accent: "var(--accent-color)",
       },
     },
   },

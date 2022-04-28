@@ -117,7 +117,7 @@ export const PageEditor: React.FC<{ type: PageTypeEnum }> = ({ type }) => {
           <span
             className={clsx(
               `text-sm`,
-              published ? `text-indigo-500` : `text-zinc-300`,
+              published ? `text-accent` : `text-zinc-300`,
             )}
           >
             {visibility === PageVisibilityEnum.Published

@@ -46,7 +46,7 @@ export const LoginModal: React.FC = () => {
       <div className="flex items-center justify-center min-h-screen">
         <Dialog.Overlay className="fixed inset-0 bg-white opacity-75" />
 
-        <div className="relative bg-white rounded-lg overflow-hidden max-w-sm shadow-large w-full mx-auto">
+        <div className="relative bg-white rounded-lg overflow-hidden max-w-sm shadow-modal w-full mx-auto">
           <Dialog.Title className="bg-zinc-200 h-12 flex items-center px-3 text-sm text-zinc-600 justify-center">
             Continue with Email
           </Dialog.Title>

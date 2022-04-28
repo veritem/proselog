@@ -67,7 +67,7 @@ export const SiteSwitcher: React.FC<{ subdomain: string }> = ({
                     <a className="flex px-2 h-8 rounded-lg items-center justify-between hover:bg-zinc-100">
                       <span className="truncate w-8/12">{site.name}</span>
                       {activeSite?.id === site.id && (
-                        <span className="text-indigo-500">
+                        <span className="text-accent">
                           <svg
                             className="w-5 h-5"
                             fill="currentColor"

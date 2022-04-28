@@ -2,12 +2,7 @@
   --border-color: #eee;
   --font-fans: theme("fontFamily.sans");
   --shadow-color-button: theme("colors.gray.300");
+  --accent-color: theme("colors.indigo.500");
   /* Accent color for form controls */
-  accent-color: theme("colors.indigo.500");
-
-  --shadow-base: 0px 9px 24px -3px rgba(0, 0, 0, 0.16),
-    0px 4px 8px -1px rgba(0, 0, 0, 0.08);
-  --shadow-tiny: 0px 1px 0px rgba(0, 0, 0, 0.03), 0px 2px 3px rgba(0, 0, 0, 0.1);
-  --shadow-large: 0px 10px 60px 0px rgba(0, 0, 0, 0.15),
-    0px 15px 25px 0px rgba(0, 0, 0, 0.1);
+  accent-color: var(--accent-color);
 }

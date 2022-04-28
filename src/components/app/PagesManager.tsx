@@ -136,7 +136,7 @@ export const PagesManager: React.FC<{ type: PageTypeEnum }> = ({ type }) => {
                     className={clsx(
                       `flex border-b-2 h-full items-center mt-[3px] px-2 justify-center`,
                       active
-                        ? `border-indigo-500 text-indigo-500`
+                        ? `border-accent text-accent`
                         : `border-transparent hover:border-zinc-300 hover:text-gray-500`,
                     )}
                   >

@@ -47,7 +47,7 @@ const DropdownMenu: React.FC<{
     () => (
       <button
         type="button"
-        className="ml-5 cursor-default hover:text-indigo-500 h-10 w-10 rounded-lg flex items-center justify-center"
+        className="ml-5 cursor-default hover:text-accent h-10 w-10 rounded-lg flex items-center justify-center"
       >
         <svg
           className="w-6 h-6"
@@ -107,14 +107,14 @@ const PageHeader: React.FC<{
       <div className="flex justify-between items-center h-16 px-5 max-w-screen-md mx-auto">
         <div className="flex items-center">
           <Link href="/">
-            <a className="flex items-center text-lg space-x-3 text-black hover:text-indigo-500">
+            <a className="flex items-center text-lg space-x-3 text-black hover:text-accent">
               <Avatar images={avatars} size={36} name={siteName} />
               <span className="font-medium">{siteName}</span>
             </a>
           </Link>
           <button
             type="button"
-            className="ml-3 text-white bg-indigo-500 border border-indigo-500 rounded-full h-7 flex items-center px-3 text-xs"
+            className="ml-3 text-white bg-accent border border-accent rounded-full h-7 flex items-center px-3 text-xs"
           >
             Subscribe
           </button>
@@ -132,7 +132,7 @@ const PageHeader: React.FC<{
               const active = router.asPath === link.href
               return (
                 <Link href={link.href} key={link.text}>
-                  <a className={clsx(active ? `text-indigo-500` : ``)}>
+                  <a className={clsx(active ? `text-accent` : ``)}>
                     {link.text}
                   </a>
                 </Link>
@@ -184,7 +184,7 @@ const HomeHeader: React.FC<{
                   className={clsx(
                     `h-10 flex font-bold items-center border-b-2 hover:border-gray-500 hover:text-gray-700`,
                     active
-                      ? `text-indigo-700 border-indigo-500 `
+                      ? `text-indigo-700 border-accent`
                       : `border-transparent`,
                   )}
                 >
