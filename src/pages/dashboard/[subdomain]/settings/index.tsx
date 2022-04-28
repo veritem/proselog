@@ -96,7 +96,6 @@ export default function SiteSettingsPage() {
                   images={[getUserContentsUrl(siteResult.data?.site?.icon)]}
                   size={140}
                   name={siteResult.data?.site?.name}
-                  bgColor="#ccc"
                   tabIndex={-1}
                   className="cursor-default focus:ring-2 ring-offset-1 ring-zinc-200"
                   onClick={onClick}

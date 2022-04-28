@@ -74,7 +74,6 @@ export default function AccountSettingsPage() {
                   ]}
                   size={140}
                   name={viewerResult.data?.viewer?.name}
-                  bgColor="#ccc"
                   tabIndex={-1}
                   className="cursor-default focus:ring-2 ring-offset-1 ring-zinc-200"
                   onClick={onClick}
