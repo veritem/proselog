@@ -18,7 +18,7 @@ export const PageLayout: React.FC<{
           <h2 className="text-xl font-bold page-title">{page.title}</h2>
         )}
         {page.type === PageTypeEnum.Post && (
-          <div className="text-zinc-500 mt-1">
+          <div className="text-zinc-400 italic mt-2">
             {formatDate(page.publishedAt)}
           </div>
         )}

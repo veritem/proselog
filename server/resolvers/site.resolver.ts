@@ -3,7 +3,8 @@ import { getGuard } from "$server/guard"
 import { prisma } from "$server/prisma"
 import {
   checkSubdomain,
-  getSiteByDomainOrSubdomain,
+  getMembership,
+  getSite,
 } from "$server/services/site.service"
 import { MembershipRole, PageType, Prisma } from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
@@ -24,6 +25,9 @@ import {
   SiteArgs,
   SitePagesArgs,
   SiteStats,
+  SiteSubscription,
+  SubscribeToSiteArgs,
+  UnsubscribeToSiteArgs,
   UpdateSiteArgs,
 } from "./site.types"
 import { User } from "./user.types"
@@ -34,7 +38,7 @@ export default class SiteResolver {
   async site(@GqlContext() ctx: ContextType, @Args() args: SiteArgs) {
     const guard = getGuard(ctx)
 
-    const site = await getSiteByDomainOrSubdomain(args.domainOrSubdomain)
+    const site = await getSite(args.site)
 
     guard.allow.ANY([() => guard.allow.site.read(site)])
 
@@ -156,6 +160,86 @@ export default class SiteResolver {
     return true
   }
 
+  @Mutation((returns) => Site)
+  async subscribeToSite(
+    @GqlContext() ctx: ContextType,
+    @Args() args: SubscribeToSiteArgs,
+  ): Promise<Site> {
+    const guard = getGuard(ctx, { requireAuth: true })
+    const site = await getSite(args.siteId)
+
+    let membership = await getMembership({
+      userId: guard.user.id,
+      siteId: site.id,
+      role: MembershipRole.SUBSCRIBER,
+    })
+
+    if (membership) {
+      const config = membership.config as Record<string, any>
+      await prisma.membership.update({
+        where: {
+          id: membership.id,
+        },
+        data: {
+          config: {
+            email: args.email ?? config.email,
+            telegram: args.telegram ?? config.telegram,
+          },
+        },
+      })
+    } else {
+      membership = await prisma.membership.create({
+        data: {
+          role: MembershipRole.SUBSCRIBER,
+          config: {
+            email: args.email,
+            telegram: args.telegram,
+          },
+          user: {
+            connect: {
+              id: guard.user.id,
+            },
+          },
+          site: {
+            connect: {
+              id: site.id,
+            },
+          },
+        },
+      })
+    }
+
+    return site
+  }
+
+  @Mutation((returns) => Boolean)
+  async unsubscribeToSite(
+    @GqlContext() ctx: ContextType,
+    @Args() args: UnsubscribeToSiteArgs,
+  ) {
+    const guard = getGuard(ctx, { requireAuth: true })
+
+    const site = await getSite(args.site)
+
+    const membership = await getMembership({
+      userId: guard.user.id,
+      siteId: site.id,
+      role: MembershipRole.SUBSCRIBER,
+    })
+
+    if (!membership) {
+      throw new ApolloError(`User is not subscribed to this site`)
+    }
+
+    await prisma.membership.delete({
+      where: {
+        id: membership.id,
+      },
+    })
+
+    return true
+  }
+
   @FieldResolver((returns) => PagesConnection)
   async pages(
     @GqlContext() ctx: ContextType,
@@ -254,5 +338,27 @@ export default class SiteResolver {
     })
 
     return { id: nanoid(), postCount, subscriberCount }
+  }
+
+  @FieldResolver((returns) => SiteSubscription, { nullable: true })
+  async subscription(
+    @GqlContext() ctx: ContextType,
+    @Root() site: Site,
+  ): Promise<SiteSubscription | null> {
+    const guard = getGuard(ctx)
+    if (!guard.user) return null
+    const membership = await getMembership({
+      userId: guard.user.id,
+      siteId: site.id,
+      role: MembershipRole.SUBSCRIBER,
+    })
+    if (!membership) return null
+
+    const config = membership.config as Record<string, any>
+    return {
+      id: membership.id,
+      email: config.email,
+      telegram: config.telegram,
+    }
   }
 }

@@ -4,19 +4,25 @@ import {
   SiteLayoutDataDocument,
   SiteLayoutDataQuery,
   SiteLayoutDataQueryVariables,
+  SubscribeModalDataDocument,
+  SubscribeModalDataQuery,
+  SubscribeModalDataQueryVariables,
   useSiteIndexPageQuery,
 } from "$src/generated/graphql"
 import Link from "next/link"
 import { formatDate } from "$src/lib/date"
 import { SiteLayout } from "$src/components/site/SiteLayout"
-import { serverSidePropsHandler } from "$src/lib/server-side-props"
+import {
+  handleUrqlErrorServerSide,
+  serverSidePropsHandler,
+} from "$src/lib/server-side-props"
 import { createUrqlClient } from "$src/lib/urql-client"
 import { getAuthTokenFromRequest } from "$server/auth"
 import { getGraphqlEndpoint } from "$server/graphql-schema"
 
 gql`
-  query SiteIndexPage($domainOrSubdomain: String!) {
-    site(domainOrSubdomain: $domainOrSubdomain) {
+  query SiteIndexPage($site: String!) {
+    site(site: $site) {
       id
       posts: pages(visibility: PUBLISHED) {
         nodes {
@@ -36,20 +42,24 @@ export const getServerSideProps = serverSidePropsHandler(async (ctx) => {
     token: getAuthTokenFromRequest(ctx.req),
     endpoint: getGraphqlEndpoint(ctx.req),
   })
+  const domainOrSubdomain = ctx.query.domain as string
 
-  const { error } = await client
-    .query<SiteLayoutDataQuery, SiteLayoutDataQueryVariables>(
-      SiteLayoutDataDocument,
-      { domainOrSubdomain: ctx.query.domain as string },
-    )
-    .toPromise()
-
-  if (error) {
-    throw error
-  }
+  await Promise.all([
+    client
+      .query<SiteLayoutDataQuery, SiteLayoutDataQueryVariables>(
+        SiteLayoutDataDocument,
+        { site: domainOrSubdomain },
+      )
+      .toPromise(),
+    client
+      .query<SubscribeModalDataQuery, SubscribeModalDataQueryVariables>(
+        SubscribeModalDataDocument,
+        { site: domainOrSubdomain },
+      )
+      .toPromise(),
+  ]).then(handleUrqlErrorServerSide)
 
   const urqlState = ssr.extractData()
-
   return {
     props: {
       urqlState,
@@ -63,7 +73,7 @@ export default function SiteIndexPage() {
 
   const [siteResult] = useSiteIndexPageQuery({
     variables: {
-      domainOrSubdomain,
+      site: domainOrSubdomain,
     },
     pause: !domainOrSubdomain,
   })
@@ -74,7 +84,7 @@ export default function SiteIndexPage() {
 
   return (
     <>
-      <SiteLayout useHomeHeader>
+      <SiteLayout>
         <div className="space-y-14">
           {posts?.map((post) => {
             return (

@@ -8,8 +8,8 @@ import React from "react"
 import { SiteSwitcher } from "./SiteSwitcher"
 
 gql`
-  query DashboardSiteData($domainOrSubdomain: String!) {
-    site(domainOrSubdomain: $domainOrSubdomain) {
+  query DashboardSiteData($site: String!) {
+    site(site: $site) {
       id
       name
     }
@@ -53,7 +53,7 @@ export const DashboardLayout: React.FC<{
   const subdomain = router.query.subdomain as string
   const [siteDataResult] = useDashboardSiteDataQuery({
     variables: {
-      domainOrSubdomain: subdomain,
+      site: subdomain,
     },
     pause: !subdomain,
   })

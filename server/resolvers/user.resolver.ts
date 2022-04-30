@@ -18,8 +18,8 @@ import {
 import { prisma } from "$server/prisma"
 import { ApolloError } from "apollo-server-core"
 import { Site, SiteArgs } from "./site.types"
-import { getSiteByDomainOrSubdomain } from "$server/services/site.service"
 import { Membership } from "./membership.types"
+import { getSite } from "$server/services/site.service"
 
 @Resolver((of) => User)
 export default class UserResolver {
@@ -135,7 +135,7 @@ export default class UserResolver {
   async site(@GqlContext() ctx: ContextType, @Args() args: SiteArgs) {
     const guard = getGuard(ctx)
 
-    const site = await getSiteByDomainOrSubdomain(args.domainOrSubdomain)
+    const site = await getSite(args.site)
 
     guard.allow.ANY([() => guard.allow.site.read(site)])
 

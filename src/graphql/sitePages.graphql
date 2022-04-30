@@ -1,9 +1,9 @@
 query SitePages(
-  $domainOrSubdomain: String!
+  $site: String!
   $visibility: PageVisibilityEnum
   $type: PageTypeEnum
 ) {
-  site(domainOrSubdomain: $domainOrSubdomain) {
+  site(site: $site) {
     id
     name
     pages(visibility: $visibility, type: $type) {

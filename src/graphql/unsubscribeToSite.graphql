@@ -1,0 +1,3 @@
+mutation unsubscribeToSite($site: String!) {
+  unsubscribeToSite(site: $site)
+}

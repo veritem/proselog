@@ -5,4 +5,5 @@ import { proxy } from "valtio"
  */
 export const clientState = proxy({
   loginModalOpened: false,
+  subscribeModalOpened: false,
 })

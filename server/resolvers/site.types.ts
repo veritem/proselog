@@ -20,14 +20,11 @@ export class Site {
   @Field()
   subdomain: string
 
-  @Field()
-  userId: string
+  @Field((type) => String, { nullable: true })
+  description?: string | null
 
-  @Field({ nullable: true })
-  description?: string
-
-  @Field({ nullable: true })
-  icon?: string
+  @Field((type) => String, { nullable: true })
+  icon?: string | null
 }
 
 @ArgsType()
@@ -78,8 +75,8 @@ export class SitePagesArgs extends PaginationArgs {
 
 @ArgsType()
 export class SiteArgs {
-  @Field()
-  domainOrSubdomain: string
+  @Field({ description: `Site id, subdomain or custom domain` })
+  site: string
 }
 
 // TODO: maybe some fields should only allow admin to view
@@ -93,4 +90,34 @@ export class SiteStats {
 
   @Field((type) => Int)
   subscriberCount: number
+}
+
+@ArgsType()
+export class SubscribeToSiteArgs {
+  @Field()
+  siteId: string
+
+  @Field({ nullable: true })
+  email?: boolean
+
+  @Field({ nullable: true })
+  telegram?: boolean
+}
+
+@ObjectType({ simpleResolvers: true })
+export class SiteSubscription {
+  @Field()
+  id: string
+
+  @Field({ nullable: true })
+  email?: boolean
+
+  @Field({ nullable: true })
+  telegram?: boolean
+}
+
+@ArgsType()
+export class UnsubscribeToSiteArgs {
+  @Field()
+  site: string
 }

@@ -1,5 +1,5 @@
 query SiteIdBySubdomain($subdomain: String!) {
-  site(domainOrSubdomain: $subdomain) {
+  site(site: $subdomain) {
     id
   }
 }

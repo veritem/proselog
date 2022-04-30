@@ -6,8 +6,8 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 
 gql`
-  query SiteArchivesPage($domainOrSubdomain: String!) {
-    site(domainOrSubdomain: $domainOrSubdomain) {
+  query SiteArchivesPage($site: String!) {
+    site(site: $site) {
       id
       posts: pages(visibility: PUBLISHED) {
         nodes {
@@ -23,16 +23,16 @@ gql`
 
 export default function SiteArchivesPage() {
   const router = useRouter()
-  const domain = router.query.domain as string
+  const domainOrSubdomain = router.query.domain as string
   const [queryResult] = useSiteArchivesPageQuery({
     variables: {
-      domainOrSubdomain: domain,
+      site: domainOrSubdomain,
     },
-    pause: !domain,
+    pause: !domainOrSubdomain,
   })
   const posts = queryResult.data?.site.posts.nodes
   return (
-    <SiteLayout title="Archives" useHomeHeader>
+    <SiteLayout title="Archives">
       <h2 className="text-xl font-bold page-title">Archives</h2>
       <div className="mt-5">
         {posts?.map((post) => {

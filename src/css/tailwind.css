@@ -22,6 +22,7 @@
   @apply min-w-[100px];
   @apply shadow-button;
   @apply whitespace-nowrap;
+  @apply font-medium;
 
   @apply transition-colors;
 }
@@ -55,11 +56,14 @@
 }
 
 .button.is-secondary {
-  @apply bg-white;
+  @apply bg-gray-50 hover:bg-gray-100 focus:bg-gray-200;
+  @apply text-gray-500;
 }
 
-.button.is-ghost {
-  @apply hover:bg-zinc-100;
+.button.is-text {
+  @apply shadow-none;
+  @apply text-gray-500;
+  @apply hover:bg-gray-50 focus:bg-gray-100;
 }
 
 .button.is-green {

@@ -39,6 +39,8 @@ export type Mutation = {
   deletePage: Scalars["Boolean"]
   deleteSite: Scalars["Boolean"]
   requestLoginLink: Scalars["Boolean"]
+  subscribeToSite: Site
+  unsubscribeToSite: Scalars["Boolean"]
   updateMembershipLastSwitchedTo: Scalars["Boolean"]
   updateSite: Site
   updateUserProfile: User
@@ -72,6 +74,16 @@ export type MutationDeleteSiteArgs = {
 export type MutationRequestLoginLinkArgs = {
   email: Scalars["String"]
   next: Scalars["String"]
+}
+
+export type MutationSubscribeToSiteArgs = {
+  email?: InputMaybe<Scalars["Boolean"]>
+  siteId: Scalars["String"]
+  telegram?: InputMaybe<Scalars["Boolean"]>
+}
+
+export type MutationUnsubscribeToSiteArgs = {
+  site: Scalars["String"]
 }
 
 export type MutationUpdateMembershipLastSwitchedToArgs = {
@@ -146,12 +158,12 @@ export type Query = {
 }
 
 export type QueryPageArgs = {
-  domainOrSubdomain?: InputMaybe<Scalars["String"]>
+  site?: InputMaybe<Scalars["String"]>
   slugOrId: Scalars["String"]
 }
 
 export type QuerySiteArgs = {
-  domainOrSubdomain: Scalars["String"]
+  site: Scalars["String"]
 }
 
 export type QueryUserArgs = {
@@ -169,8 +181,8 @@ export type Site = {
   pages: PagesConnection
   stats: SiteStats
   subdomain: Scalars["String"]
+  subscription?: Maybe<SiteSubscription>
   updatedAt: Scalars["DateTime"]
-  userId: Scalars["String"]
 }
 
 export type SitePagesArgs = {
@@ -185,6 +197,13 @@ export type SiteStats = {
   id: Scalars["String"]
   postCount: Scalars["Int"]
   subscriberCount: Scalars["Int"]
+}
+
+export type SiteSubscription = {
+  __typename?: "SiteSubscription"
+  email?: Maybe<Scalars["Boolean"]>
+  id: Scalars["String"]
+  telegram?: Maybe<Scalars["Boolean"]>
 }
 
 export type User = {
@@ -206,11 +225,11 @@ export type UserMembershipsArgs = {
 }
 
 export type UserSiteArgs = {
-  domainOrSubdomain: Scalars["String"]
+  site: Scalars["String"]
 }
 
 export type DashboardSiteDataQueryVariables = Exact<{
-  domainOrSubdomain: Scalars["String"]
+  site: Scalars["String"]
 }>
 
 export type DashboardSiteDataQuery = {
@@ -242,7 +261,7 @@ export type SitesForSiteSwitcherQuery = {
 }
 
 export type SiteLayoutDataQueryVariables = Exact<{
-  domainOrSubdomain: Scalars["String"]
+  site: Scalars["String"]
 }>
 
 export type SiteLayoutDataQuery = {
@@ -255,12 +274,31 @@ export type SiteLayoutDataQuery = {
     description?: string | null
     subdomain: string
     icon?: string | null
+    subscription?: { __typename?: "SiteSubscription"; id: string } | null
     owner: {
       __typename?: "User"
       id: string
       name: string
       avatar?: string | null
     }
+  }
+}
+
+export type SubscribeModalDataQueryVariables = Exact<{
+  site: Scalars["String"]
+}>
+
+export type SubscribeModalDataQuery = {
+  __typename?: "Query"
+  site: {
+    __typename?: "Site"
+    id: string
+    subscription?: {
+      __typename?: "SiteSubscription"
+      id: string
+      email?: boolean | null
+      telegram?: boolean | null
+    } | null
   }
 }
 
@@ -341,7 +379,7 @@ export type RequestLoginLinkMutation = {
 }
 
 export type SiteQueryVariables = Exact<{
-  domainOrSubdomain: Scalars["String"]
+  site: Scalars["String"]
 }>
 
 export type SiteQuery = {
@@ -366,7 +404,7 @@ export type SiteIdBySubdomainQuery = {
 }
 
 export type SitePagesQueryVariables = Exact<{
-  domainOrSubdomain: Scalars["String"]
+  site: Scalars["String"]
   visibility?: InputMaybe<PageVisibilityEnum>
   type?: InputMaybe<PageTypeEnum>
 }>
@@ -390,6 +428,35 @@ export type SitePagesQuery = {
       }>
     }
   }
+}
+
+export type SubscribeToSiteMutationVariables = Exact<{
+  siteId: Scalars["String"]
+  email: Scalars["Boolean"]
+  telegram: Scalars["Boolean"]
+}>
+
+export type SubscribeToSiteMutation = {
+  __typename?: "Mutation"
+  subscribeToSite: {
+    __typename?: "Site"
+    id: string
+    subscription?: {
+      __typename?: "SiteSubscription"
+      id: string
+      email?: boolean | null
+      telegram?: boolean | null
+    } | null
+  }
+}
+
+export type UnsubscribeToSiteMutationVariables = Exact<{
+  site: Scalars["String"]
+}>
+
+export type UnsubscribeToSiteMutation = {
+  __typename?: "Mutation"
+  unsubscribeToSite: boolean
 }
 
 export type UpdateMembershipLastSwitchedToMutationVariables = Exact<{
@@ -443,7 +510,7 @@ export type ViewerQuery = {
 }
 
 export type SitePageQueryQueryVariables = Exact<{
-  domainOrSubdomain: Scalars["String"]
+  site: Scalars["String"]
   slugOrId: Scalars["String"]
 }>
 
@@ -462,7 +529,7 @@ export type SitePageQueryQuery = {
 }
 
 export type SiteArchivesPageQueryVariables = Exact<{
-  domainOrSubdomain: Scalars["String"]
+  site: Scalars["String"]
 }>
 
 export type SiteArchivesPageQuery = {
@@ -484,7 +551,7 @@ export type SiteArchivesPageQuery = {
 }
 
 export type SiteIndexPageQueryVariables = Exact<{
-  domainOrSubdomain: Scalars["String"]
+  site: Scalars["String"]
 }>
 
 export type SiteIndexPageQuery = {
@@ -507,7 +574,7 @@ export type SiteIndexPageQuery = {
 }
 
 export type SubdomainIndexDataQueryVariables = Exact<{
-  domainOrSubdomain: Scalars["String"]
+  site: Scalars["String"]
   visibility?: InputMaybe<PageVisibilityEnum>
 }>
 
@@ -554,10 +621,7 @@ export const DashboardSiteDataDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "domainOrSubdomain" },
-          },
+          variable: { kind: "Variable", name: { kind: "Name", value: "site" } },
           type: {
             kind: "NonNullType",
             type: {
@@ -576,10 +640,10 @@ export const DashboardSiteDataDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "domainOrSubdomain" },
+                name: { kind: "Name", value: "site" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "domainOrSubdomain" },
+                  name: { kind: "Name", value: "site" },
                 },
               },
             ],
@@ -705,10 +769,7 @@ export const SiteLayoutDataDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "domainOrSubdomain" },
-          },
+          variable: { kind: "Variable", name: { kind: "Name", value: "site" } },
           type: {
             kind: "NonNullType",
             type: {
@@ -737,10 +798,10 @@ export const SiteLayoutDataDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "domainOrSubdomain" },
+                name: { kind: "Name", value: "site" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "domainOrSubdomain" },
+                  name: { kind: "Name", value: "site" },
                 },
               },
             ],
@@ -752,6 +813,16 @@ export const SiteLayoutDataDocument = {
                 { kind: "Field", name: { kind: "Name", value: "description" } },
                 { kind: "Field", name: { kind: "Name", value: "subdomain" } },
                 { kind: "Field", name: { kind: "Name", value: "icon" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "subscription" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                    ],
+                  },
+                },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "owner" },
@@ -781,6 +852,78 @@ export function useSiteLayoutDataQuery(
 ) {
   return Urql.useQuery<SiteLayoutDataQuery>({
     query: SiteLayoutDataDocument,
+    ...options,
+  })
+}
+export const SubscribeModalDataDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "SubscribeModalData" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "site" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "site" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "site" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "site" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "subscription" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "email" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "telegram" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useSubscribeModalDataQuery(
+  options: Omit<Urql.UseQueryArgs<SubscribeModalDataQueryVariables>, "query">,
+) {
+  return Urql.useQuery<SubscribeModalDataQuery>({
+    query: SubscribeModalDataDocument,
     ...options,
   })
 }
@@ -1262,10 +1405,7 @@ export const SiteDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "domainOrSubdomain" },
-          },
+          variable: { kind: "Variable", name: { kind: "Name", value: "site" } },
           type: {
             kind: "NonNullType",
             type: {
@@ -1284,10 +1424,10 @@ export const SiteDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "domainOrSubdomain" },
+                name: { kind: "Name", value: "site" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "domainOrSubdomain" },
+                  name: { kind: "Name", value: "site" },
                 },
               },
             ],
@@ -1345,7 +1485,7 @@ export const SiteIdBySubdomainDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "domainOrSubdomain" },
+                name: { kind: "Name", value: "site" },
                 value: {
                   kind: "Variable",
                   name: { kind: "Name", value: "subdomain" },
@@ -1383,10 +1523,7 @@ export const SitePagesDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "domainOrSubdomain" },
-          },
+          variable: { kind: "Variable", name: { kind: "Name", value: "site" } },
           type: {
             kind: "NonNullType",
             type: {
@@ -1424,10 +1561,10 @@ export const SitePagesDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "domainOrSubdomain" },
+                name: { kind: "Name", value: "site" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "domainOrSubdomain" },
+                  name: { kind: "Name", value: "site" },
                 },
               },
             ],
@@ -1509,6 +1646,172 @@ export function useSitePagesQuery(
   options: Omit<Urql.UseQueryArgs<SitePagesQueryVariables>, "query">,
 ) {
   return Urql.useQuery<SitePagesQuery>({ query: SitePagesDocument, ...options })
+}
+export const SubscribeToSiteDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "subscribeToSite" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "siteId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "email" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "Boolean" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "telegram" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "Boolean" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "subscribeToSite" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "siteId" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "siteId" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "email" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "email" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "telegram" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "telegram" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "subscription" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "email" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "telegram" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useSubscribeToSiteMutation() {
+  return Urql.useMutation<
+    SubscribeToSiteMutation,
+    SubscribeToSiteMutationVariables
+  >(SubscribeToSiteDocument)
+}
+export const UnsubscribeToSiteDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "unsubscribeToSite" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "site" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "unsubscribeToSite" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "site" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "site" },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode
+
+export function useUnsubscribeToSiteMutation() {
+  return Urql.useMutation<
+    UnsubscribeToSiteMutation,
+    UnsubscribeToSiteMutationVariables
+  >(UnsubscribeToSiteDocument)
 }
 export const UpdateMembershipLastSwitchedToDocument = {
   kind: "Document",
@@ -1842,10 +2145,7 @@ export const SitePageQueryDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "domainOrSubdomain" },
-          },
+          variable: { kind: "Variable", name: { kind: "Name", value: "site" } },
           type: {
             kind: "NonNullType",
             type: {
@@ -1878,10 +2178,10 @@ export const SitePageQueryDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "domainOrSubdomain" },
+                name: { kind: "Name", value: "site" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "domainOrSubdomain" },
+                  name: { kind: "Name", value: "site" },
                 },
               },
             ],
@@ -1907,10 +2207,10 @@ export const SitePageQueryDocument = {
               },
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "domainOrSubdomain" },
+                name: { kind: "Name", value: "site" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "domainOrSubdomain" },
+                  name: { kind: "Name", value: "site" },
                 },
               },
             ],
@@ -1950,10 +2250,7 @@ export const SiteArchivesPageDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "domainOrSubdomain" },
-          },
+          variable: { kind: "Variable", name: { kind: "Name", value: "site" } },
           type: {
             kind: "NonNullType",
             type: {
@@ -1972,10 +2269,10 @@ export const SiteArchivesPageDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "domainOrSubdomain" },
+                name: { kind: "Name", value: "site" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "domainOrSubdomain" },
+                  name: { kind: "Name", value: "site" },
                 },
               },
             ],
@@ -2052,10 +2349,7 @@ export const SiteIndexPageDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "domainOrSubdomain" },
-          },
+          variable: { kind: "Variable", name: { kind: "Name", value: "site" } },
           type: {
             kind: "NonNullType",
             type: {
@@ -2074,10 +2368,10 @@ export const SiteIndexPageDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "domainOrSubdomain" },
+                name: { kind: "Name", value: "site" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "domainOrSubdomain" },
+                  name: { kind: "Name", value: "site" },
                 },
               },
             ],
@@ -2158,10 +2452,7 @@ export const SubdomainIndexDataDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "domainOrSubdomain" },
-          },
+          variable: { kind: "Variable", name: { kind: "Name", value: "site" } },
           type: {
             kind: "NonNullType",
             type: {
@@ -2191,10 +2482,10 @@ export const SubdomainIndexDataDocument = {
             arguments: [
               {
                 kind: "Argument",
-                name: { kind: "Name", value: "domainOrSubdomain" },
+                name: { kind: "Name", value: "site" },
                 value: {
                   kind: "Variable",
-                  name: { kind: "Name", value: "domainOrSubdomain" },
+                  name: { kind: "Name", value: "site" },
                 },
               },
             ],

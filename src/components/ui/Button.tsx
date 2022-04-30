@@ -5,7 +5,7 @@ export const Button: React.FC<
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
     isLoading?: boolean
     isBlock?: boolean
-    variant?: "primary" | "ghost"
+    variant?: "primary" | "secondary" | "text"
     variantColor?: "green" | "red"
     size?: "sm"
     rounded?: "full" | "lg"

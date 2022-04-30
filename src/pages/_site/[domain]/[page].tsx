@@ -1,9 +1,8 @@
 import { getAuthTokenFromRequest } from "$server/auth"
 import { getGraphqlEndpoint } from "$server/graphql-schema"
-import { PageLayout } from "$src/components/app/PageLayout"
+import { PageLayout } from "$src/components/site/PageLayout"
 import { SiteLayout } from "$src/components/site/SiteLayout"
 import {
-  PageTypeEnum,
   SitePageQueryDocument,
   SitePageQueryQuery,
   SitePageQueryQueryVariables,
@@ -12,18 +11,20 @@ import {
   SiteLayoutDataQueryVariables,
   useSitePageQueryQuery,
 } from "$src/generated/graphql"
-import { notFound, serverSidePropsHandler } from "$src/lib/server-side-props"
+import {
+  handleUrqlErrorServerSide,
+  serverSidePropsHandler,
+} from "$src/lib/server-side-props"
 import { createUrqlClient } from "$src/lib/urql-client"
-import { useRouter } from "next/router"
 import { gql } from "urql"
 
 gql`
-  query SitePageQuery($domainOrSubdomain: String!, $slugOrId: String!) {
-    site(domainOrSubdomain: $domainOrSubdomain) {
+  query SitePageQuery($site: String!, $slugOrId: String!) {
+    site(site: $site) {
       id
       name
     }
-    page(slugOrId: $slugOrId, domainOrSubdomain: $domainOrSubdomain) {
+    page(slugOrId: $slugOrId, site: $site) {
       id
       title
       type
@@ -52,7 +53,7 @@ export const getServerSideProps = serverSidePropsHandler<Props>(async (ctx) => {
       .query<SitePageQueryQuery, SitePageQueryQueryVariables>(
         SitePageQueryDocument,
         {
-          domainOrSubdomain,
+          site: domainOrSubdomain,
           slugOrId: slug,
         },
       )
@@ -60,19 +61,11 @@ export const getServerSideProps = serverSidePropsHandler<Props>(async (ctx) => {
     client
       .query<SiteLayoutDataQuery, SiteLayoutDataQueryVariables>(
         SiteLayoutDataDocument,
-        { domainOrSubdomain },
+        { site: domainOrSubdomain },
       )
       .toPromise(),
-  ]).then((results) => {
-    for (const item of results) {
-      if (item.error) {
-        throw item.error
-      }
-    }
-    if (!results[0].data?.page) {
-      throw notFound()
-    }
-  })
+  ]).then(handleUrqlErrorServerSide)
+
   const urqlState = ssr.extractData()
   return {
     props: { urqlState, domainOrSubdomain, slug },
@@ -82,7 +75,7 @@ export const getServerSideProps = serverSidePropsHandler<Props>(async (ctx) => {
 export default function SitePage({ domainOrSubdomain, slug }: Props) {
   const [queryResult] = useSitePageQueryQuery({
     variables: {
-      domainOrSubdomain: domainOrSubdomain,
+      site: domainOrSubdomain,
       slugOrId: slug,
     },
   })
@@ -93,9 +86,8 @@ export default function SitePage({ domainOrSubdomain, slug }: Props) {
     return null
   }
 
-  const useHomeHeader = page.type === PageTypeEnum.Page
   return (
-    <SiteLayout title={page?.title} useHomeHeader={useHomeHeader}>
+    <SiteLayout title={page?.title}>
       <PageLayout page={page} />
     </SiteLayout>
   )

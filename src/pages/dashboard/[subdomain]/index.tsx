@@ -9,11 +9,8 @@ import { useRouter } from "next/router"
 import { useEffect } from "react"
 
 gql`
-  query SubdomainIndexData(
-    $domainOrSubdomain: String!
-    $visibility: PageVisibilityEnum
-  ) {
-    site(domainOrSubdomain: $domainOrSubdomain) {
+  query SubdomainIndexData($site: String!, $visibility: PageVisibilityEnum) {
+    site(site: $site) {
       id
       name
       subdomain
@@ -41,7 +38,7 @@ export default function SubdomainIndex() {
   const visibility = PageVisibilityEnum.All
   const [queryResult] = useSubdomainIndexDataQuery({
     variables: {
-      domainOrSubdomain: subdomain,
+      site: subdomain,
       visibility,
     },
     pause: !subdomain,

@@ -3,7 +3,8 @@ import { getGuard } from "$server/guard"
 import { getExcerpt, renderPageContent } from "$server/markdown"
 import { prisma } from "$server/prisma"
 import { checkPageSlug } from "$server/services/page.service"
-import { getSiteByDomainOrSubdomain } from "$server/services/site.service"
+import { getSite } from "$server/services/site.service"
+import { isUUID } from "$server/uuid"
 import { ApolloError } from "apollo-server-core"
 import { nanoid } from "nanoid"
 import {
@@ -14,7 +15,6 @@ import {
   Resolver,
   Root,
 } from "type-graphql"
-import { validate as validateUUID } from "uuid"
 import {
   DeletePageArgs,
   Page,
@@ -29,21 +29,18 @@ export default class PostResolver {
   async page(@GqlContext() ctx: ContextType, @Args() args: PageArgs) {
     const guard = getGuard(ctx)
 
-    const site = args.domainOrSubdomain
-      ? await getSiteByDomainOrSubdomain(args.domainOrSubdomain)
-      : null
+    const site = args.site ? await getSite(args.site) : null
 
-    if (args.domainOrSubdomain && !site) {
+    if (args.site && !site) {
       throw new ApolloError(`Site not found`)
     }
 
-    const isUUID = validateUUID(args.slugOrId)
-
-    if (!isUUID && !args.domainOrSubdomain) {
-      throw new ApolloError("missing domainOrSubdomain")
+    const isPageUUID = isUUID(args.slugOrId)
+    if (!isPageUUID && !args.site) {
+      throw new ApolloError("missing args.site")
     }
 
-    const page = isUUID
+    const page = isPageUUID
       ? await prisma.page.findUnique({
           where: {
             id: args.slugOrId,

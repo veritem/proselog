@@ -72,8 +72,11 @@ export class PageArgs {
   @Field()
   slugOrId: string
 
-  @Field({ nullable: true, description: `Optional when slugOrId is an id` })
-  domainOrSubdomain?: string
+  @Field({
+    nullable: true,
+    description: `Optional when slugOrId is an id, this should be site id, domain or subdomain`,
+  })
+  site?: string
 }
 
 @ArgsType()

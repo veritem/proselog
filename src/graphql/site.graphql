@@ -1,5 +1,5 @@
-query site($domainOrSubdomain: String!) {
-  site(domainOrSubdomain: $domainOrSubdomain) {
+query site($site: String!) {
+  site(site: $site) {
     id
     name
     icon

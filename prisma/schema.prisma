@@ -67,6 +67,7 @@ model Membership {
   role           MembershipRole
   acceptedAt     DateTime?
   lastSwitchedTo DateTime       @default(now())
+  config         Json           @default("{}")
 
   @@map("memberships")
 }

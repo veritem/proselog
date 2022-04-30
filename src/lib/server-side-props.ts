@@ -1,4 +1,5 @@
 import { GetServerSidePropsContext, GetServerSideProps } from "next"
+import { OperationResult } from "urql"
 
 class Redirect {
   constructor(public url: string) {}
@@ -56,6 +57,14 @@ export const serverSidePropsHandler = <TProps extends object>(
           error: (error as any).message,
         },
       }
+    }
+  }
+}
+
+export const handleUrqlErrorServerSide = (results: OperationResult[]) => {
+  for (const item of results) {
+    if (item.error) {
+      throw item.error
     }
   }
 }

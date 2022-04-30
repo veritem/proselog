@@ -7,9 +7,13 @@ generates:
       - 'typescript'
       - 'typescript-operations'
       - 'typescript-urql'
-  ./graphql.schema.json:
+  src/generated/graphql.schema.json:
     plugins:
       - 'introspection'
+    config:
+      minify: true
+      schemaDescription: false
+      descriptions: false
 config:
   withComponents: false
   withHooks: true

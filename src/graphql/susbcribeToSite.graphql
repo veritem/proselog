@@ -1,0 +1,14 @@
+mutation subscribeToSite(
+  $siteId: String!
+  $email: Boolean!
+  $telegram: Boolean!
+) {
+  subscribeToSite(siteId: $siteId, email: $email, telegram: $telegram) {
+    id
+    subscription {
+      id
+      email
+      telegram
+    }
+  }
+}

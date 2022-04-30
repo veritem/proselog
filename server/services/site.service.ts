@@ -1,4 +1,5 @@
 import { prisma } from "$server/prisma"
+import { isUUID } from "$server/uuid"
 import { MembershipRole } from "@prisma/client"
 import { ApolloError } from "apollo-server-core"
 import limax from "limax"
@@ -54,12 +55,18 @@ export const getUserLastActiveSite = async (userId: string) => {
   return site
 }
 
-export const getSiteByDomainOrSubdomain = async (domainOrSubdomain: string) => {
-  const site = await prisma.site.findUnique({
-    where: {
-      subdomain: domainOrSubdomain,
-    },
-  })
+export const getSite = async (input: string) => {
+  const site = isUUID(input)
+    ? await prisma.site.findUnique({
+        where: {
+          id: input,
+        },
+      })
+    : await prisma.site.findUnique({
+        where: {
+          subdomain: input,
+        },
+      })
 
   if (!site || site.deletedAt) {
     throw new ApolloError(`Site not found`)
@@ -70,4 +77,20 @@ export const getSiteByDomainOrSubdomain = async (domainOrSubdomain: string) => {
 
 export const getTitleSlug = (title: string) => {
   return limax(title)
+}
+
+export const getMembership = async (data: {
+  siteId: string
+  userId: string
+  role: MembershipRole
+}) => {
+  const first = await prisma.membership.findFirst({
+    where: {
+      role: data.role,
+      userId: data.userId,
+      siteId: data.siteId,
+    },
+  })
+
+  return first
 }
