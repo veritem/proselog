@@ -1,5 +1,5 @@
 @import "./variables.css";
 @import "./tailwind.css";
 @import "./prose.css";
-@import "./code.css";
 @import "./prism-dark.css";
+@import "./code.css";

@@ -9,13 +9,14 @@ import { PageVisibilityEnum } from "~/lib/types"
 import toast from "react-hot-toast"
 import { Input } from "~/components/ui/Input"
 import { getSiteLink } from "~/lib/helpers"
-import { useEditor } from "~/components/ui/Editor"
 import { type EditorView } from "@codemirror/view"
 import { trpc } from "~/lib/trpc"
 import { useRouter } from "next/router"
 import { DashboardLayout } from "~/components/dashboard/DashboardLayout"
 import { UniLink } from "~/components/ui/UniLink"
 import { useUploadFile } from "~/hooks/useUploadFile"
+import { useEditor } from "~/editor"
+import { EditorContent } from "@tiptap/react"
 
 const getInputDatetimeValue = (date: Date | string) => {
   const str = dayjs(date).format()
@@ -46,10 +47,10 @@ export default function SubdomainEditor() {
   })
   const createOrUpdatePage = trpc.useMutation("site.createOrUpdatePage")
   const uploadFile = useUploadFile()
+  const editor = useEditor()
 
   const [values, setValues] = useState({
     title: "",
-    content: "",
     publishedAt: new Date().toISOString(),
     published: false,
     slug: "",
@@ -63,6 +64,11 @@ export default function SubdomainEditor() {
     })
   }
 
+  const focusEditor = () => {
+    editor?.chain().focus()
+  }
+
+  // Successfully created or updated page
   useEffect(() => {
     if (createOrUpdatePage.isSuccess) {
       createOrUpdatePage.reset()
@@ -76,6 +82,7 @@ export default function SubdomainEditor() {
     }
   }, [createOrUpdatePage, isPost, router, subdomain, trpcContext])
 
+  // Failed to create or update page
   useEffect(() => {
     if (createOrUpdatePage.isError) {
       createOrUpdatePage.reset()
@@ -90,18 +97,14 @@ export default function SubdomainEditor() {
       return {
         ...values,
         title: page.title,
-        content: page.content,
         publishedAt: page.publishedAt,
         published: page.published,
         slug: page.slug,
       }
     })
-  }, [page])
 
-  const handleEditorContentChange = useCallback(
-    (value: string) => updateValue("content", value),
-    []
-  )
+    editor?.setOptions({ content: page.content })
+  }, [page, editor])
 
   const handleDropFile = useCallback(
     async (file: File, view: EditorView) => {
@@ -128,13 +131,6 @@ export default function SubdomainEditor() {
     },
     [uploadFile]
   )
-
-  const { editorRef } = useEditor({
-    value: values.content,
-    onChange: handleEditorContentChange,
-    onDropFile: handleDropFile,
-    placeholder: "Start writing here..",
-  })
 
   return (
     <DashboardLayout>
@@ -221,13 +217,18 @@ export default function SubdomainEditor() {
                   name="title"
                   value={values.title}
                   onChange={(e) => updateValue("title", e.target.value)}
-                  className="h-12 ml-1 inline-flex items-center border-none text-3xl font-bold w-full focus:outline-none"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      focusEditor()
+                    }
+                  }}
+                  className="h-12 inline-flex items-center border-none text-3xl font-bold w-full focus:outline-none"
                   placeholder="Title goes here.."
                 />
               </div>
               <div className="mt-5">
                 <div className="">
-                  <div ref={editorRef}></div>
+                  <EditorContent editor={editor} />
                 </div>
               </div>
             </div>

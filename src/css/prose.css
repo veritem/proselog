@@ -1,3 +1,8 @@
+.prose {
+  /* For ProseMirror */
+  @apply focus:outline-none;
+}
+
 .prose > p {
   @apply my-5;
 }
@@ -52,4 +57,11 @@
 
 .prose pre {
   @apply overflow-auto;
+}
+
+:not(pre) > code {
+  @apply bg-indigo-100 text-indigo-600;
+  @apply p-1;
+  @apply rounded;
+  @apply whitespace-pre-wrap;
 }
