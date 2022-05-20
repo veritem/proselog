@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:14
+    restart: always
+    container_name: proselog_db
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_USER: postgres 
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: proselog
